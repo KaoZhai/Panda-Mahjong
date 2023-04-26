@@ -16,4 +16,12 @@ public class LobbyScene : MonoBehaviour
     {
         SceneManager.LoadScene("Start");
     }
+
+
+    public void Taiwan1Button()
+    {
+        SceneManager.LoadScene("WaitingRoom");
+    }
+
+
 }
