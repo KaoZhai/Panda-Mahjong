@@ -8,8 +8,9 @@ public class GenerateTile : MonoBehaviour
 {
     public GameObject mahjongPrefab; // 麻將Prefab
     public Vector3 startPosition; // 生成起始位置
-    public float spacing = 1.0f; // 麻將間距
+    public float spacing = 2.0f; // 麻將間距
     public Transform parent;
+
     void Start()
     {
         GenerateMahjong();
