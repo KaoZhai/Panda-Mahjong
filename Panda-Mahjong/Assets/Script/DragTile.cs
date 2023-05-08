@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class DragTile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHandler
@@ -39,13 +39,18 @@ public class DragTile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDra
 
     public void OnEndDrag(PointerEventData eventData) 
     {
-        if(transform.localPosition.y > 0)
+        if(self.transform.parent == hand)
         {
-            self.transform.parent = tilePool;
-        }
-        else
-        {
-            self.transform.position = oriPosition;
+            if(transform.localPosition.y > 0)
+            {
+                self.transform.SetParent(tilePool);
+                Vector3 objectScale = transform.localScale;
+                transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            }
+            else
+            {
+                self.transform.position = oriPosition;
+            }
         }
     }
 }
