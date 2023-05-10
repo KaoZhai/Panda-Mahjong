@@ -3,25 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Fusion;
 
-public class LobbyScene : MonoBehaviour
+namespace Game.Lobby
 {
-    // Start is called before the first frame update
-    void Start()
+    public class LobbyScene : MonoBehaviour
     {
-        
+        [SerializeField] private LobbyManager lobbyManager = null;
+        [SerializeField] private RoomListPannel roomListPannel = null;
+        // [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
+        public void OnLeaveBtnClick()
+        {
+            SceneManager.LoadScene("Start");
+        }
+
+        public async void OnCreateRoomBtnClick()
+        {
+            // SceneManager.LoadScene("CreateRoom");
+
+            await lobbyManager.CreateRoom("Room1", 4);
+        }
+
+        private void DisplayRoomList(bool value)
+        {
+            roomListPannel.DisplayPannel(value);
+        }
+
+        private void DisplayRoomCreating(bool value)
+        {
+
+        }
     }
-
-    public void LeaveButton()
-    {
-        SceneManager.LoadScene("Start");
-    }
-
-
-    public void Taiwan1Button()
-    {
-        SceneManager.LoadScene("WaitingRoom");
-    }
-
-
 }
