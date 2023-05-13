@@ -16,7 +16,7 @@ public class TableManager : MonoBehaviour
         // GenerateAllMahjong();
         GenerateAllTile();
 
-        // Shuffle();
+        Shuffle();
     }
 
     void SetTileFace(GameObject mahjong)
@@ -198,6 +198,21 @@ public class TableManager : MonoBehaviour
                 SetTileFace(tile_obj);
             }
             ++cardFace_index; 
+        }
+    }
+
+    void Shuffle()
+    {
+        for(int i = 0; i < tiles.Count; ++i)
+        {
+            int j = Random.Range(0, tiles.Count);
+            GameObject tmp = tiles[i];
+            tiles[i] = tiles[j];
+            tiles[j] = tmp;
+        }
+        for(int i = 0; i < tiles.Count; ++i)
+        {
+            Debug.Log(tiles[i]);
         }
     }
 }
