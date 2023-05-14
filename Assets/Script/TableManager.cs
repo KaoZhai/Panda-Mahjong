@@ -9,14 +9,68 @@ public class TableManager : MonoBehaviour
     public GameObject mahjongPrefab; // 麻將Prefab
     public Vector3 startPosition; // 生成起始位置
     public float spacing = 2.0f; // 麻將間距
-    public Transform parent;
-    List<GameObject> tiles = new List<GameObject>();
+    public Transform transform_tileWall;
+    public Transform transform_localPlayer;
+    List<int> players = new List<int>();
+    List<GameObject> tile_wall = new List<GameObject>();
+    List<List<GameObject>> players_tiles = new List<List<GameObject>>();
+    int localPlayerId = 1;
     void Start() 
     {
         // GenerateAllMahjong();
         GenerateAllTile();
-
         Shuffle();
+        PickSeatsAndDecideDealer();
+        DealTiles();
+    }
+
+
+    void DealTiles()
+    {
+        for(int i = 0; i < 4; ++i)
+        {
+            players_tiles.Add(new List<GameObject>());
+        }
+        for(int k = 0; k < 4; ++k)
+        {
+            for(int i = 0; i < 4; ++i)
+            {
+                for(int j = 0; j < 4; ++j)
+                {
+                    players_tiles[i].Add(tile_wall[0]);
+                    tile_wall.RemoveAt(0);
+                }
+            }
+        }
+        for(int i = 0; i < 4; ++i)
+        {
+            Debug.Log("玩家" + i.ToString());
+            for(int j = 0; j < players_tiles[i].Count; ++j)
+            {
+                Debug.Log(players_tiles[i][j]);
+                if(i == localPlayerId)
+                {
+                    players_tiles[i][j].transform.position = startPosition + new Vector3(j * spacing, 0, 0);
+                    players_tiles[i][j].transform.parent = transform_localPlayer;
+                    players_tiles[i][j].SetActive(true);
+                }
+            }
+        }
+    }
+
+    void PickSeatsAndDecideDealer()
+    {
+        for(int i = 1; i <= 4; ++i)
+        {
+            players.Add(i);
+        }
+        for(int i = 0; i < players.Count; ++i)
+        {
+            int j = Random.Range(0, players.Count);
+            int tmp = players[i];
+            players[i] = players[j];
+            players[j] = tmp;
+        }
     }
 
     void SetTileFace(GameObject mahjong)
@@ -51,7 +105,7 @@ public class TableManager : MonoBehaviour
         for (int i = 1; i <= 4; ++i)
         {
 
-            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
             Tile tile =  tile_obj.GetComponent<Tile>();
             if(tile==null)
             {
@@ -62,7 +116,7 @@ public class TableManager : MonoBehaviour
             tile.cardFace_index = cardFace_index;
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
-            tiles.Add(tile_obj);
+            tile_wall.Add(tile_obj);
             tile_obj.name = tile.id;
             SetTileFace(tile_obj);
             ++cardFace_index;
@@ -72,7 +126,7 @@ public class TableManager : MonoBehaviour
         for (int i = 1; i <= 4; ++i)
         {
 
-            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
             Tile tile =  tile_obj.GetComponent<Tile>();
             if(tile==null)
             {
@@ -83,7 +137,7 @@ public class TableManager : MonoBehaviour
             tile.cardFace_index = cardFace_index;
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
-            tiles.Add(tile_obj);
+            tile_wall.Add(tile_obj);
             tile_obj.name = tile.id;
             SetTileFace(tile_obj);
             ++cardFace_index;
@@ -94,7 +148,7 @@ public class TableManager : MonoBehaviour
         {
             for (int j = 1; j <= 4; ++j)
             {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
                 Tile tile =  tile_obj.GetComponent<Tile>();
                 if(tile==null)
                 {
@@ -105,7 +159,7 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
-                tiles.Add(tile_obj);
+                tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
@@ -116,7 +170,7 @@ public class TableManager : MonoBehaviour
         {
             for (int j = 1; j <= 4; ++j)
             {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
                 Tile tile =  tile_obj.GetComponent<Tile>();
                 if(tile==null)
                 {
@@ -127,7 +181,7 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
-                tiles.Add(tile_obj);
+                tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
@@ -138,7 +192,7 @@ public class TableManager : MonoBehaviour
         {
             for (int j = 1; j <= 4; ++j)
             {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
                 Tile tile =  tile_obj.GetComponent<Tile>();
                 if(tile==null)
                 {
@@ -149,7 +203,7 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
-                tiles.Add(tile_obj);
+                tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
@@ -160,7 +214,7 @@ public class TableManager : MonoBehaviour
         {
             for (int j = 1; j <= 4; ++j)
             {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
                 Tile tile =  tile_obj.GetComponent<Tile>();
                 if(tile==null)
                 {
@@ -171,7 +225,7 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
-                tiles.Add(tile_obj);
+                tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
@@ -182,7 +236,7 @@ public class TableManager : MonoBehaviour
         {
             for (int j = 1; j <= 4; ++j)
             {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, parent);
+                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
                 Tile tile =  tile_obj.GetComponent<Tile>();
                 if(tile==null)
                 {
@@ -193,7 +247,7 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
-                tiles.Add(tile_obj);
+                tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
@@ -203,16 +257,18 @@ public class TableManager : MonoBehaviour
 
     void Shuffle()
     {
-        for(int i = 0; i < tiles.Count; ++i)
+        for(int i = 0; i < tile_wall.Count; ++i)
         {
-            int j = Random.Range(0, tiles.Count);
-            GameObject tmp = tiles[i];
-            tiles[i] = tiles[j];
-            tiles[j] = tmp;
+            int j = Random.Range(0, tile_wall.Count);
+            GameObject tmp = tile_wall[i];
+            tile_wall[i] = tile_wall[j];
+            tile_wall[j] = tmp;
         }
-        for(int i = 0; i < tiles.Count; ++i)
+        Debug.Log("洗牌後的牌牆");
+        for(int i = 0; i < tile_wall.Count; ++i)
         {
-            Debug.Log(tiles[i]);
+
+            Debug.Log(tile_wall[i]);
         }
     }
 }
