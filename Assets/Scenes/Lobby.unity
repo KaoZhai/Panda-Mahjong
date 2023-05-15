@@ -1809,7 +1809,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 0}
   roomUnitPrefab: {fileID: 266122147286468751, guid: ea516222197319043837d64f7aa84357, type: 3}
   lobbyManager: {fileID: 0}
-  parent:
+  parentPostitions:
   - {fileID: 1749280781}
   - {fileID: 1732152747}
   - {fileID: 1309819873}
@@ -1818,9 +1818,7 @@ MonoBehaviour:
   - {fileID: 362254923}
   - {fileID: 193353762}
   - {fileID: 1361963746}
-  hide: {fileID: 1838209721}
-  btnPrevious: {fileID: 431477919}
-  btnNext: {fileID: 787448247}
+  hideUnit: {fileID: 1838209721}
   panelText: {fileID: 1510131376}
 --- !u!114 &879983700
 MonoBehaviour:
