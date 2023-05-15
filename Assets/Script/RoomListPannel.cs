@@ -18,14 +18,10 @@ namespace Game.Lobby
         private int roomCount = 0;
         public List<Transform> parent = new List<Transform>();
         public Transform hide = null;
-        public Button btnPrevious;
-        public Button btnNext;
         public Text panelText;
 
         void Start()
         {
-            InitGUI();
-
             // 底下為 debug 用，生成假房間，以後請刪掉
             for(int i = 1 ; i <= 20 ; i++)
             {
@@ -39,12 +35,6 @@ namespace Game.Lobby
             BindPage(pageIndex);
             panelText.text = string.Format("{0}/{1}", pageIndex.ToString(), pageCount.ToString());
             // 以上為 debug 用，生成假房間，以後請刪掉
-        }
-
-        private void InitGUI()
-        {
-            btnNext.onClick.AddListener(() => { Next(); });
-            btnPrevious.onClick.AddListener(() => { Previous(); });
         }
 
         public void DisplayPannel(bool value)
@@ -111,22 +101,12 @@ namespace Game.Lobby
                 roomList[i].transform.SetParent(hide);
             }
 
-            // if(pageCount == 1)
-            // {
-            //     for(int i = 0 ; i < Mathf.Min(8, roomCount) ; i++)
-            //     {
-            //         roomList[i].transform.SetParent(parent[i]);
-            //         roomList[i].transform.localPosition = new Vector3(0, 0, 0);
-            //     }
-            // }
-            // else if(pageCount > 1)
-            // {
-                for(int i = 0, j = 8 * (index - 1) ; j < Mathf.Min(8 * index, roomCount) ; i++, j++ )
-                {
-                    roomList[j].transform.SetParent(parent[i]);
-                    roomList[j].transform.localPosition = new Vector3(0, 0, 0);
-                }
-            // }
+            
+            for(int i = 0, j = 8 * (index - 1) ; j < Mathf.Min(8 * index, roomCount) ; i++, j++ )
+            {
+                roomList[j].transform.SetParent(parent[i]);
+                roomList[j].transform.localPosition = new Vector3(0, 0, 0);
+            }
         }
     }
 }
