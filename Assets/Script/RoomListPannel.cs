@@ -17,6 +17,7 @@ namespace Game.Lobby
         private int pageCount = 0;
         private int roomCount = 0;
         public List<Transform> parent = new List<Transform>();
+        public Transform hide = null;
         public Button btnPrevious;
         public Button btnNext;
         public Text panelText;
@@ -26,7 +27,7 @@ namespace Game.Lobby
             InitGUI();
 
             // 底下為 debug 用，生成假房間，以後請刪掉
-            for(int i = 1 ; i <= 8 ; i++)
+            for(int i = 1 ; i <= 20 ; i++)
             {
                 RoomUnit roomUnit = Instantiate(roomUnitPrefab, contentTrans);
                 roomUnit.SetInfo(lobbyManager, i.ToString(), 1, 4);
@@ -105,60 +106,27 @@ namespace Game.Lobby
             if(roomList == null || roomCount <= 0) return;
             if(index < 0 || index > roomCount)     return;
 
-            if(pageCount == 1)
+            for(int i = 0 ; i < roomCount ; i++)
             {
-                for(int i = 0 ; i < Mathf.Min(8, roomCount) ; i++)
-                {
-                    // roomList[i].SetActive(true);
-                    roomList[i].transform.SetParent(parent[i]);
-                    roomList[i].transform.localPosition = new Vector3(0, 0, 0);
-                }
-
-                // int canDisplay = 0;
-
-                // for(int i = 8 ; i > 0 ; i--)
-                // {
-                //     if(canDisplay < 8)
-                //     {
-                //         transform.GetChild(canDisplay).gameObject.SetActive( true );
-                //         transform.GetChild(canDisplay).gameObject.transform.SetParent(parent[canDisplay]);
-                //     }
-                //     else
-                //     {
-                //         transform.GetChild(canDisplay).gameObject.SetActive( false );
-                //     }
-
-                //     canDisplay += 1;
-                // }
+                roomList[i].transform.SetParent(hide);
             }
-            else if(pageCount > 1)
-            {
-                if(index == pageCount)
-                {
-                    int canDisplay = 0;
 
-                    for(int i = 8 ; i > 0 ; i--)
-                    {
-                        if(canDisplay < roomCount - 8 * (index - 1))
-                        {
-                            transform.GetChild(canDisplay).gameObject.SetActive( true );
-                        }
-                        else
-                        {
-                            transform.GetChild(canDisplay).gameObject.SetActive( false );
-                        }
-
-                        canDisplay += 1;
-                    }
-                }
-            }
-            else
-            {
-                for(int i = 8 ; i > 0 ; i--)
+            // if(pageCount == 1)
+            // {
+            //     for(int i = 0 ; i < Mathf.Min(8, roomCount) ; i++)
+            //     {
+            //         roomList[i].transform.SetParent(parent[i]);
+            //         roomList[i].transform.localPosition = new Vector3(0, 0, 0);
+            //     }
+            // }
+            // else if(pageCount > 1)
+            // {
+                for(int i = 0, j = 8 * (index - 1) ; j < Mathf.Min(8 * index, roomCount) ; i++, j++ )
                 {
-                    transform.GetChild(8 - i).gameObject.SetActive( true );
+                    roomList[j].transform.SetParent(parent[i]);
+                    roomList[j].transform.localPosition = new Vector3(0, 0, 0);
                 }
-            }
+            // }
         }
     }
 }
