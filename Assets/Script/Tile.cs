@@ -21,6 +21,8 @@ public class Tile : MonoBehaviour
     public TileType tile_type;
     public int tile_number;
     public int cardFace_index;
+    public int playerId;
+    public TableManager tableManager;
 
 
 }

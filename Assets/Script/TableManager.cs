@@ -11,6 +11,7 @@ public class TableManager : MonoBehaviour
     public float spacing = 2.0f; // 麻將間距
     public Transform transform_tileWall;
     public Transform transform_localPlayer;
+    public List<Transform> transform_hand = new List<Transform>();
     List<int> players = new List<int>();
     List<GameObject> tile_wall = new List<GameObject>();
     List<List<GameObject>> players_tiles = new List<List<GameObject>>();
@@ -48,6 +49,7 @@ public class TableManager : MonoBehaviour
             for(int j = 0; j < players_tiles[i].Count; ++j)
             {
                 Debug.Log(players_tiles[i][j]);
+                players_tiles[i][j].GetComponent<Tile>().playerId = i;
                 if(i == localPlayerId)
                 {
                     players_tiles[i][j].transform.position = startPosition + new Vector3(j * spacing, 0, 0);
@@ -60,7 +62,7 @@ public class TableManager : MonoBehaviour
 
     void PickSeatsAndDecideDealer()
     {
-        for(int i = 1; i <= 4; ++i)
+        for(int i = 0; i < 4; ++i)
         {
             players.Add(i);
         }
@@ -114,6 +116,8 @@ public class TableManager : MonoBehaviour
             tile.tile_type = TileType.Season;
             tile.tile_number = i;
             tile.cardFace_index = cardFace_index;
+            tile.tableManager = this;
+            tile.playerId = -1;
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
             tile_wall.Add(tile_obj);
@@ -135,6 +139,8 @@ public class TableManager : MonoBehaviour
             tile.tile_type = TileType.Flower;
             tile.tile_number = i;
             tile.cardFace_index = cardFace_index;
+            tile.tableManager = this;
+            tile.playerId = -1;
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
             tile_wall.Add(tile_obj);
@@ -157,6 +163,8 @@ public class TableManager : MonoBehaviour
                 tile.tile_type = TileType.Wind;
                 tile.tile_number = i;
                 tile.cardFace_index = cardFace_index;
+                tile.tableManager = this;
+                tile.playerId = -1;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -179,6 +187,8 @@ public class TableManager : MonoBehaviour
                 tile.tile_type = TileType.Dragon;
                 tile.tile_number = i;
                 tile.cardFace_index = cardFace_index;
+                tile.tableManager = this;
+                tile.playerId = -1;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -201,6 +211,8 @@ public class TableManager : MonoBehaviour
                 tile.tile_type = TileType.Character;
                 tile.tile_number = i;
                 tile.cardFace_index = cardFace_index;
+                tile.tableManager = this;
+                tile.playerId = -1;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -223,6 +235,8 @@ public class TableManager : MonoBehaviour
                 tile.tile_type = TileType.Bamboo;
                 tile.tile_number = i;
                 tile.cardFace_index = cardFace_index;
+                tile.tableManager = this;
+                tile.playerId = -1;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -245,6 +259,8 @@ public class TableManager : MonoBehaviour
                 tile.tile_type = TileType.Dot;
                 tile.tile_number = i;
                 tile.cardFace_index = cardFace_index;
+                tile.tableManager = this;
+                tile.playerId = -1;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -270,5 +286,31 @@ public class TableManager : MonoBehaviour
 
             Debug.Log(tile_wall[i]);
         }
+    }
+
+    // todo: just public for demo, it should be private
+    public void GetTileFromTileWall(int playerId) 
+    {
+        Debug.Log("NowTop: " + tile_wall[0]);
+        // todo: just for demo, should not change the playerId
+        playerId = localPlayerId;
+        players_tiles[playerId].Add(tile_wall[0]);
+        tile_wall[0].GetComponent<Tile>().playerId = playerId;
+        tile_wall[0].GetComponent<RectTransform>().SetParent(transform_hand[playerId]);
+        tile_wall[0].SetActive(true);
+        tile_wall.RemoveAt(0);
+        Debug.Log("NextTop: " + tile_wall[0]);
+        
+    }
+
+    public void NextPlayer()
+    {
+        localPlayerId = (localPlayerId + 1) % 4;
+        // Debug.Log("after: " + localPlayerId);
+    }
+
+    public int GetLocalPlayerId()
+    {
+        return localPlayerId;
     }
 }
