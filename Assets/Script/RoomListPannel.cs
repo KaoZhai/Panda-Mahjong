@@ -16,8 +16,8 @@ namespace Game.Lobby
         private int pageIndex = 1;
         private int pageCount = 0;
         private int roomCount = 0;
-        public List<Transform> parent = new List<Transform>();
-        public Transform hide = null;
+        public List<Transform> parentPostitions = new List<Transform>();
+        public Transform hideUnit = null;
         public Text panelText;
 
         void Start()
@@ -98,13 +98,13 @@ namespace Game.Lobby
 
             for(int i = 0 ; i < roomCount ; i++)
             {
-                roomList[i].transform.SetParent(hide);
+                roomList[i].transform.SetParent(hideUnit);
             }
 
             
             for(int i = 0, j = 8 * (index - 1) ; j < Mathf.Min(8 * index, roomCount) ; i++, j++ )
             {
-                roomList[j].transform.SetParent(parent[i]);
+                roomList[j].transform.SetParent(parentPostitions[i]);
                 roomList[j].transform.localPosition = new Vector3(0, 0, 0);
             }
         }
