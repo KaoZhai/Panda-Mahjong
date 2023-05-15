@@ -12,6 +12,8 @@ public class TableManager : MonoBehaviour
     public Transform transform_tileWall;
     public Transform transform_localPlayer;
     public List<Transform> transform_hand = new List<Transform>();
+    public Transform underHand;
+    public Transform underTilePoll;
     List<int> players = new List<int>();
     List<GameObject> tile_wall = new List<GameObject>();
     List<List<GameObject>> players_tiles = new List<List<GameObject>>();
@@ -118,6 +120,8 @@ public class TableManager : MonoBehaviour
             tile.cardFace_index = cardFace_index;
             tile.tableManager = this;
             tile.playerId = -1;
+            tile.tilePool = underTilePoll;
+            tile.hand = underHand;
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
             tile_wall.Add(tile_obj);
@@ -141,6 +145,8 @@ public class TableManager : MonoBehaviour
             tile.cardFace_index = cardFace_index;
             tile.tableManager = this;
             tile.playerId = -1;
+            tile.tilePool = underTilePoll;
+            tile.hand = underHand;
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
             tile_wall.Add(tile_obj);
@@ -165,6 +171,8 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 tile.tableManager = this;
                 tile.playerId = -1;
+                tile.tilePool = underTilePoll;
+                tile.hand = underHand;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -189,6 +197,8 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 tile.tableManager = this;
                 tile.playerId = -1;
+                tile.tilePool = underTilePoll;
+                tile.hand = underHand;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -213,6 +223,8 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 tile.tableManager = this;
                 tile.playerId = -1;
+                tile.tilePool = underTilePoll;
+                tile.hand = underHand;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -237,6 +249,8 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 tile.tableManager = this;
                 tile.playerId = -1;
+                tile.tilePool = underTilePoll;
+                tile.hand = underHand;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
@@ -261,6 +275,8 @@ public class TableManager : MonoBehaviour
                 tile.cardFace_index = cardFace_index;
                 tile.tableManager = this;
                 tile.playerId = -1;
+                tile.tilePool = underTilePoll;
+                tile.hand = underHand;
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
