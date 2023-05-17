@@ -51,7 +51,7 @@ public class TableManager : MonoBehaviour
             for(int j = 0; j < players_tiles[i].Count; ++j)
             {
                 Debug.Log(players_tiles[i][j]);
-                players_tiles[i][j].GetComponent<Tile>().SetPlayerId(i);
+                players_tiles[i][j].GetComponent<Game.Tile.Tile>().SetPlayerId(i);
                 if(i == localPlayerId)
                 {
                     players_tiles[i][j].transform.position = startPosition + new Vector3(j * spacing, 0, 0);
@@ -79,7 +79,7 @@ public class TableManager : MonoBehaviour
 
     void SetTileFace(GameObject mahjong)
     {
-        int cardFaceIndex = mahjong.GetComponent<Tile>().cardFaceIndex;
+        int cardFaceIndex = mahjong.GetComponent<Game.Tile.Tile>().cardFaceIndex;
         GameObject face = mahjong.transform.Find("Face").gameObject;
         Image faceImage = face.GetComponent<Image>();
         Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex.ToString());
@@ -95,7 +95,7 @@ public class TableManager : MonoBehaviour
         
     }
 
-    void GenerateTileId(Tile tile, int cnt)
+    void GenerateTileId(Game.Tile.Tile tile, int cnt)
     {
         tile.id = tile.tileType.ToString() + "_" + 
                     tile.tileNumber.ToString() + "_" +
@@ -110,7 +110,7 @@ public class TableManager : MonoBehaviour
         {
 
             GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-            Tile tile =  tile_obj.GetComponent<Tile>();
+            Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
             if(tile==null)
             {
                 Debug.LogError("沒有 tile_script");
@@ -135,7 +135,7 @@ public class TableManager : MonoBehaviour
         {
 
             GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-            Tile tile =  tile_obj.GetComponent<Tile>();
+            Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
             if(tile==null)
             {
                 Debug.LogError("沒有 tile_script");
@@ -161,7 +161,7 @@ public class TableManager : MonoBehaviour
             for (int j = 1; j <= 4; ++j)
             {
                 GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
+                Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
                 if(tile==null)
                 {
                     Debug.LogError("沒有 tile_script");
@@ -187,7 +187,7 @@ public class TableManager : MonoBehaviour
             for (int j = 1; j <= 4; ++j)
             {
                 GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
+                Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
                 if(tile==null)
                 {
                     Debug.LogError("沒有 tile_script");
@@ -213,7 +213,7 @@ public class TableManager : MonoBehaviour
             for (int j = 1; j <= 4; ++j)
             {
                 GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
+                Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
                 if(tile==null)
                 {
                     Debug.LogError("沒有 tile_script");
@@ -239,7 +239,7 @@ public class TableManager : MonoBehaviour
             for (int j = 1; j <= 4; ++j)
             {
                 GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
+                Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
                 if(tile==null)
                 {
                     Debug.LogError("沒有 tile_script");
@@ -265,7 +265,7 @@ public class TableManager : MonoBehaviour
             for (int j = 1; j <= 4; ++j)
             {
                 GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
+                Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
                 if(tile==null)
                 {
                     Debug.LogError("沒有 tile_script");
@@ -311,7 +311,7 @@ public class TableManager : MonoBehaviour
         // todo: just for demo, should not change the playerId
         playerId = localPlayerId;
         players_tiles[playerId].Add(tile_wall[0]);
-        tile_wall[0].GetComponent<Tile>().SetPlayerId(playerId);
+        tile_wall[0].GetComponent<Game.Tile.Tile>().SetPlayerId(playerId);
         tile_wall[0].GetComponent<RectTransform>().SetParent(transform_hand[playerId]);
         tile_wall[0].SetActive(true);
         tile_wall.RemoveAt(0);
