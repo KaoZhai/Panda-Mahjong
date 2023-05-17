@@ -21,6 +21,7 @@ namespace Game.Lobby
         {
             // SceneManager.LoadScene("CreateRoom");
 
+            // just for test
             await lobbyManager.CreateRoom("Room1", 4);
         }
 
