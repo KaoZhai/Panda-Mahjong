@@ -10,8 +10,8 @@ namespace Game.Lobby
     {
         [SerializeField] private Dropdown dropDown = null;
         [SerializeField] private CanvasGroup canvasGroup = null;
-        // [SerializeField] private LobbyManager lobbyManager = null;
-        // [SerializeField] private TMP_InputField roomNameInputField = null;
+        [SerializeField] private LobbyManager lobbyManager = null;
+        [SerializeField] private InputField roomNameInputField = null;
 
         public void Start()
         {
@@ -42,6 +42,11 @@ namespace Game.Lobby
             }
         }
 
+        public void OnCancelBtnClick()
+        {
+            DisplayPannel(false);
+        }
+
         public void OnDropDownChange(int itemIndex)
         {
             if (itemIndex >= dropDown.options.Count)
@@ -51,9 +56,9 @@ namespace Game.Lobby
             dropDown.value = itemIndex;
         }
 
-        public void OnCreateRoomBtnClick()
+        public async void OnCreateRoomBtnClick()
         {
-
+            await lobbyManager.CreateRoom(roomNameInputField.text, 4);
         }
     }
 }
