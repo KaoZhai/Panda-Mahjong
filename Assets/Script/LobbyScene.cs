@@ -22,6 +22,7 @@ namespace Game.Lobby
         public void OnCreateRoomBtnClick()
         {
             DisplayRoomCreating(true);
+            DisplayRoomList(false);
         }
 
         private void DisplayRoomList(bool value)

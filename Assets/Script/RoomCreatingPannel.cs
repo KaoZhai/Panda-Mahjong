@@ -11,6 +11,7 @@ namespace Game.Lobby
         [SerializeField] private Dropdown dropDown = null;
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private LobbyManager lobbyManager = null;
+        [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private InputField roomNameInputField = null;
 
         public void Start()
@@ -45,6 +46,7 @@ namespace Game.Lobby
         public void OnCancelBtnClick()
         {
             DisplayPannel(false);
+            roomListPannel.DisplayPannel(true);
         }
 
         public void OnDropDownChange(int itemIndex)

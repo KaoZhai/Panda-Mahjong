@@ -2773,6 +2773,7 @@ MonoBehaviour:
   dropDown: {fileID: 1623001331}
   canvasGroup: {fileID: 1326914869}
   lobbyManager: {fileID: 1417278372}
+  roomListPannel: {fileID: 879983699}
   roomNameInputField: {fileID: 1068838398}
 --- !u!225 &1326914869
 CanvasGroup:
