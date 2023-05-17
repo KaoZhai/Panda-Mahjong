@@ -51,7 +51,7 @@ public class TableManager : MonoBehaviour
             for(int j = 0; j < players_tiles[i].Count; ++j)
             {
                 Debug.Log(players_tiles[i][j]);
-                players_tiles[i][j].GetComponent<Tile>().playerId = i;
+                players_tiles[i][j].GetComponent<Tile>().SetPlayerId(i);
                 if(i == localPlayerId)
                 {
                     players_tiles[i][j].transform.position = startPosition + new Vector3(j * spacing, 0, 0);
@@ -79,32 +79,32 @@ public class TableManager : MonoBehaviour
 
     void SetTileFace(GameObject mahjong)
     {
-        int cardFace_index = mahjong.GetComponent<Tile>().cardFace_index;
+        int cardFaceIndex = mahjong.GetComponent<Tile>().cardFaceIndex;
         GameObject face = mahjong.transform.Find("Face").gameObject;
         Image faceImage = face.GetComponent<Image>();
-        Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFace_index.ToString());
+        Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex.ToString());
         if (img) 
         {
             faceImage.sprite = img;
-            // Debug.Log("成功設定圖像" + "Image/Mahjong/" + cardFace_index.ToString());
+            // Debug.Log("成功設定圖像" + "Image/Mahjong/" + cardFaceIndex.ToString());
         }
         else
         {
-            Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardFace_index.ToString());
+            Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardFaceIndex.ToString());
         }
         
     }
 
     void GenerateTileId(Tile tile, int cnt)
     {
-        tile.id = tile.tile_type.ToString() + "_" + 
-                    tile.tile_number.ToString() + "_" +
+        tile.id = tile.tileType.ToString() + "_" + 
+                    tile.tileNumber.ToString() + "_" +
                     cnt.ToString();
     }
 
     void GenerateAllTile()
     {
-        int cardFace_index = 1;
+        int cardFaceIndex = 1;
         // Season       1-4
         for (int i = 1; i <= 4; ++i)
         {
@@ -115,19 +115,19 @@ public class TableManager : MonoBehaviour
             {
                 Debug.LogError("沒有 tile_script");
             }
-            tile.tile_type = TileType.Season;
-            tile.tile_number = i;
-            tile.cardFace_index = cardFace_index;
-            tile.tableManager = this;
-            tile.playerId = -1;
-            tile.tilePool = underTilePoll;
-            tile.hand = underHand;
+            tile.tileType = Game.Tile.TileType.Season;
+            tile.tileNumber = i;
+            tile.cardFaceIndex = cardFaceIndex;
+            tile.SetTableManager(this);
+            tile.SetPlayerId(-1);
+            tile.SetTilePool(underTilePoll);
+            tile.SetHand(underHand);
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
             tile_wall.Add(tile_obj);
             tile_obj.name = tile.id;
             SetTileFace(tile_obj);
-            ++cardFace_index;
+            ++cardFaceIndex;
             
         }
         // Flower       5-8
@@ -140,19 +140,19 @@ public class TableManager : MonoBehaviour
             {
                 Debug.LogError("沒有 tile_script");
             }
-            tile.tile_type = TileType.Flower;
-            tile.tile_number = i;
-            tile.cardFace_index = cardFace_index;
-            tile.tableManager = this;
-            tile.playerId = -1;
-            tile.tilePool = underTilePoll;
-            tile.hand = underHand;
+            tile.tileType = Game.Tile.TileType.Flower;
+            tile.tileNumber = i;
+            tile.cardFaceIndex = cardFaceIndex;
+            tile.SetTableManager(this);
+            tile.SetPlayerId(-1);
+            tile.SetTilePool(underTilePoll);
+            tile.SetHand(underHand);
             GenerateTileId(tile, 1);
             Debug.Log(tile.id);
             tile_wall.Add(tile_obj);
             tile_obj.name = tile.id;
             SetTileFace(tile_obj);
-            ++cardFace_index;
+            ++cardFaceIndex;
             
         }
         // Wind         9-12 
@@ -166,20 +166,20 @@ public class TableManager : MonoBehaviour
                 {
                     Debug.LogError("沒有 tile_script");
                 }
-                tile.tile_type = TileType.Wind;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                tile.tableManager = this;
-                tile.playerId = -1;
-                tile.tilePool = underTilePoll;
-                tile.hand = underHand;
+                tile.tileType = Game.Tile.TileType.Wind;
+                tile.tileNumber = i;
+                tile.cardFaceIndex = cardFaceIndex;
+                tile.SetTableManager(this);
+                tile.SetPlayerId(-1);
+                tile.SetTilePool(underTilePoll);
+                tile.SetHand(underHand);
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
-            ++cardFace_index; 
+            ++cardFaceIndex; 
         }
         // Dragon       13-15
         for (int i = 1; i <= 3; ++i)
@@ -192,20 +192,20 @@ public class TableManager : MonoBehaviour
                 {
                     Debug.LogError("沒有 tile_script");
                 }
-                tile.tile_type = TileType.Dragon;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                tile.tableManager = this;
-                tile.playerId = -1;
-                tile.tilePool = underTilePoll;
-                tile.hand = underHand;
+                tile.tileType = Game.Tile.TileType.Dragon;
+                tile.tileNumber = i;
+                tile.cardFaceIndex = cardFaceIndex;
+                tile.SetTableManager(this);
+                tile.SetPlayerId(-1);
+                tile.SetTilePool(underTilePoll);
+                tile.SetHand(underHand);
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
-            ++cardFace_index; 
+            ++cardFaceIndex; 
         }
         // Character    16-24
         for (int i = 1; i <= 9; ++i)
@@ -218,20 +218,20 @@ public class TableManager : MonoBehaviour
                 {
                     Debug.LogError("沒有 tile_script");
                 }
-                tile.tile_type = TileType.Character;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                tile.tableManager = this;
-                tile.playerId = -1;
-                tile.tilePool = underTilePoll;
-                tile.hand = underHand;
+                tile.tileType = Game.Tile.TileType.Character;
+                tile.tileNumber = i;
+                tile.cardFaceIndex = cardFaceIndex;
+                tile.SetTableManager(this);
+                tile.SetPlayerId(-1);
+                tile.SetTilePool(underTilePoll);
+                tile.SetHand(underHand);
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
-            ++cardFace_index; 
+            ++cardFaceIndex; 
         }
         // Bamboo       25-33
         for (int i = 1; i <= 9; ++i)
@@ -244,20 +244,20 @@ public class TableManager : MonoBehaviour
                 {
                     Debug.LogError("沒有 tile_script");
                 }
-                tile.tile_type = TileType.Bamboo;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                tile.tableManager = this;
-                tile.playerId = -1;
-                tile.tilePool = underTilePoll;
-                tile.hand = underHand;
+                tile.tileType = Game.Tile.TileType.Bamboo;
+                tile.tileNumber = i;
+                tile.cardFaceIndex = cardFaceIndex;
+                tile.SetTableManager(this);
+                tile.SetPlayerId(-1);
+                tile.SetTilePool(underTilePoll);
+                tile.SetHand(underHand);
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
-            ++cardFace_index; 
+            ++cardFaceIndex; 
         }
         // Dot          34-42
         for (int i = 1; i <= 9; ++i)
@@ -270,20 +270,20 @@ public class TableManager : MonoBehaviour
                 {
                     Debug.LogError("沒有 tile_script");
                 }
-                tile.tile_type = TileType.Dot;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                tile.tableManager = this;
-                tile.playerId = -1;
-                tile.tilePool = underTilePoll;
-                tile.hand = underHand;
+                tile.tileType = Game.Tile.TileType.Dot;
+                tile.tileNumber = i;
+                tile.cardFaceIndex = cardFaceIndex;
+                tile.SetTableManager(this);
+                tile.SetPlayerId(-1);
+                tile.SetTilePool(underTilePoll);
+                tile.SetHand(underHand);
                 GenerateTileId(tile, j);
                 Debug.Log(tile.id);
                 tile_wall.Add(tile_obj);
                 tile_obj.name = tile.id;
                 SetTileFace(tile_obj);
             }
-            ++cardFace_index; 
+            ++cardFaceIndex; 
         }
     }
 
@@ -311,7 +311,7 @@ public class TableManager : MonoBehaviour
         // todo: just for demo, should not change the playerId
         playerId = localPlayerId;
         players_tiles[playerId].Add(tile_wall[0]);
-        tile_wall[0].GetComponent<Tile>().playerId = playerId;
+        tile_wall[0].GetComponent<Tile>().SetPlayerId(playerId);
         tile_wall[0].GetComponent<RectTransform>().SetParent(transform_hand[playerId]);
         tile_wall[0].SetActive(true);
         tile_wall.RemoveAt(0);

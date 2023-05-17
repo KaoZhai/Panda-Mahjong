@@ -3,28 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public enum TileType
-{
-    Flower, 
-    Season,
-    Wind,
-    Dragon, 
-    Character,
-    Bamboo,
-    Dot
+namespace Game.Tile {
+    public enum TileType
+    {
+        Flower, 
+        Season,
+        Wind,
+        Dragon, 
+        Character,
+        Bamboo,
+        Dot
+    }
 }
+
 
 
 public class Tile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHandler
 {
     // {tile_type}_{tile_number}_{1..4}
     public string id;
-    public TileType tile_type;
-    public int tile_number;
-    public int cardFace_index;
-    public int playerId;
-    public Transform tilePool, hand;
-    public TableManager tableManager;
+    public Game.Tile.TileType tileType;
+    public int tileNumber;
+    public int cardFaceIndex;
+    private int playerId;
+    private Transform tilePool, hand;
+    private TableManager tableManager;
     private Transform self;
     private Vector3 oriPosition;
     
@@ -35,7 +38,7 @@ public class Tile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHan
 
     public void OnBeginDrag(PointerEventData eventData) 
     {
-        if(self.transform.parent == hand && playerId == tableManager.GetLocalPlayerId())
+        if(IsValidDrag(self.transform.parent, tableManager.GetLocalPlayerId()))
         {
             oriPosition = self.transform.position;
         }
@@ -43,7 +46,7 @@ public class Tile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHan
 
     public void OnDrag(PointerEventData eventData) 
     {
-        if(self.transform.parent == hand && playerId == tableManager.GetLocalPlayerId())
+        if(IsValidDrag(self.transform.parent, tableManager.GetLocalPlayerId()))
         {
             self.transform.position = eventData.position;
         }
@@ -51,7 +54,7 @@ public class Tile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHan
 
     public void OnEndDrag(PointerEventData eventData) 
     {
-        if(self.transform.parent == hand && playerId == tableManager.GetLocalPlayerId())
+        if(IsValidDrag(self.transform.parent, tableManager.GetLocalPlayerId()))
         {
             if(transform.localPosition.y > 0)
             {
@@ -63,5 +66,50 @@ public class Tile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHan
                 self.transform.position = oriPosition;
             }
         }
+    }
+
+    private bool IsValidDrag(Transform parent, int id)
+    {
+        return parent == hand && id == playerId;
+    }
+
+    public int GetPlayerId()
+    {
+        return playerId;
+    }
+
+    public void SetPlayerId(int id)
+    {
+        playerId = id;
+    }
+
+    public Transform GetHand()
+    {
+        return hand;
+    }
+
+    public void SetHand(Transform hand)
+    {
+        this.hand = hand;
+    }
+
+    public Transform GetTilePool()
+    {
+        return tilePool;
+    }
+
+    public void SetTilePool(Transform tilePool)
+    {
+        this.tilePool = tilePool;
+    }
+
+    public TableManager GetTableManager()
+    {
+        return tableManager;
+    }
+
+    public void SetTableManager(TableManager tableManager)
+    {
+        this.tableManager = tableManager;
     }
 }
