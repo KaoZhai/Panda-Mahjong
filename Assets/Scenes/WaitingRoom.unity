@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 45486756}
   - component: {fileID: 45486755}
   m_Layer: 5
-  m_Name: StartButton
+  m_Name: StartBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1283,7 +1283,7 @@ GameObject:
   - component: {fileID: 779250080}
   - component: {fileID: 779250079}
   m_Layer: 5
-  m_Name: LeaveButton
+  m_Name: LeaveBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1966,7 +1966,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1181634694}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1c7777787c987f4a9254793841bd4c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 4371427b8fa41ab4098fe4c63797cd94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 0}

@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 431477920}
   - component: {fileID: 431477919}
   m_Layer: 5
-  m_Name: Previous
+  m_Name: PreviousBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -700,7 +700,7 @@ GameObject:
   - component: {fileID: 487519117}
   - component: {fileID: 487519116}
   m_Layer: 5
-  m_Name: LeaveButtontton
+  m_Name: LeaveBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -834,7 +834,7 @@ GameObject:
   - component: {fileID: 513410106}
   - component: {fileID: 513410105}
   m_Layer: 5
-  m_Name: CreateButtontton
+  m_Name: CreateRoomBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -905,10 +905,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1326914864}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1181634699}
+        m_TargetAssemblyTypeName: Game.Lobby.LobbyScene, Assembly-CSharp
+        m_MethodName: OnCreateRoomBtnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1360,7 +1360,7 @@ GameObject:
   - component: {fileID: 787448248}
   - component: {fileID: 787448247}
   m_Layer: 5
-  m_Name: Next
+  m_Name: NextBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1753,9 +1753,10 @@ GameObject:
   - component: {fileID: 879983698}
   - component: {fileID: 879983701}
   - component: {fileID: 879983700}
+  - component: {fileID: 879983702}
   - component: {fileID: 879983699}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: RoomListPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1805,10 +1806,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348a5809675e5a44189c22c4f21ea5b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contentTrans: {fileID: 879983698}
-  canvasGroup: {fileID: 0}
+  panelText: {fileID: 1510131376}
+  hideTrans: {fileID: 1838209721}
+  canvasGroup: {fileID: 879983702}
   roomUnitPrefab: {fileID: 266122147286468751, guid: ea516222197319043837d64f7aa84357, type: 3}
-  lobbyManager: {fileID: 0}
+  lobbyManager: {fileID: 1417278372}
   parentPostitions:
   - {fileID: 1749280781}
   - {fileID: 1732152747}
@@ -1818,8 +1820,6 @@ MonoBehaviour:
   - {fileID: 362254923}
   - {fileID: 193353762}
   - {fileID: 1361963746}
-  hideUnit: {fileID: 1838209721}
-  panelText: {fileID: 1510131376}
 --- !u!114 &879983700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1858,6 +1858,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 879983697}
   m_CullTransparentMesh: 1
+--- !u!225 &879983702
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879983697}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1051746039
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2180,7 +2192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f85e54281020d04fb3db6f54adf61b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 0}
+  lobbyManager: {fileID: 1417278372}
   roomListPannel: {fileID: 879983699}
 --- !u!1 &1227410266
 GameObject:
@@ -2857,6 +2869,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388410323}
   m_CullTransparentMesh: 1
+--- !u!1 &1417278371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1417278373}
+  - component: {fileID: 1417278372}
+  m_Layer: 0
+  m_Name: LobbyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1417278372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417278371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7584bf76582099d41a450180b7ff3b77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomListPannel: {fileID: 879983699}
+  playerNetworkDataPrefab: {fileID: -3488874529639845621, guid: eefe55435cafb2c438003a77d6f748a2, type: 3}
+--- !u!4 &1417278373
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417278371}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 627.7812, y: -71.62425, z: -12.570433}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1431068460
 GameObject:
   m_ObjectHideFlags: 0
@@ -3166,7 +3224,7 @@ GameObject:
   - component: {fileID: 1510131377}
   - component: {fileID: 1510131376}
   m_Layer: 5
-  m_Name: panel text
+  m_Name: PageText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3759,7 +3817,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695754360}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1695754362
 Camera:
   m_ObjectHideFlags: 0
