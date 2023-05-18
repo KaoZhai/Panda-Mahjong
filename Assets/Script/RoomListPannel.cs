@@ -51,27 +51,22 @@ namespace Game.Lobby
 
         public void Next()
         {
-            if (pageCount <= 0) return;
-            if (pageIndex >= pageCount) return;
-
             pageIndex += 1;
-            if (pageIndex >= pageCount) pageIndex = pageCount;
-
-            BindPage(pageIndex);
-
-            panelText.text = string.Format("{0}/{1}", pageIndex.ToString(), pageCount.ToString());
+            UpdatePage();
         }
 
         public void Previous()
         {
-            if (pageCount <= 0) return;
-            if (pageIndex <= 1) return;
-
             pageIndex -= 1;
-            if (pageIndex < 1) pageIndex = 1;
+            UpdatePage();            
+        }
+
+        private void UpdatePage()
+        {
+            pageIndex = Mathf.Max(1, pageIndex);
+            pageIndex = Mathf.Min(pageIndex, pageCount);
 
             BindPage(pageIndex);
-
             panelText.text = string.Format("{0}/{1}", pageIndex.ToString(), pageCount.ToString());
         }
 
