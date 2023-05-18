@@ -19,10 +19,10 @@ namespace Game.Tile
     public class Tile : MonoBehaviour, IBeginDragHandler , IDragHandler, IEndDragHandler
     {
         // {tile_type}_{tile_number}_{1..4}
-        public string id;
-        public Game.Tile.TileType tileType;
-        public int tileNumber;
-        public int cardFaceIndex;
+        private string id;
+        private Game.Tile.TileType tileType;
+        private int tileNumber;
+        private int cardFaceIndex;
         private int playerId;
         private Transform tilePool, hand;
         private TableManager tableManager;
@@ -109,6 +109,46 @@ namespace Game.Tile
         public void SetTableManager(TableManager tableManager)
         {
             this.tableManager = tableManager;
+        }
+
+        public Game.Tile.TileType GetTileType()
+        {
+            return tileType;
+        }
+
+        public void SetTileType(TileType type)
+        {
+            tileType = type;
+        }
+
+        public int GetTileNumber()
+        {
+            return tileNumber;
+        }
+
+        public void SetTileNumber(int number)
+        {
+            tileNumber = number;
+        }
+
+        public int GetCardFaceIndex()
+        {
+            return cardFaceIndex;
+        }
+
+        public void SetCardFaceIndex(int cardFaceIndex)
+        {
+            this.cardFaceIndex = cardFaceIndex;
+        }
+
+        public string GetTileId()
+        {
+            return id;
+        }
+
+        public void SetTileId(string id)
+        {
+            this.id = id;
         }
     }
 }
