@@ -81,29 +81,14 @@ namespace Game.Tile
             playerId = id;
         }
 
-        public Transform GetHand()
-        {
-            return hand;
-        }
-
         public void SetHand(Transform hand)
         {
             this.hand = hand;
         }
 
-        public Transform GetTilePool()
-        {
-            return tilePool;
-        }
-
         public void SetTilePool(Transform tilePool)
         {
             this.tilePool = tilePool;
-        }
-
-        public TableManager GetTableManager()
-        {
-            return tableManager;
         }
 
         public void SetTableManager(TableManager tableManager)
