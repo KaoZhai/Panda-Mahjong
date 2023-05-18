@@ -7,8 +7,8 @@ namespace Game.Lobby
     public class PlayerUnit : MonoBehaviour
     {
         // TODO: using TMP_text
-        [SerializeField] private string playerNameTxt = null;
-        [SerializeField] private string isReadyTxt = null;
+        [SerializeField] private Text playerNameTxt = null;
+        [SerializeField] private Text isReadyTxt = null;
 
         private string playerName = null;
         private bool isReady = false;
@@ -18,8 +18,8 @@ namespace Game.Lobby
             this.playerName = playerName;
             this.isReady = isReady;
 
-            playerNameTxt = playerName;
-            isReadyTxt = isReady ? "Ready" : "";
+            playerNameTxt.text = playerName;
+            isReadyTxt.text = isReady ? "Ready" : "";
         }
     }
 }
