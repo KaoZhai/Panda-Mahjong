@@ -48,5 +48,24 @@ namespace Game.Room
                 playerNetworkData.SetReady_RPC(true);
             }
         }
+
+        public void OnLeaveBtnClicked()
+        {
+            var runner = gameManager.Runner;
+
+            if (gameManager.PlayerList.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+            {
+                if (gameManager.Runner.GameMode == GameMode.Host)
+                {
+                    foreach (var player in gameManager.PlayerList.Keys)
+                    {
+                        gameManager.Runner.Disconnect(player);
+                    }
+                } else
+                {
+                    gameManager.Runner.Disconnect(runner.LocalPlayer);
+                }
+            }
+        }
     }
 }
