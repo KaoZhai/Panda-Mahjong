@@ -649,18 +649,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &363460670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 363460660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64b90b10b2d7a324b849e6bba9e10e4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &381044158
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,6 +788,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 404617981}
+  - component: {fileID: 404617982}
   m_Layer: 5
   m_Name: underPlayer
   m_TagString: Untagged
@@ -834,6 +823,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &404617982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 404617980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb31098cd85dc4345a9fe6151591d237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 1891151360}
+  tilePool: {fileID: 343377996}
 --- !u!1 &415379001
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 415379002}
+  - component: {fileID: 415379003}
   m_Layer: 5
   m_Name: rightPlayer
   m_TagString: Untagged
@@ -873,6 +877,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &415379003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 415379001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb31098cd85dc4345a9fe6151591d237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 381044159}
+  tilePool: {fileID: 1279276190}
 --- !u!1 &429205927
 GameObject:
   m_ObjectHideFlags: 0
@@ -3117,18 +3135,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1b6564fbfc1b1944b72f0c7094caa5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mahjongPrefab: {fileID: 363460660}
-  startPosition: {x: 0, y: 0, z: 0}
-  spacing: 2
-  transformTileWall: {fileID: 1541029055}
-  transformLocalPlayer: {fileID: 1891151360}
-  transformHand:
-  - {fileID: 926873198}
-  - {fileID: 381044159}
-  - {fileID: 1712560615}
-  - {fileID: 1891151360}
-  underHand: {fileID: 1891151360}
-  underTilePoll: {fileID: 343377996}
+  players:
+  - {fileID: 404617982}
+  - {fileID: 1791163571}
+  - {fileID: 1709999532}
+  - {fileID: 415379003}
+  tileWall: {fileID: 1541029059}
 --- !u!1 &1541029054
 GameObject:
   m_ObjectHideFlags: 0
@@ -3141,6 +3153,7 @@ GameObject:
   - component: {fileID: 1541029058}
   - component: {fileID: 1541029057}
   - component: {fileID: 1541029056}
+  - component: {fileID: 1541029059}
   m_Layer: 0
   m_Name: TileWall
   m_TagString: Untagged
@@ -3229,6 +3242,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1541029059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541029054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915cd7e4a24ac864eab7279708f062db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transformTileWall: {fileID: 1541029055}
+  mahjongPrefab: {fileID: 363460660}
 --- !u!1 &1709999530
 GameObject:
   m_ObjectHideFlags: 0
@@ -3238,6 +3265,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1709999531}
+  - component: {fileID: 1709999532}
   m_Layer: 5
   m_Name: upperPlayer
   m_TagString: Untagged
@@ -3268,6 +3296,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1709999532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709999530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb31098cd85dc4345a9fe6151591d237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 1712560615}
+  tilePool: {fileID: 643731167}
 --- !u!1 &1712560614
 GameObject:
   m_ObjectHideFlags: 0
@@ -3482,6 +3524,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1791163570}
+  - component: {fileID: 1791163571}
   m_Layer: 5
   m_Name: leftplayer
   m_TagString: Untagged
@@ -3512,6 +3555,20 @@ RectTransform:
   m_AnchoredPosition: {x: 405.43628, y: -272.01062}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1791163571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791163569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb31098cd85dc4345a9fe6151591d237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 926873198}
+  tilePool: {fileID: 429205928}
 --- !u!1 &1800607517
 GameObject:
   m_ObjectHideFlags: 0
