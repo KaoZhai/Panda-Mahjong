@@ -76,5 +76,17 @@ namespace Game.Core
                 Runner.SetActiveScene("GamePlay");
             }
         }
+
+        private bool isRoomCreater = false;
+
+        public bool GetIsRoomCreater()
+        {
+            return isRoomCreater;
+        }
+
+        public void SetIsRoomCreater(bool value)
+        {
+            isRoomCreater = value;
+        }
     }
 }
