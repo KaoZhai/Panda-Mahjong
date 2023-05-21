@@ -661,14 +661,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b90b10b2d7a324b849e6bba9e10e4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
-  tile_type: 0
-  tile_number: 0
-  cardFace_index: 0
-  playerId: 0
-  tilePool: {fileID: 0}
-  hand: {fileID: 0}
-  tableManager: {fileID: 0}
 --- !u!1 &381044158
 GameObject:
   m_ObjectHideFlags: 0
@@ -3017,7 +3009,6 @@ GameObject:
   - component: {fileID: 1503191543}
   - component: {fileID: 1503191542}
   - component: {fileID: 1503191541}
-  - component: {fileID: 1503191545}
   - component: {fileID: 1503191547}
   m_Layer: 5
   m_Name: Canvas
@@ -3114,22 +3105,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1503191545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503191540}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0c38b9dfc7471e4aadd4cc64b39b918, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mahjongPrefab: {fileID: 363460660}
-  startPosition: {x: 0, y: 0, z: 0}
-  spacing: 1
-  parent: {fileID: 1891151360}
 --- !u!114 &1503191547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3145,13 +3120,13 @@ MonoBehaviour:
   mahjongPrefab: {fileID: 363460660}
   startPosition: {x: 0, y: 0, z: 0}
   spacing: 2
-  transform_tileWall: {fileID: 1541029055}
-  transform_localPlayer: {fileID: 1891151360}
-  transform_hand:
-  - {fileID: 381044159}
-  - {fileID: 1891151360}
+  transformTileWall: {fileID: 1541029055}
+  transformLocalPlayer: {fileID: 1891151360}
+  transformHand:
   - {fileID: 926873198}
+  - {fileID: 381044159}
   - {fileID: 1712560615}
+  - {fileID: 1891151360}
   underHand: {fileID: 1891151360}
   underTilePoll: {fileID: 343377996}
 --- !u!1 &1541029054

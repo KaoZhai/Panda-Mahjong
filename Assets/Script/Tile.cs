@@ -23,9 +23,9 @@ namespace Game.Tile
         private Game.Tile.TileType tileType;
         private int tileNumber;
         private int cardFaceIndex;
-        private int playerId;
-        private Transform tilePool, hand;
-        private TableManager tableManager;
+        private int playerId = -1;
+        public Transform tilePool, hand;
+        private Game.TableManager.TableManager tableManager;
         private Transform self;
         private Vector3 oriPosition;
 
@@ -65,68 +65,53 @@ namespace Game.Tile
                 }
             }
         }
+        
 
         private bool IsValidDrag(Transform parent, int id)
         {
             return parent == hand && id == playerId;
         }
 
-        public string PlayerId
+        public int PlayerId
         {
-            get
-            {
-                return playerId;
-            }
-            set
-            {
-                playerId = value;
-            }
+            get { return playerId; }
         }
 
         public TileType TileType
         {
-            get
-            {
-                return tileType;
-            }
-            set
-            {
-                tileType = value;
-            }
+            get { return tileType; }
+            set { tileType = value; }
         }
 
         public int TileNumber
         {
-            get
-            {
-                return tileNumber;
-            }
-            set
-            {
-                tileNumber = value;
-            }
+            get { return tileNumber; }
+            set { tileNumber = value; }
         }
 
         public int CardFaceIndex
         {
-            get
-            {
-                return cardFaceIndex;
-            }
-            set
-            {
-                cardFaceIndex = value;
-            }
+            get { return cardFaceIndex; }
+            set { cardFaceIndex = value; }
         }
 
         public string TileId
         {
-            get
-            {
-                return id;
-            }
+            get { return id; }
+        }
+        public void SetTileId(int serialNumber) 
+        {
+            id = tileType.ToString() + "_" + 
+                tileNumber.ToString() + "_" +
+                serialNumber.ToString();
         }
 
+        public void SetTilePlayer(Game.Player.Player player)
+        {
+            this.playerId = PlayerId;
+            tilePool = player.tilePool;
+            hand = player.hand;
+        }
         public void SetHand(Transform hand)
         {
             this.hand = hand;
@@ -137,7 +122,7 @@ namespace Game.Tile
             this.tilePool = tilePool;
         }
 
-        public void SetTableManager(TableManager tableManager)
+        public void SetTableManager(Game.TableManager.TableManager tableManager)
         {
             this.tableManager = tableManager;
         }
