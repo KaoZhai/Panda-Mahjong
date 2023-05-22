@@ -23,8 +23,7 @@ namespace Game.Tile
         private Game.Tile.TileType tileType;
         private int tileNumber;
         private int cardFaceIndex;
-        private int playerId = -1;
-        public Transform tilePool, hand;
+        private Game.Player.Player player;
         private Game.TableManager.TableManager tableManager;
         private Transform self;
         private Vector3 oriPosition;
@@ -36,7 +35,7 @@ namespace Game.Tile
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.GetLocalPlayerId()))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
             {
                 oriPosition = self.transform.position;
             }
@@ -44,7 +43,7 @@ namespace Game.Tile
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.GetLocalPlayerId()))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
             {
                 self.transform.position = eventData.position;
             }
@@ -52,11 +51,11 @@ namespace Game.Tile
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.GetLocalPlayerId()))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
             {
                 if (transform.localPosition.y > 0)
                 {
-                    self.transform.SetParent(tilePool);
+                    player.Discord(id);
                     tableManager.NextPlayer();
                 }
                 else
@@ -69,12 +68,12 @@ namespace Game.Tile
 
         private bool IsValidDrag(Transform parent, int id)
         {
-            return parent == hand && id == playerId;
+            return parent == player.hand && id == player.PlayerId;
         }
 
         public int PlayerId
         {
-            get { return playerId; }
+            get { return player.PlayerId; }
         }
 
         public TileType TileType
@@ -106,26 +105,21 @@ namespace Game.Tile
                 serialNumber.ToString();
         }
 
-        public void SetTilePlayer(Game.Player.Player player)
+        public Game.Player.Player Player
         {
-            this.playerId = PlayerId;
-            tilePool = player.tilePool;
-            hand = player.hand;
-        }
-        public void SetHand(Transform hand)
-        {
-            this.hand = hand;
-        }
-
-        public void SetTilePool(Transform tilePool)
-        {
-            this.tilePool = tilePool;
-        }
-
+            get { return player; }
+            set { player = value; }
+        } 
         public void SetTableManager(Game.TableManager.TableManager tableManager)
         {
             this.tableManager = tableManager;
         }
+
+        public bool IsFlower()
+        {
+            return (tileType == TileType.Flower) || (tileType == TileType.Season);
+        }
+
     }
 }
 

@@ -11,26 +11,53 @@ namespace Game.TableManager {
 
         public List<Game.Player.Player> players = new List<Game.Player.Player>();
         public Game.TileWall.TileWall tileWall;
-        
-        int localPlayerId = 1;
+
+        private int activePlayerId = 0;
+
+        public int ActivePlayerId
+        {
+            get { return activePlayerId; }
+        }
+
         void Start() 
         {
 
             tileWall.GetReady(this);
-            for(int i = 1; i <= 4; i++)
+            // todo: player will set player id, now is 0-3
+            for(int i = 0; i < 4; i++)
             {
-                players[i-1].PlayerId = i;
+                players[i].PlayerId = i;
             }
 
-            PickSeatsAndDecideDealer();
+            // PickSeatsAndDecideDealer();
+
             DealTiles();
-            foreach(Player.Player player in players)
-            {
-                if (player.PlayerId == 1)
-                    player.DisplayHandTiles();
-            }
+            OpenDoor();
+
         }
 
+
+
+
+        void OpenDoor()
+        {
+            tileWall.DealTile(players[activePlayerId]);
+            int cnt = 0;
+            while(cnt < 4)
+            {
+                foreach(Player.Player player in players)
+                {
+                    if (player.IsDoneReplace())
+                    {
+                        cnt += 1;
+                    }
+                    else
+                    {
+                        player.ReplaceFlower(tileWall);
+                    }
+                }
+            }
+        }
 
         void DealTiles()
         {
@@ -56,29 +83,42 @@ namespace Game.TableManager {
                 players[i] = players[j];
                 players[j] = tmp;
             }
+            activePlayerId = players[0].PlayerId;
         }
 
-        
-
-        
-        // todo: just public for demo, it should be private
-        public void GetTileFromTileWall(int playerId) 
+        public void Draw(Player.Player player)
         {
-            // todo: just for demo, should not change the playerId
-            playerId = localPlayerId;
-            tileWall.DealTile(players[playerId]);
+            tileWall.DealTile(players[activePlayerId]);
+            while(!player.IsDoneReplace())
+            {
+                player.ReplaceFlower(tileWall);
+            }
+        }
+        public void NextPlayer() 
+        {
+            activePlayerId = (activePlayerId + 1) % 4;
+            Draw(players[activePlayerId]);
+            //  only from single player
+            if(activePlayerId != 0)
+            {
+                players[activePlayerId].DefaultDiscard();
+                NextPlayer();
+            }
+        }
+
+
+        public void BeforeNextPlayer()
+        {
+            // todo: check pong
+            // if (IsPlayerCanPong())
+            // {
+
+            // }
             
-        }
+            // todo: check chi
+            
+            NextPlayer();
 
-        public void NextPlayer()
-        {
-            localPlayerId = (localPlayerId + 1) % 4;
-            // Debug.Log("after: " + localPlayerId);
-        }
-
-        public int GetLocalPlayerId()
-        {
-            return localPlayerId;
         }
     }
 }

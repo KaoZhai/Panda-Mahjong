@@ -130,8 +130,6 @@ namespace Game.TileWall {
             if ( tileList.Count > 0)
             {
                 tile = tileList[0];
-                Debug.Log(tile);
-                Debug.Log(player);
                 player.GetTile(tile);
                 tileList.RemoveAt(0);
             }
@@ -141,7 +139,22 @@ namespace Game.TileWall {
             }
         }
 
-        
+        public void BuPai(Game.Player.Player player)
+        {
+            GameObject tile = null;
+            if ( tileList.Count > 0)
+            {
+                tile = tileList[tileList.Count-1];
+                player.GetTile(tile);
+                tileList.RemoveAt(tileList.Count-1);
+            }
+            else
+            {
+                Debug.LogError("牌牆已空");
+            }
+        }
+
+
         void Shuffle()
         {
             for(int i = 0; i < tileList.Count; ++i)
