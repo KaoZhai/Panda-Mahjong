@@ -19,7 +19,7 @@ namespace Game.Lobby
             this.isReady = isReady;
 
             playerNameTxt.text = playerName;
-            isReadyTxt.text = isReady ? "Ready" : "";
+            isReadyTxt.text = isReady ? "Ready" : "Not Ready";
         }
     }
 }
