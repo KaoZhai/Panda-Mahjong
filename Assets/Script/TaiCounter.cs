@@ -98,13 +98,109 @@ public class TaiCounter : MonoBehaviour
     {
         if(curTileList.Count == 0)
         {
-
+            int tmpTai = CalculateTai();
+            if (tmpTai > tai)
+            {
+                tai = tmpTai;
+                scoringList = CalculateScoring();
+                return tai;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         foreach (var tile in curTileList)
         {
+            // have pair
+            if (pairCnt == 1)
+            {
 
+            }
+            // no pair yet
+            else
+            {
+                int tile_number = tile.tile_number;
+                if (tile.tile_type == TileType.Character)
+                {
+                    if (characterArray[tile_number - 1] >= 2)
+                    {
+                        characterArray[tile_number - 1] -= 2;
+                        for (int i = 0; i < 2; i++)
+                        {
+                            var tileToRemove = curTileList.SingleOrDefault(r => (r.tile_number == tile_number && r.tile_type == TileType.Character));
+                            curTileList.Remove(itemToRemove);
+                        }
+                        pairCnt = 1;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (tile.tile_type == TileType.Bamboo)
+                {
+                    if (bambooArray[tile_number - 1] >= 2)
+                    {
+
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (tile.tile_type == TileType.Dot)
+                {
+                    if (dotArray[tile_number - 1] >= 2)
+                    {
+
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (tile.tile_type == TileType.Dragon)
+                {
+                    if (dragonArray[tile_number - 1] >= 2)
+                    {
+
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (tile.tile_type == TileType.Wind)
+                {
+                    if (windArray[tile_number - 1] >= 2)
+                    {
+
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    Debug.Log("Error: " + tile.tile_type);
+                    return 0;
+                }
+            }
         }
+        return 0;
+    }
+
+    private int CalculateTai()
+    {
+        return 0;
+    }
+
+    private List<string> CalculateScoring()
+    {
+        return null;
     }
 
 }
