@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Fusion;
 using Game.Core;
 
-namespace Game.Lobby
+namespace Game.Room
 {
     public class RoomScene : MonoBehaviour
     {
@@ -12,11 +13,21 @@ namespace Game.Lobby
         private GameManager gameManager = null;
 
         [SerializeField] private CanvasGroup canvasGroup = null;
+        [SerializeField] private SettingPanel settingPanel = null;
         // [SerializeField] private PlayerListPannel playerListPannel = null;
 
         public void Start()
         {
             gameManager = GameManager.Instance;
+
+            if (gameManager.IsRoomCreater)
+            {
+                settingPanel.DisplayPannel(true);
+            }
+            else
+            {
+                settingPanel.DisplayPannel(false);
+            }
         }
 
         public void DisplayPannel(bool value)

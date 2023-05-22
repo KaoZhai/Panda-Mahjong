@@ -34,6 +34,8 @@ namespace Game.Lobby
         public async Task JoinLobby(NetworkRunner runner)
         {
             var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
+            
+            gameManager.IsRoomCreater = false;
 
             if (!result.Ok)
                 Debug.LogError($"Fail to start: {result.ShutdownReason}");
@@ -57,6 +59,8 @@ namespace Game.Lobby
                     Scene = SceneManager.GetActiveScene().buildIndex,
                     SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>()
                 });
+
+                gameManager.IsRoomCreater = true;
 
                 if (result.Ok)
                     SceneManager.LoadScene("WaitingRoom");
