@@ -9,20 +9,20 @@ namespace Game.Lobby
 {
     public class LobbyScene : MonoBehaviour
     {
-        [SerializeField] private LobbyManager lobbyManager = null;
+        // [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private RoomListPannel roomListPannel = null;
-        // [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
+        [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
+        
+        
         public void OnLeaveBtnClick()
         {
             SceneManager.LoadScene("Start");
         }
 
-        public async void OnCreateRoomBtnClick()
+        public void OnCreateRoomBtnClick()
         {
-            // SceneManager.LoadScene("CreateRoom");
-
-            // just for test
-            await lobbyManager.CreateRoom("Room1", 4);
+            DisplayRoomCreating(true);
+            DisplayRoomList(false);
         }
 
         private void DisplayRoomList(bool value)
@@ -32,7 +32,7 @@ namespace Game.Lobby
 
         private void DisplayRoomCreating(bool value)
         {
-
+            roomCreatingPannel.DisplayPannel(value);
         }
     }
 }
