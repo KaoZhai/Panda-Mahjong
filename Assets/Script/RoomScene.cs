@@ -20,7 +20,7 @@ namespace Game.Room
         {
             gameManager = GameManager.Instance;
 
-            if (gameManager.GetIsRoomCreater() == true)
+            if (gameManager.IsRoomCreater)
             {
                 settingPanel.DisplayPannel(true);
             }
