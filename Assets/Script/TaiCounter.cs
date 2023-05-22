@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class TaiCounter : MonoBehaviour
 {
-    private List<Tile> handTile = null;
-    private List<Tile> tileDeck = null;
-    private List<string> scoring = null;
+    private List<Tile> handTileList = null;
+    private List<Tile> tileDeckList = null;
+    private List<string> scoringList = null;
     private int[] characterArray = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
     private int[] dotArray = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
     private int[] bambooArray = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -18,14 +18,17 @@ public class TaiCounter : MonoBehaviour
     private int deckKongCnt = 0;
     private int deckPonCnt = 0;
     private int deckStraightCnt = 0;
+    private int handPonCnt = 0;
+    private int handStraightCnt = 0;
+    private int pairCnt = 0;
     private int tai = 0;
     private bool isDealer = false;
     private bool isFirstTile = false;
     private bool isLastTile = false;
 
-    public List<string> Scoring
+    public List<string> ScoringList
     {
-        get { return scoring; }
+        get { return scoringList; }
     }
 
     public int Tai
@@ -33,11 +36,11 @@ public class TaiCounter : MonoBehaviour
         get { return tai; }
     }
 
-    public void TaiCount(List<Tile> handTile = null, List<Tile> tileDeck = null, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
+    public void TaiCount(List<Tile> handTileList = null, List<Tile> tileDeckList = null, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
     bool isDealer = false, bool isFirstTile = false, bool isLastTile = false)
     {
-        this.handTile = handTile;
-        this.tileDeck = tileDeck;
+        this.handTileList = handTileList;
+        this.tileDeckList = tileDeckList;
         this.deckKongCnt = deckKongCnt;
         this.deckPonCnt = deckPonCnt;
         this.deckStraightCnt = deckStraightCnt;
@@ -47,12 +50,15 @@ public class TaiCounter : MonoBehaviour
 
         TransHandsToArray();
 
+        //recursion
+        FindHighestTai(handTileList);
+
         return;
     }
 
     private void TransHandsToArray()
     {
-        foreach (var tile in handTile)
+        foreach (var tile in handTileList)
         {
             if (tile.tile_type == TileType.Character)
             {
@@ -78,6 +84,26 @@ public class TaiCounter : MonoBehaviour
             {
                 Debug.Log("Error: " + tile.tile_type);
             }
+        }
+    }
+
+    private void ClearVar()
+    {
+        handPonCnt = 0;
+        handStraightCnt = 0;
+        pairCnt = 0;
+    }
+
+    private int FindHighestTai(List<Tile> curTileList = null)
+    {
+        if(curTileList.Count == 0)
+        {
+
+        }
+
+        foreach (var tile in curTileList)
+        {
+
         }
     }
 
