@@ -8,12 +8,12 @@ public class TaiCounter : MonoBehaviour
     private List<Tile> handTileList = new List<Tile>();
     private List<Tile> tileDeckList = new List<Tile>();
     private List<string> scoringList = new List<string>();
-    private int deckgangCnt = 0;
+    private int deckGangCnt = 0;
     private int deckPonCnt = 0;
     private int deckStraightCnt = 0;
     private int faceWind = 0; //門風 1東2南3西4北
     private int courtWind = 0; //場風 1東2南3西4北
-    private int hidegangCnt = 0;
+    private int hideGangCnt = 0;
     private int dealerWinStreak = 0;
     private bool isDealer = false;
     private bool isFirstTile = false;
@@ -36,19 +36,19 @@ public class TaiCounter : MonoBehaviour
         get { return tai; }
     }
 
-    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckgangCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0, int faceWind = 0,
-    int courtWind = 0, int hidegangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false, bool afterGang = false)
+    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckGangCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0, int faceWind = 0,
+    int courtWind = 0, int hideGangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false, bool afterGang = false)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
         this.handTileList = handTileList;
         this.tileDeckList = tileDeckList;
-        this.deckgangCnt = deckgangCnt;
+        this.deckGangCnt = deckGangCnt;
         this.deckPonCnt = deckPonCnt;
         this.deckStraightCnt = deckStraightCnt;
         this.faceWind = faceWind;
         this.courtWind = courtWind;
-        this.hidegangCnt = hidegangCnt;
+        this.hideGangCnt = hideGangCnt;
         this.dealerWinStreak = dealerWinStreak;
         this.isDealer = isDealer;
         this.isFirstTile = isFirstTile;
@@ -181,7 +181,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool MenQing() //門清
     {
-        if(deckgangCnt + deckPonCnt + deckStraightCnt == 0)
+        if(deckGangCnt + deckPonCnt + deckStraightCnt == 0)
         {
             return true;
         }
@@ -317,25 +317,103 @@ public class TaiCounter : MonoBehaviour
         return false;
     }
 
-    //槓上開花
+    private bool GangShangKaiHua()//槓上開花
+    {
+        return afterGang;
+    }
 
-    //海底撈月
+    private bool HaiDiLaoYue()//海底撈月
+    {
+        return isLastTile && isSelfDraw;
+    }
 
-    //全求人
+    private bool HeDiLaoYu()//河底撈魚
+    {
+        return isLastTile && (!isSelfDraw);
+    }
 
-    //平胡
+    private bool QuanQiuRen()//全求人
+    {
+        if(deckGangCnt + deckPonCnt + deckStraightCnt == 5)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //三暗刻
+    private bool PingHu(int[] tileCountArray, int handPonCnt)//平胡
+    {
+        //檢查無字無花
+        int check = 0;
+        for (int i = 31; i <= 48; i++)
+        {
+            check += tileCountArray[i];
+        }
 
-    //碰碰胡
+        if (deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + tileCountArray + check == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool SanAnKe(int handPonCnt)//三暗刻
+    {
+        if (handPonCnt + hideGangCnt == 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool PengPengHu(int handPonCnt)//碰碰胡
+    {
+        if(handPonCnt + hideGangCnt + deckPonCnt + deckGangCnt == 5)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     //混一色
 
     //小三元
 
-    //四暗刻
+    private bool SiAnKe(int handPonCnt)//四暗刻
+    {
+        if (handPonCnt + hideGangCnt == 4)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //五暗刻
+    private bool WuAnKe(int handPonCnt)//五暗刻
+    {
+        if (handPonCnt + hideGangCnt == 5)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     //清一色
 
@@ -343,9 +421,29 @@ public class TaiCounter : MonoBehaviour
 
     //大三元
 
-    //七搶一
+    private bool QiQiangYi()//七搶一
+    {
+        //#TODO
+        return false;
+    }
 
-    //八仙過海
+    private bool BaXianGuoHai(int[] tileCountArray)//八仙過海
+    {
+        int cnt = 0;
+        for(int i = 41; i <= 48; i++)
+        {
+            cnt += tileCountArray[i];
+        }
+
+        if(cnt == 8)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     //字一色
 
