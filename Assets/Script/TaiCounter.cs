@@ -19,6 +19,7 @@ public class TaiCounter : MonoBehaviour
     private bool isFirstTile = false;
     private bool isLastTile = false;
     private bool isSelfDraw = false;
+    private bool afterGang = false;
     private int tai = 0;
 
     public void Start()
@@ -36,7 +37,7 @@ public class TaiCounter : MonoBehaviour
     }
 
     public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckgangCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0, int faceWind = 0,
-    int courtWind = 0, int hidegangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false)
+    int courtWind = 0, int hidegangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false, bool afterGang = false)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
@@ -53,6 +54,7 @@ public class TaiCounter : MonoBehaviour
         this.isFirstTile = isFirstTile;
         this.isLastTile = isLastTile;
         this.isSelfDraw = isSelfDraw;
+        this.afterGang = afterGang;
         
         TransToArray(tileCountArray, handTileList);
 
