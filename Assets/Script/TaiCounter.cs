@@ -8,10 +8,12 @@ public class TaiCounter : MonoBehaviour
     private List<Tile> handTileList = new List<Tile>();
     private List<Tile> tileDeckList = new List<Tile>();
     private List<string> scoringList = new List<string>();
-    private int deckKongCnt = 0;
+    private int deckgangCnt = 0;
     private int deckPonCnt = 0;
     private int deckStraightCnt = 0;
-    private int hideKongCnt = 0;
+    private int faceWind = 0; //門風 1東2南3西4北
+    private int courtWind = 0; //場風 1東2南3西4北
+    private int hidegangCnt = 0;
     private int dealerWinStreak = 0;
     private bool isDealer = false;
     private bool isFirstTile = false;
@@ -33,17 +35,19 @@ public class TaiCounter : MonoBehaviour
         get { return tai; }
     }
 
-    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
-    int hideKongCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false)
+    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckgangCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0, int faceWind = 0,
+    int courtWind = 0, int hidegangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
         this.handTileList = handTileList;
         this.tileDeckList = tileDeckList;
-        this.deckKongCnt = deckKongCnt;
+        this.deckgangCnt = deckgangCnt;
         this.deckPonCnt = deckPonCnt;
         this.deckStraightCnt = deckStraightCnt;
-        this.hideKongCnt = hideKongCnt;
+        this.faceWind = faceWind;
+        this.courtWind = courtWind;
+        this.hidegangCnt = hidegangCnt;
         this.dealerWinStreak = dealerWinStreak;
         this.isDealer = isDealer;
         this.isFirstTile = isFirstTile;
@@ -221,22 +225,95 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    private bool Dong() //東
+    private bool Dong(int[] tileCountArray) //東
     {
-
+        if (tileCountArray[31] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    //南
+    private bool Nan(int[] tileCountArray)//南
+    {
+        if (tileCountArray[32] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //西
+    private bool Xi(int[] tileCountArray)//西
+    {
+        if (tileCountArray[33] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //北
+    private bool Bei(int[] tileCountArray)//北
+    {
+        if (tileCountArray[34] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //花槓
+    private bool HuaGang(int[] tileCountArray)//花槓
+    {
+        if (tileCountArray[41] + tileCountArray[42] + tileCountArray[43] + tileCountArray[44] == 4)
+        {
+            tileCountArray[41] = 0;
+            tileCountArray[42] = 0;
+            tileCountArray[43] = 0;
+            tileCountArray[44] = 0;
+            return true;
+        }
+        else if (tileCountArray[45] + tileCountArray[46] + tileCountArray[47] + tileCountArray[48] == 4)
+        {
+            tileCountArray[45] = 0;
+            tileCountArray[46] = 0;
+            tileCountArray[47] = 0;
+            tileCountArray[48] = 0;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //花台
+    private bool HuaTai(int[] tileCountArray, int pos)//花台
+    {
+        if (tileCountArray[pos] == 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //獨聽
+    private bool DuTing()//獨聽
+    {
+        // #TODO
+        return false;
+    }
 
     //槓上開花
 
