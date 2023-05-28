@@ -15,6 +15,7 @@ public class TaiCounter : MonoBehaviour
     private bool isDealer = false;
     private bool isFirstTile = false;
     private bool isLastTile = false;
+    private bool isSelfDraw = false;
     private int tai = 0;
 
     public void Start()
@@ -32,7 +33,7 @@ public class TaiCounter : MonoBehaviour
     }
 
     public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
-    int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false)
+    int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
@@ -45,6 +46,7 @@ public class TaiCounter : MonoBehaviour
         this.isDealer = isDealer;
         this.isFirstTile = isFirstTile;
         this.isLastTile = isLastTile;
+        this.isSelfDraw = isSelfDraw;
         
         TransToArray(tileCountArray, handTileList);
 
@@ -159,4 +161,116 @@ public class TaiCounter : MonoBehaviour
         return calScoring;
     }
 
+    private bool Dealer() //莊家
+    {
+        return isDealer;
+    }
+
+    private bool SelfDraw() //自摸
+    {
+        return isSelfDraw;
+    }
+
+    private bool MenQing() //門清
+    {
+        if (handTileList.Count == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool Zhong(int[] tileCountArray) //中
+    {
+        if (tileCountArray[45] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool Fa(int[] tileCountArray) //發
+    {
+        if (tileCountArray[46] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool Bai(int[] tileCountArray) //白
+    {
+        if (tileCountArray[47] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool Dong() //東
+    {
+
+    }
+
+    //南
+
+    //西
+
+    //北
+
+    //花槓
+
+    //花台
+
+    //獨聽
+
+    //槓上開花
+
+    //海底撈月
+
+    //全求人
+
+    //平胡
+
+    //三暗刻
+
+    //碰碰胡
+
+    //混一色
+
+    //小三元
+
+    //四暗刻
+
+    //五暗刻
+
+    //清一色
+
+    //小四喜
+
+    //大三元
+
+    //七搶一
+
+    //八仙過海
+
+    //字一色
+
+    //大四喜
+
+    //地胡
+
+    //天胡
 }
