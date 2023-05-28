@@ -8,23 +8,14 @@ public class TaiCounter : MonoBehaviour
     private List<Tile> handTileList = null;
     private List<Tile> tileDeckList = null;
     private List<string> scoringList = null;
-    private int[] characterArray = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private int[] dotArray = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private int[] bambooArray = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private int[] dragonArray = new int[] {0, 0, 0}; //中 發 白
-    private int[] windArray = new int[] {0, 0, 0, 0}; //東 南 西 北
-    private int[] seasonArray = new int[] {0, 0, 0, 0}; //春 夏 秋 冬
-    private int[] flowerArray = new int[] {0, 0, 0, 0}; //梅 蘭 竹 菊
+    private int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
     private int deckKongCnt = 0;
     private int deckPonCnt = 0;
     private int deckStraightCnt = 0;
-    private int handPonCnt = 0;
-    private int handStraightCnt = 0;
-    private int pairCnt = 0;
-    private int tai = 0;
     private bool isDealer = false;
     private bool isFirstTile = false;
     private bool isLastTile = false;
+    private int tai = 0;
 
     public List<string> ScoringList
     {
@@ -62,23 +53,23 @@ public class TaiCounter : MonoBehaviour
         {
             if (tile.tile_type == TileType.Character)
             {
-                characterArray[tile.tile_number - 1] += 1;
-            }
-            else if (tile.tile_type == TileType.Bamboo)
-            {
-                bambooArray[tile.tile_number - 1] += 1;
+                tileCountArray[0 + tile.tile_number] += 1;
             }
             else if (tile.tile_type == TileType.Dot)
             {
-                dotArray[tile.tile_number - 1] += 1;
+                tileCountArray[10 + tile.tile_number] += 1;
             }
-            else if (tile.tile_type == TileType.Dragon)
+            else if (tile.tile_type == TileType.Bamboo)
             {
-                dragonArray[tile.tile_number - 1] += 1;
+                tileCountArray[20 + tile.tile_number] += 1;
             }
             else if (tile.tile_type == TileType.Wind)
             {
-                windArray[tile.tile_number - 1] += 1;
+                tileCountArray[30 + tile.tile_number] += 1;
+            }
+            else if (tile.tile_type == TileType.Dragon)
+            {
+                tileCountArray[34 + tile.tile_number] += 1;
             }
             else
             {
@@ -86,14 +77,7 @@ public class TaiCounter : MonoBehaviour
             }
         }
     }
-
-    private void ClearVar()
-    {
-        handPonCnt = 0;
-        handStraightCnt = 0;
-        pairCnt = 0;
-    }
-
+    
     private int FindHighestTai(List<Tile> curTileList = null)
     {
         if(curTileList.Count == 0)
@@ -130,7 +114,7 @@ public class TaiCounter : MonoBehaviour
                         for (int i = 0; i < 2; i++)
                         {
                             var tileToRemove = curTileList.SingleOrDefault(r => (r.tile_number == tile_number && r.tile_type == TileType.Character));
-                            curTileList.Remove(itemToRemove);
+                            curTileList.Remove(tileToRemove);
                         }
                         pairCnt = 1;
                     }
