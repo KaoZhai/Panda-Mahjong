@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class TaiCounter : MonoBehaviour
 {
-    private List<Tile> handTileList = null;
-    private List<Tile> tileDeckList = null;
-    private List<string> scoringList = null;
+    private List<Tile> handTileList = new List<Tile>();
+    private List<Tile> tileDeckList = new List<Tile>();
+    private List<string> scoringList = new List<string>();
     private int deckKongCnt = 0;
     private int deckPonCnt = 0;
     private int deckStraightCnt = 0;
@@ -18,7 +18,7 @@ public class TaiCounter : MonoBehaviour
 
     public void Start()
     {
-        
+        Debug.Log(CalculateScoring(0, 0)[0]);
     }
 
     public List<string> ScoringList
@@ -31,7 +31,7 @@ public class TaiCounter : MonoBehaviour
         get { return tai; }
     }
 
-    public void TaiCount(List<Tile> handTileList = null, List<Tile> tileDeckList = null, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
+    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
     bool isDealer = false, bool isFirstTile = false, bool isLastTile = false)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
@@ -48,12 +48,12 @@ public class TaiCounter : MonoBehaviour
         TransToArray(tileCountArray, handTileList);
 
         //recursion
-        FindHighestTai((int[])tileCountArray.Clone(), 0, 0, 0);
+        FindHighestTai((int[])tileCountArray.Clone(), false, 0, 0);
 
         return;
     }
 
-    private void TransToArray(int[] tileCountArray, List<Tile> tileList = null)
+    private void TransToArray(int[] tileCountArray, List<Tile> tileList)
     {
         foreach (var tile in tileList)
         {
@@ -92,113 +92,70 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    private int FindHighestTai(int[] nowTileArray, int pairCnt = 0, int ponCnt = 0, int straightCnt = 0)
+    private void FindHighestTai(int[] nowTileArray, bool havePair = false, int ponCnt = 0, int straightCnt = 0)
     {
         if(nowTileArray.Sum() == 0)
         {
-            int tmpTai = CalculateTai();
+            int tmpTai = CalculateTai(ponCnt, straightCnt);
             if (tmpTai > this.tai)
             {
                 this.tai = tmpTai;
-                this.scoringList = CalculateScoring();
-                return this.tai;
+                this.scoringList = CalculateScoring(ponCnt, straightCnt);
             }
-            else
-            {
-                return 0;
-            }
+            return;
         }
 
-        foreach (var tile in curTileList)
+        for(int i = 1; i <= 37; i++)
         {
+            if(nowTileArray[i] == 0)
+                continue;
+            
             // have pair
-            if (pairCnt == 1)
+            if (havePair)
             {
-
+                // check straight
+                if(nowTileArray[i] > 0 && nowTileArray[i - 1] > 0 && nowTileArray[i + 1] > 0)
+                {
+                    nowTileArray[i - 1] -= 1;
+                    nowTileArray[i] -= 1;
+                    nowTileArray[i + 1] -= 1;
+                    FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt, straightCnt + 1);
+                    nowTileArray[i - 1] += 1;
+                    nowTileArray[i] += 1;
+                    nowTileArray[i + 1] += 1;
+                }
+                // check pon
+                if(nowTileArray[i] >= 3)
+                {
+                    nowTileArray[i] -= 3;
+                    FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt + 1, straightCnt);
+                    nowTileArray[i] += 3;
+                }
             }
             // no pair yet
             else
             {
-                int tile_number = tile.tile_number;
-                if (tile.tile_type == TileType.Character)
+                if(nowTileArray[i] >= 2)
                 {
-                    if (characterArray[tile_number - 1] >= 2)
-                    {
-                        characterArray[tile_number - 1] -= 2;
-                        for (int i = 0; i < 2; i++)
-                        {
-                            var tileToRemove = curTileList.SingleOrDefault(r => (r.tile_number == tile_number && r.tile_type == TileType.Character));
-                            curTileList.Remove(tileToRemove);
-                        }
-                        pairCnt = 1;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else if (tile.tile_type == TileType.Bamboo)
-                {
-                    if (bambooArray[tile_number - 1] >= 2)
-                    {
-
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else if (tile.tile_type == TileType.Dot)
-                {
-                    if (dotArray[tile_number - 1] >= 2)
-                    {
-
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else if (tile.tile_type == TileType.Dragon)
-                {
-                    if (dragonArray[tile_number - 1] >= 2)
-                    {
-
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else if (tile.tile_type == TileType.Wind)
-                {
-                    if (windArray[tile_number - 1] >= 2)
-                    {
-
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    Debug.Log("Error: " + tile.tile_type);
-                    return 0;
+                    nowTileArray[i] -= 2;
+                    FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt, straightCnt);
+                    nowTileArray[i] += 2;
                 }
             }
         }
-        return 0;
+        return;
     }
 
-    private int CalculateTai()
+    private int CalculateTai(int handPonCnt = 0, int handStraightCnt = 0)
     {
-        return 0;
+        int calTai = 0;
+        return calTai;
     }
 
-    private List<string> CalculateScoring()
+    private List<string> CalculateScoring(int handPonCnt = 0, int handStraightCnt = 0)
     {
-        return null;
+        List<string> calScoring = new List<string>();
+        return calScoring;
     }
 
 }
