@@ -181,7 +181,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool MenQing() //門清
     {
-        if (tileDeckList.Count == 0)
+        if(deckgangCnt + deckPonCnt + deckStraightCnt == 0)
         {
             return true;
         }
