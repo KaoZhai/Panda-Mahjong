@@ -11,6 +11,7 @@ public class TaiCounter : MonoBehaviour
     private int deckKongCnt = 0;
     private int deckPonCnt = 0;
     private int deckStraightCnt = 0;
+    private int dealerWinStreak = 0;
     private bool isDealer = false;
     private bool isFirstTile = false;
     private bool isLastTile = false;
@@ -18,7 +19,6 @@ public class TaiCounter : MonoBehaviour
 
     public void Start()
     {
-        Debug.Log(CalculateScoring(0, 0)[0]);
     }
 
     public List<string> ScoringList
@@ -32,7 +32,7 @@ public class TaiCounter : MonoBehaviour
     }
 
     public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckKongCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
-    bool isDealer = false, bool isFirstTile = false, bool isLastTile = false)
+    int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
@@ -41,6 +41,7 @@ public class TaiCounter : MonoBehaviour
         this.deckKongCnt = deckKongCnt;
         this.deckPonCnt = deckPonCnt;
         this.deckStraightCnt = deckStraightCnt;
+        this.dealerWinStreak = dealerWinStreak;
         this.isDealer = isDealer;
         this.isFirstTile = isFirstTile;
         this.isLastTile = isLastTile;
