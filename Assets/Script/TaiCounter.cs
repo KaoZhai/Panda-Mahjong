@@ -172,6 +172,217 @@ public class TaiCounter : MonoBehaviour
     private int CalculateTai(int handPonCnt = 0, int handStraightCnt = 0)
     {
         int calTai = 0;
+        int[] tileCountArray = new int[50];
+
+        //將所有手牌和擺牌轉為 array
+        TransToArray(tileCountArray, handTileList);
+        TransToArray(tileCountArray, tileDeckList);
+
+        //地胡不計門清、自摸、不求人
+        //天胡不計門清、自摸、不求人、獨聽、槓上開花
+        //七搶一、八仙不計正花、花槓
+        //花槓不計正花
+        //小、大三元不再計三元刻
+        //小、大四喜不再計圈風台、門風台
+        if (Dealer())
+        {
+            calTai += 1;
+            if (dealerWinStreak > 0)
+            {
+                calTai += dealerWinStreak * 2;
+            }
+            
+            if (TianHu())
+            {
+                calTai += 24;
+            }
+        }
+        if (DiHu())
+        {
+            calTai += 16;
+        }
+
+        //風
+        if (DaSiXi(tileCountArray))
+        {
+            calTai += 16;
+        }
+        else if (XiaoSiXi(tileCountArray))
+        {
+            calTai += 8;
+        }
+        else
+        {
+            if (faceWind == 1 && Dong(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (faceWind == 2 && Nan(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (faceWind == 3 && Xi(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (faceWind == 4 && Bei(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (courtWind == 1 && Dong(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (courtWind == 2 && Nan(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (courtWind == 3 && Xi(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (courtWind == 4 && Bei(tileCountArray))
+            {
+                calTai += 1;
+            }
+        }
+
+        //三元
+        if (DaSanYuan(tileCountArray))
+        {
+            calTai += 8;
+        }
+        else if (XiaoSanYuan(tileCountArray))
+        {
+            calTai += 4;
+        }
+        else
+        {
+            if (Zhong(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (Fa(tileCountArray))
+            {
+                calTai += 1;
+            }
+            if (Bai(tileCountArray))
+            {
+                calTai += 1;
+            }
+        }
+
+        //花
+        if (BaXianGuoHai())
+        {
+            calTai += 8;
+        }
+        else if (QiQiangYi())
+        {
+            calTai += 8;
+        }
+        else
+        {
+            if (HuaGang(tileCountArray, true)) //春夏秋冬
+            {
+                calTai += 2;
+            }
+            else if(HuaTai(tileCountArray, 40 + faceWind))
+            {
+                calTai += 1;
+            }
+
+            if (HuaGang(tileCountArray, false)) //梅蘭竹菊
+            {
+                calTai += 2;
+            }
+            else if(HuaTai(tileCountArray, 44 + faceWind))
+            {
+                calTai += 1;
+            }
+        }
+
+        //門清、自摸、不求人
+        if (!(TianHu() || DiHu()))
+        {
+            if (MenQing() && SelfDraw())
+            {
+                calTai += 3;
+            }
+            else if(MenQing())
+            {
+                calTai += 1;
+            }
+            else if(SelfDraw())
+            {
+                calTai += 1;
+            }
+        }
+
+        //獨聽、槓上開花
+        if (!TianHu())
+        {
+            if (DuTing())
+            {
+                calTai += 1;
+            }
+            if (GangShangKaiHua())
+            {
+                calTai += 1;
+            }
+        }
+
+        if (HaiDiLaoYue())
+        {
+            calTai += 1;
+        }
+
+        if (HeDiLaoYu())
+        {
+            calTai += 1;
+        }
+
+        if (QuanQiuRen())
+        {
+            calTai += 2;
+        }
+
+        if (PingHu(tileCountArray, handPonCnt))
+        {
+            calTai += 2;
+        }
+
+        if (PengPengHu(handPonCnt))
+        {
+            calTai += 4;
+        }
+
+        if (SanAnKe(handPonCnt))
+        {
+            calTai += 2;
+        }
+        else if (SiAnKe(handPonCnt))
+        {
+            calTai += 5;
+        }
+        else if (WuAnKe(handPonCnt))
+        {
+            calTai += 8;
+        }
+
+        if (ZiYiSe(tileCountArray))
+        {
+            calTai += 16;
+        }
+        else if (QingYiSe(tileCountArray))
+        {
+            calTai += 8;
+        }
+        else if (HunYiSe(tileCountArray))
+        {
+            calTai += 4;
+        }
+
         return calTai;
     }
 
@@ -356,7 +567,7 @@ public class TaiCounter : MonoBehaviour
             check += tileCountArray[i];
         }
 
-        if (deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + check == 0)
+        if ((!isSelfDraw) && deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + check == 0)
         {
             return true;
         }
@@ -426,7 +637,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool XiaoSanYuan(int[] tileCountArray)//小三元
     {
-        if ((!DaSanYuan(tileCountArray)) && tileCountArray[35] >= 2 && tileCountArray[36] >= 2 && tileCountArray[37] >= 2)
+        if (tileCountArray[35] >= 2 && tileCountArray[36] >= 2 && tileCountArray[37] >= 2)
         {
             return true;
         }
@@ -496,7 +707,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool XiaoSiXi(int[] tileCountArray)//小四喜
     {
-        if ((!DaSiXi(tileCountArray)) && tileCountArray[31] >= 2 && tileCountArray[32] >= 2 && tileCountArray[33] >= 2 && tileCountArray[34] >= 2)
+        if (tileCountArray[31] >= 2 && tileCountArray[32] >= 2 && tileCountArray[33] >= 2 && tileCountArray[34] >= 2)
         {
             return true;
         }
