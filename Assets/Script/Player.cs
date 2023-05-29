@@ -74,7 +74,7 @@ namespace Game.PlayingRoom {
         {
             handTiles.Add(tile);
             tile.GetComponent<Tile>().Player = this;
-            tile.transform.SetParent(hand);
+            tile.transform.SetParent(hand, false);
             tile.SetActive(true);
         }
 
@@ -93,14 +93,14 @@ namespace Game.PlayingRoom {
         
         void ShowTile(int indexOfHandTiles)
         {
-            handTiles[indexOfHandTiles].transform.SetParent(showPool);
+            handTiles[indexOfHandTiles].transform.SetParent(showPool, false);
             showTiles.Add(handTiles[indexOfHandTiles]);
             handTiles.RemoveAt(indexOfHandTiles);
         }
 
         void TakeTileFromOther()
         {
-            tableManager.LastTile.transform.SetParent(showPool);
+            tableManager.LastTile.transform.SetParent(showPool, false);
             showTiles.Add(tableManager.LastTile);
         }
         public void ReplaceFlower()
@@ -137,7 +137,7 @@ namespace Game.PlayingRoom {
                 if (handTiles[i].GetComponent<Tile>().TileId == tileId)
                 {
                     tableManager.LastTile = handTiles[i];
-                    handTiles[i].transform.SetParent(tilePool);
+                    handTiles[i].transform.SetParent(tilePool, false);
                     handTiles[i].SetActive(true);
                     handTiles.RemoveAt(i);
                     break;
@@ -264,10 +264,10 @@ namespace Game.PlayingRoom {
                 GameObject set = Instantiate(setPrefab, new Vector3(0, 0, 0), Quaternion.identity, chiTileSetsTransform);
                 set.SetActive(true);
                 GameObject a = Instantiate(canChiTileSet[i][0]);
-                a.transform.SetParent(set.transform);
+                a.transform.SetParent(set.transform, false);
                 a.name = canChiTileSet[i][0].GetComponent<Tile>().TileId;
                 GameObject b = Instantiate(canChiTileSet[i][1]);
-                b.transform.SetParent(set.transform);
+                b.transform.SetParent(set.transform, false);
                 b.name = canChiTileSet[i][1].GetComponent<Tile>().TileId;
             }
         }
