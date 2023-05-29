@@ -20,6 +20,10 @@ namespace Game.Lobby
 
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
+        [SerializeField] private GameObject waitingRoomPanel = null;
+        [SerializeField] private GameObject lobbyPanel = null;
+        [SerializeField] private Game.Room.SettingPanel waitingSettingPanel = null;
+        
         public async void Start()
         {
             gameManager = GameManager.Instance;
@@ -63,7 +67,12 @@ namespace Game.Lobby
                 gameManager.IsRoomCreater = true;
 
                 if (result.Ok)
-                    SceneManager.LoadScene("WaitingRoom");
+                {
+                    waitingRoomPanel.SetActive(true);
+                    lobbyPanel.SetActive(false);
+                    waitingSettingPanel.DisplayPannel(true);
+                }
+                
                 else
                     Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
@@ -80,7 +89,11 @@ namespace Game.Lobby
 
 
             if (result.Ok)
-                SceneManager.LoadScene("WaitingRoom");
+            {
+                waitingRoomPanel.SetActive(true);
+                lobbyPanel.SetActive(false);
+            }
+
             else
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
         }
