@@ -19,7 +19,9 @@ public class TaiCounter : MonoBehaviour
     private bool isFirstTile = false;
     private bool isLastTile = false;
     private bool isSelfDraw = false;
-    private bool afterGang = false;
+    private bool isAfterGang = false;
+    private bool isOnly = false;
+    private Tile winningTile = null;
     private int tai = 0;
 
     public void Start()
@@ -36,8 +38,9 @@ public class TaiCounter : MonoBehaviour
         get { return tai; }
     }
 
-    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckGangCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0, int faceWind = 0,
-    int courtWind = 0, int hideGangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false, bool isLastTile = false, bool isSelfDraw = false, bool afterGang = false)
+    public void TaiCount(List<Tile> handTileList, List<Tile> tileDeckList, int deckGangCnt = 0, int deckPonCnt = 0, int deckStraightCnt = 0,
+    int faceWind = 0, int courtWind = 0, int hideGangCnt = 0, int dealerWinStreak = 0, bool isDealer = false, bool isFirstTile = false,
+    bool isLastTile = false, bool isSelfDraw = false, bool isAfterGang = false, bool isOnly = false, Tile winningTile = null)
     {
         int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
@@ -54,7 +57,9 @@ public class TaiCounter : MonoBehaviour
         this.isFirstTile = isFirstTile;
         this.isLastTile = isLastTile;
         this.isSelfDraw = isSelfDraw;
-        this.afterGang = afterGang;
+        this.isAfterGang = isAfterGang;
+        this.isOnly = isOnly;
+        this.winningTile = winningTile;
         
         TransToArray(tileCountArray, handTileList);
 
@@ -275,22 +280,14 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    private bool HuaGang(int[] tileCountArray)//花槓
+    private bool HuaGang(int[] tileCountArray, bool isSeason)//花槓
     {
-        if (tileCountArray[41] + tileCountArray[42] + tileCountArray[43] + tileCountArray[44] == 4)
+        if (isSeason && tileCountArray[41] + tileCountArray[42] + tileCountArray[43] + tileCountArray[44] == 4)
         {
-            tileCountArray[41] = 0;
-            tileCountArray[42] = 0;
-            tileCountArray[43] = 0;
-            tileCountArray[44] = 0;
             return true;
         }
-        else if (tileCountArray[45] + tileCountArray[46] + tileCountArray[47] + tileCountArray[48] == 4)
+        else if ((!isSeason) && tileCountArray[45] + tileCountArray[46] + tileCountArray[47] + tileCountArray[48] == 4)
         {
-            tileCountArray[45] = 0;
-            tileCountArray[46] = 0;
-            tileCountArray[47] = 0;
-            tileCountArray[48] = 0;
             return true;
         }
         else
@@ -313,13 +310,12 @@ public class TaiCounter : MonoBehaviour
 
     private bool DuTing()//獨聽
     {
-        // #TODO
-        return false;
+        return isOnly;
     }
 
     private bool GangShangKaiHua()//槓上開花
     {
-        return afterGang;
+        return isAfterGang;
     }
 
     private bool HaiDiLaoYue()//海底撈月
@@ -423,8 +419,14 @@ public class TaiCounter : MonoBehaviour
 
     private bool QiQiangYi()//七搶一
     {
-        //#TODO
-        return false;
+        if ((!SelfDraw) && (winningTile.tile_type == TileType.Season || winningTile.tile_type == TileType.Flower))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private bool BaXianGuoHai(int[] tileCountArray)//八仙過海
