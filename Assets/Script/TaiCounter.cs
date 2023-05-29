@@ -60,11 +60,18 @@ public class TaiCounter : MonoBehaviour
         this.isAfterGang = isAfterGang;
         this.isOnly = isOnly;
         this.winningTile = winningTile;
-        
-        TransToArray(tileCountArray, handTileList);
 
-        //recursion
-        FindHighestTai((int[])tileCountArray.Clone(), false, 0, 0);
+        if (QiQiangYi() || BaXianGuoHai())
+        {
+            this.tai = CalculateTai(0, 0);
+            this.scoringList = CalculateScoring(0, 0);
+        }
+        else
+        {
+            TransToArray(tileCountArray, handTileList);
+            //recursion
+            FindHighestTai((int[])tileCountArray.Clone(), false, 0, 0);
+        }
 
         return;
     }
@@ -186,7 +193,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool MenQing() //門清
     {
-        if(deckGangCnt + deckPonCnt + deckStraightCnt == 0)
+        if (deckGangCnt + deckPonCnt + deckStraightCnt == 0)
         {
             return true;
         }
@@ -330,7 +337,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool QuanQiuRen()//全求人
     {
-        if(deckGangCnt + deckPonCnt + deckStraightCnt == 5)
+        if (deckGangCnt + deckPonCnt + deckStraightCnt == 5)
         {
             return true;
         }
@@ -373,7 +380,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool PengPengHu(int handPonCnt)//碰碰胡
     {
-        if(handPonCnt + hideGangCnt + deckPonCnt + deckGangCnt == 5)
+        if (handPonCnt + hideGangCnt + deckPonCnt + deckGangCnt == 5)
         {
             return true;
         }
@@ -383,9 +390,51 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    //混一色
+    private bool HunYiSe(int[] tileCountArray)//混一色
+    {
+        int characterCnt = 0;
+        int dotCnt = 0;
+        int bambooCnt = 0;
+        int letterCnt = 0;
 
-    //小三元
+        for (int i = 1; i <= 9; i++)
+        {
+            characterCnt += tileCountArray[i];
+        }
+        for (int i = 11; i <= 19; i++)
+        {
+            dotCnt += tileCountArray[i];
+        }
+        for (int i = 21; i <= 29; i++)
+        {
+            bambooCnt += tileCountArray[i];
+        }
+        for (int i = 31; i <= 37; i++)
+        {
+            letterCnt += tileCountArray[i];
+        }
+
+        if ((letterCnt > 0) && ((characterCnt + dotCnt == 0) || (characterCnt + bambooCnt == 0) || (dotCnt + bambooCnt == 0)))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool XiaoSanYuan(int[] tileCountArray)//小三元
+    {
+        if ((!DaSanYuan(tileCountArray)) && tileCountArray[35] >= 2 && tileCountArray[36] >= 2 && tileCountArray[37] >= 2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     private bool SiAnKe(int handPonCnt)//四暗刻
     {
@@ -411,11 +460,63 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    //清一色
+    private bool QingYiSe(int[] tileCountArray)//清一色
+    {
+        int characterCnt = 0;
+        int dotCnt = 0;
+        int bambooCnt = 0;
+        int letterCnt = 0;
 
-    //小四喜
+        for (int i = 1; i <= 9; i++)
+        {
+            characterCnt += tileCountArray[i];
+        }
+        for (int i = 11; i <= 19; i++)
+        {
+            dotCnt += tileCountArray[i];
+        }
+        for (int i = 21; i <= 29; i++)
+        {
+            bambooCnt += tileCountArray[i];
+        }
+        for (int i = 31; i <= 37; i++)
+        {
+            letterCnt += tileCountArray[i];
+        }
 
-    //大三元
+        if ((letterCnt == 0) && ((characterCnt + dotCnt == 0) || (characterCnt + bambooCnt == 0) || (dotCnt + bambooCnt == 0)))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool XiaoSiXi(int[] tileCountArray)//小四喜
+    {
+        if ((!DaSiXi(tileCountArray)) && tileCountArray[31] >= 2 && tileCountArray[32] >= 2 && tileCountArray[33] >= 2 && tileCountArray[34] >= 2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool DaSanYuan(int[] tileCountArray)//大三元
+    {
+        if (tileCountArray[35] >= 3 && tileCountArray[36] >= 3 && tileCountArray[37] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     private bool QiQiangYi()//七搶一
     {
@@ -429,15 +530,9 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    private bool BaXianGuoHai(int[] tileCountArray)//八仙過海
+    private bool BaXianGuoHai()//八仙過海
     {
-        int cnt = 0;
-        for(int i = 41; i <= 48; i++)
-        {
-            cnt += tileCountArray[i];
-        }
-
-        if(cnt == 8)
+        if (isSelfDraw && (winningTile.tile_type == TileType.Season || winningTile.tile_type == TileType.Flower))
         {
             return true;
         }
@@ -447,11 +542,58 @@ public class TaiCounter : MonoBehaviour
         }
     }
 
-    //字一色
+    private bool ZiYiSe(int[] tileCountArray)//字一色
+    {
+        //檢查無萬筒條
+        int cnt = 0;
+        for (int i = 1; i <= 29; i++)
+        {
+            cnt += tileCountArray[i];
+        }
 
-    //大四喜
+        if (cnt == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //地胡
+    private bool DaSiXi(int[] tileCountArray)//大四喜
+    {
+        if (tileCountArray[31] >= 3 && tileCountArray[32] >= 3 && tileCountArray[33] >= 3 && tileCountArray[34] >= 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    //天胡
+    private bool DiHu()//地胡
+    {
+        if (isFirstTile && isSelfDraw && (!isDealer))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool TianHu()//天胡
+    {
+        if (isFirstTile && isSelfDraw && isDealer)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
