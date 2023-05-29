@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Game.Tile
+namespace Game.PlayingRoom
 {
     public enum TileType
     {
@@ -16,15 +16,31 @@ namespace Game.Tile
         Dot
     }
 
+    public class TileGameObjectComparer : IComparer<GameObject>
+    {
+        public int Compare(GameObject x, GameObject y)
+        {
+            return string.Compare(x.GetComponent<Tile>().TileId, y.GetComponent<Tile>().TileId);
+        }
+    }
+
+    public class TileComparer : IComparer<Tile>
+    {
+        public int Compare(Tile x, Tile y)
+        {
+            return string.Compare(x.TileId, y.TileId);
+        }
+    }
+
     public class Tile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         // {tile_type}_{tile_number}_{1..4}
         private string id;
-        private Game.Tile.TileType tileType;
+        private TileType tileType;
         private int tileNumber;
         private int cardFaceIndex;
-        private Game.Player.Player player;
-        private Game.TableManager.TableManager tableManager;
+        private Player player;
+        private TableManager tableManager;
         private Transform self;
         private Vector3 oriPosition;
 
@@ -56,7 +72,6 @@ namespace Game.Tile
                 if (transform.localPosition.y > 0)
                 {
                     player.Discord(id);
-                    tableManager.NextPlayer();
                 }
                 else
                 {
@@ -68,7 +83,7 @@ namespace Game.Tile
 
         private bool IsValidDrag(Transform parent, int id)
         {
-            return parent == player.hand && id == player.PlayerId;
+            return parent == player.Hand && id == player.PlayerId;
         }
 
         public int PlayerId
@@ -105,21 +120,36 @@ namespace Game.Tile
                 serialNumber.ToString();
         }
 
-        public Game.Player.Player Player
+        public Player Player
         {
             get { return player; }
             set { player = value; }
         } 
-        public void SetTableManager(Game.TableManager.TableManager tableManager)
+        public void SetTableManager(TableManager tableManager)
         {
             this.tableManager = tableManager;
         }
-
+        // Flower Season
         public bool IsFlower()
         {
             return (tileType == TileType.Flower) || (tileType == TileType.Season);
         }
 
+        // Wind Dragon
+        public bool IsHonor()
+        {
+            return (tileType == TileType.Wind) || (tileType == TileType.Dragon);
+        }
+        // Dot Bamboo Character
+        public bool IsSuit()
+        {
+            return (tileType == TileType.Dot) || (tileType == TileType.Bamboo) || (tileType == TileType.Character);
+        }
+
+        public bool IsSame(Tile tile)
+        {
+            return tile.CardFaceIndex == this.CardFaceIndex;
+        }
     }
 }
 

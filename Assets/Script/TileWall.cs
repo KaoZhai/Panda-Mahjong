@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.TileWall {
+namespace Game.PlayingRoom {
     public class TileWall : MonoBehaviour
     {
         private Vector3 startPosition;
-        public Transform transformTileWall;
-        public GameObject mahjongPrefab; // 麻將Prefab
+        [SerializeField] private Transform transformTileWall;
+        [SerializeField] private GameObject mahjongPrefab; // 麻將Prefab
         private List<GameObject> tileList = new List<GameObject>();
 
-        private Game.TableManager.TableManager tableManager;
+        private TableManager tableManager;
 
-        public Game.TableManager.TableManager TableManager {
+        public TableManager TableManager {
             set { tableManager = value; }
         }
 
-        public void GetReady(Game.TableManager.TableManager tableManager)
+        public void GetReady(TableManager tableManager)
         {
             Debug.Log(tableManager);
             this.tableManager = tableManager;
@@ -26,7 +26,7 @@ namespace Game.TileWall {
         }
         void SetTileFace(GameObject mahjong)
         {
-            int cardFaceIndex = mahjong.GetComponent<Game.Tile.Tile>().CardFaceIndex;
+            int cardFaceIndex = mahjong.GetComponent<Tile>().CardFaceIndex;
             GameObject face = mahjong.transform.Find("Face").gameObject;
             Image faceImage = face.GetComponent<Image>();
             Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex.ToString());
@@ -41,10 +41,10 @@ namespace Game.TileWall {
             
         }
 
-        void GenerateTile(Game.Tile.TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
+        void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
         {
-            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
-            Game.Tile.Tile tile =  tile_obj.GetComponent<Game.Tile.Tile>();
+            GameObject tileObj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
+            Tile tile =  tileObj.GetComponent<Tile>();
             if(tile==null)
             {
                 Debug.LogError("沒有 tile_script");
@@ -57,9 +57,9 @@ namespace Game.TileWall {
             tile.CardFaceIndex = cardFaceIndex;
             tile.SetTileId(serialNumber);
 
-            tileList.Add(tile_obj);
-            tile_obj.name = tile.TileId;
-            SetTileFace(tile_obj);
+            tileList.Add(tileObj);
+            tileObj.name = tile.TileId;
+            SetTileFace(tileObj);
         }
 
         void GenerateAllTile()
@@ -68,13 +68,13 @@ namespace Game.TileWall {
             // Season       1-4
             for (int i = 1; i <= 4; ++i)
             {
-                GenerateTile(Game.Tile.TileType.Season, i, cardFaceIndex, 1);
+                GenerateTile(TileType.Season, i, cardFaceIndex, 1);
                 ++cardFaceIndex;
             }
             // Flower       5-8
             for (int i = 1; i <= 4; ++i)
             {
-                GenerateTile(Game.Tile.TileType.Flower, i, cardFaceIndex, 1);
+                GenerateTile(TileType.Flower, i, cardFaceIndex, 1);
                 ++cardFaceIndex;
             }
             // Wind         9-12 
@@ -82,7 +82,7 @@ namespace Game.TileWall {
             {
                 for (int j = 1; j <= 4; ++j)
                 {
-                    GenerateTile(Game.Tile.TileType.Wind, i, cardFaceIndex, j);
+                    GenerateTile(TileType.Wind, i, cardFaceIndex, j);
                 }
                 ++cardFaceIndex; 
             }
@@ -91,7 +91,7 @@ namespace Game.TileWall {
             {
                 for (int j = 1; j <= 4; ++j)
                 {
-                    GenerateTile(Game.Tile.TileType.Dragon, i, cardFaceIndex, j);
+                    GenerateTile(TileType.Dragon, i, cardFaceIndex, j);
                 }
                 ++cardFaceIndex; 
             }
@@ -100,7 +100,7 @@ namespace Game.TileWall {
             {
                 for (int j = 1; j <= 4; ++j)
                 {
-                    GenerateTile(Game.Tile.TileType.Character, i, cardFaceIndex, j);
+                    GenerateTile(TileType.Character, i, cardFaceIndex, j);
                 }
                 ++cardFaceIndex; 
             }
@@ -109,7 +109,7 @@ namespace Game.TileWall {
             {
                 for (int j = 1; j <= 4; ++j)
                 {
-                    GenerateTile(Game.Tile.TileType.Bamboo, i, cardFaceIndex, j);
+                    GenerateTile(TileType.Bamboo, i, cardFaceIndex, j);
                 }
                 ++cardFaceIndex; 
             }
@@ -118,13 +118,13 @@ namespace Game.TileWall {
             {
                 for (int j = 1; j <= 4; ++j)
                 {
-                    GenerateTile(Game.Tile.TileType.Dot, i, cardFaceIndex, j);
+                    GenerateTile(TileType.Dot, i, cardFaceIndex, j);
                 }
                 ++cardFaceIndex; 
             }
         }
 
-        public void DealTile(Game.Player.Player player)
+        public void DealTile(Player player)
         {
             GameObject tile = null;
             if ( tileList.Count > 0)
@@ -139,7 +139,7 @@ namespace Game.TileWall {
             }
         }
 
-        public void BuPai(Game.Player.Player player)
+        public void BuPai(Player player)
         {
             GameObject tile = null;
             if ( tileList.Count > 0)
