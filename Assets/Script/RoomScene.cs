@@ -15,6 +15,8 @@ namespace Game.Room
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private SettingPanel settingPanel = null;
         // [SerializeField] private PlayerListPannel playerListPannel = null;
+        [SerializeField] private GameObject readyBtn = null;
+        [SerializeField] private GameObject startBtn = null;
 
         public void Start()
         {
@@ -23,10 +25,14 @@ namespace Game.Room
             if (gameManager.IsRoomCreater)
             {
                 settingPanel.DisplayPannel(true);
+                startBtn.SetActive(true);
+                readyBtn.SetActive(false);
             }
             else
             {
                 settingPanel.DisplayPannel(false);
+                startBtn.SetActive(false);
+                readyBtn.SetActive(true);
             }
         }
 
@@ -47,6 +53,13 @@ namespace Game.Room
             {
                 playerNetworkData.SetReady_RPC(true);
             }
+
+            //#TODO 更改當前玩家的資訊
+        }
+
+        public void OnStartBtnClicked()
+        {
+            //#TODO 開始遊戲
         }
     }
 }
