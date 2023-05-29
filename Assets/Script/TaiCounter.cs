@@ -217,31 +217,32 @@ public class TaiCounter : MonoBehaviour
             {
                 calTai += 1;
             }
-            if (faceWind == 2 && Nan(tileCountArray))
+            else if (faceWind == 2 && Nan(tileCountArray))
             {
                 calTai += 1;
             }
-            if (faceWind == 3 && Xi(tileCountArray))
+            else if (faceWind == 3 && Xi(tileCountArray))
             {
                 calTai += 1;
             }
-            if (faceWind == 4 && Bei(tileCountArray))
+            else if (faceWind == 4 && Bei(tileCountArray))
             {
                 calTai += 1;
             }
-            if (courtWind == 1 && Dong(tileCountArray))
+
+            else if (courtWind == 1 && Dong(tileCountArray))
             {
                 calTai += 1;
             }
-            if (courtWind == 2 && Nan(tileCountArray))
+            else if (courtWind == 2 && Nan(tileCountArray))
             {
                 calTai += 1;
             }
-            if (courtWind == 3 && Xi(tileCountArray))
+            else if (courtWind == 3 && Xi(tileCountArray))
             {
                 calTai += 1;
             }
-            if (courtWind == 4 && Bei(tileCountArray))
+            else if (courtWind == 4 && Bei(tileCountArray))
             {
                 calTai += 1;
             }
@@ -389,6 +390,218 @@ public class TaiCounter : MonoBehaviour
     private List<string> CalculateScoring(int handPonCnt = 0, int handStraightCnt = 0)
     {
         List<string> calScoring = new List<string>();
+        int[] tileCountArray = new int[50];
+
+        //將所有手牌和擺牌轉為 array
+        TransToArray(tileCountArray, handTileList);
+        TransToArray(tileCountArray, tileDeckList);
+
+        //地胡不計門清、自摸、不求人
+        //天胡不計門清、自摸、不求人、獨聽、槓上開花
+        //七搶一、八仙不計正花、花槓
+        //花槓不計正花
+        //小、大三元不再計三元刻
+        //小、大四喜不再計圈風台、門風台
+        if (Dealer())
+        {
+            calScoring.Add("莊家");
+            if (dealerWinStreak > 0)
+            {
+                calScoring.Add("連"+dealerWinStreak.ToString()+"拉"+dealerWinStreak.ToString());
+            }
+            
+            if (TianHu())
+            {
+                calScoring.Add("天胡");
+            }
+        }
+        if (DiHu())
+        {
+            calScoring.Add("地胡");
+        }
+
+        //風
+        if (DaSiXi(tileCountArray))
+        {
+            calScoring.Add("大四喜");
+        }
+        else if (XiaoSiXi(tileCountArray))
+        {
+            calScoring.Add("小四喜");
+        }
+        else
+        {
+            if (faceWind == 1 && Dong(tileCountArray))
+            {
+                calScoring.Add("門風東");
+            }
+            else if (faceWind == 2 && Nan(tileCountArray))
+            {
+                calScoring.Add("門風南");
+            }
+            else if (faceWind == 3 && Xi(tileCountArray))
+            {
+                calScoring.Add("門風西");
+            }
+            else if (faceWind == 4 && Bei(tileCountArray))
+            {
+                calScoring.Add("門風北");
+            }
+
+            if (courtWind == 1 && Dong(tileCountArray))
+            {
+                calScoring.Add("場風東");
+            }
+            else if (courtWind == 2 && Nan(tileCountArray))
+            {
+                calScoring.Add("場風南");
+            }
+            else if (courtWind == 3 && Xi(tileCountArray))
+            {
+                calScoring.Add("場風西");
+            }
+            else if (courtWind == 4 && Bei(tileCountArray))
+            {
+                calScoring.Add("場風北");
+            }
+        }
+
+        //三元
+        if (DaSanYuan(tileCountArray))
+        {
+            calScoring.Add("大三元");
+        }
+        else if (XiaoSanYuan(tileCountArray))
+        {
+            calScoring.Add("小三元");
+        }
+        else
+        {
+            if (Zhong(tileCountArray))
+            {
+                calScoring.Add("中");
+            }
+            if (Fa(tileCountArray))
+            {
+                calScoring.Add("發");
+            }
+            if (Bai(tileCountArray))
+            {
+                calScoring.Add("白");
+            }
+        }
+
+        //花
+        if (BaXianGuoHai())
+        {
+            calScoring.Add("八仙過海");
+        }
+        else if (QiQiangYi())
+        {
+            calScoring.Add("七搶一");
+        }
+        else
+        {
+            if (HuaGang(tileCountArray, true)) //春夏秋冬
+            {
+                calScoring.Add("四季");
+            }
+            else if(HuaTai(tileCountArray, 40 + faceWind))
+            {
+                calScoring.Add(faceWind.ToString()+"花");
+            }
+
+            if (HuaGang(tileCountArray, false)) //梅蘭竹菊
+            {
+                calScoring.Add("四君子");
+            }
+            else if(HuaTai(tileCountArray, 44 + faceWind))
+            {
+                calScoring.Add(faceWind.ToString()+"花");
+            }
+        }
+
+        //門清、自摸、不求人
+        if (!(TianHu() || DiHu()))
+        {
+            if (MenQing() && SelfDraw())
+            {
+                calScoring.Add("門清一摸三");
+            }
+            else if(MenQing())
+            {
+                calScoring.Add("門清");
+            }
+            else if(SelfDraw())
+            {
+                calScoring.Add("自摸");
+            }
+        }
+
+        //獨聽、槓上開花
+        if (!TianHu())
+        {
+            if (DuTing())
+            {
+                calScoring.Add("獨聽");
+            }
+            if (GangShangKaiHua())
+            {
+                calScoring.Add("槓上開花");
+            }
+        }
+
+        if (HaiDiLaoYue())
+        {
+            calScoring.Add("海底撈月");
+        }
+
+        if (HeDiLaoYu())
+        {
+            calScoring.Add("河底撈魚");
+        }
+
+        if (QuanQiuRen())
+        {
+            calScoring.Add("全求人");
+        }
+
+        if (PingHu(tileCountArray, handPonCnt))
+        {
+            calScoring.Add("平胡");
+        }
+
+        if (PengPengHu(handPonCnt))
+        {
+            calScoring.Add("碰碰胡");
+        }
+
+        if (SanAnKe(handPonCnt))
+        {
+            calScoring.Add("三暗刻");
+        }
+        else if (SiAnKe(handPonCnt))
+        {
+            calScoring.Add("四暗刻");
+        }
+        else if (WuAnKe(handPonCnt))
+        {
+            calScoring.Add("五暗刻");
+        }
+
+        if (ZiYiSe(tileCountArray))
+        {
+            calScoring.Add("字一色");
+        }
+        else if (QingYiSe(tileCountArray))
+        {
+            calScoring.Add("清一色");
+        }
+        else if (HunYiSe(tileCountArray))
+        {
+            calScoring.Add("混一色");
+        }
+        
         return calScoring;
     }
 
