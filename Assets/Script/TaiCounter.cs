@@ -349,7 +349,7 @@ public class TaiCounter : MonoBehaviour
             check += tileCountArray[i];
         }
 
-        if (deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + tileCountArray + check == 0)
+        if (deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + check == 0)
         {
             return true;
         }
@@ -419,7 +419,7 @@ public class TaiCounter : MonoBehaviour
 
     private bool QiQiangYi()//七搶一
     {
-        if ((!SelfDraw) && (winningTile.tile_type == TileType.Season || winningTile.tile_type == TileType.Flower))
+        if ((!isSelfDraw) && (winningTile.tile_type == TileType.Season || winningTile.tile_type == TileType.Flower))
         {
             return true;
         }
