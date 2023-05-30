@@ -7,7 +7,7 @@ using Fusion;
 
 namespace Game.Room
 {
-    public class SettingPanel : MonoBehaviour
+    public class RoomSettingPanel : MonoBehaviour
     {
         [SerializeField] private CanvasGroup canvasGroup = null;
 

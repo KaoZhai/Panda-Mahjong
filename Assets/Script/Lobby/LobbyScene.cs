@@ -16,7 +16,6 @@ namespace Game.Lobby
         
         public void OnLeaveBtnClick()
         {
-            SceneManager.LoadScene("Start");
         }
 
         public void OnCreateRoomBtnClick()
@@ -29,6 +28,7 @@ namespace Game.Lobby
         {
             DisplayRoomCreating(false);
             DisplayRoomList(true);
+            
         }
 
         private void DisplayRoomList(bool value)

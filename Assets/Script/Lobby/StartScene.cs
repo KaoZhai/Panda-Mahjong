@@ -7,19 +7,10 @@ using UnityEngine.SceneManagement;
 public class StartScene : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    public void StartButton()
-    {
-        SceneManager.LoadScene("Lobby");
-    }
 
     public void SettingButton()
     {
-        SceneManager.LoadScene("Setting");
+        // Setting Panel
     }
 
     public void ExitButton()
