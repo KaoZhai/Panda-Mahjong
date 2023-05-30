@@ -22,13 +22,29 @@ namespace Game.Lobby
             SetDropdownOptions(valueList);
         }
 
+        #region BtnCallBack
+
+        public void OnCancelBtnClick()
+        {
+            DisplayPannel(false);
+            roomListPannel.DisplayPannel(true);
+        }
+        
+        public async void OnCreateRoomBtnClick()
+        {
+            await lobbyManager.CreateRoom(roomNameInputField.text, 4);
+        }
+
+        #endregion
+
+        #region Helper Function
         public void DisplayPannel(bool value)
         {
             canvasGroup.alpha = value ? 1 : 0;
             canvasGroup.interactable = value;
             canvasGroup.blocksRaycasts = value;
         }
-
+        
         public void SetDropdownOptions(List<int> valueList)
         {
             if (valueList.Count > 0)
@@ -42,13 +58,7 @@ namespace Game.Lobby
                 }
             }
         }
-
-        public void OnCancelBtnClick()
-        {
-            DisplayPannel(false);
-            roomListPannel.DisplayPannel(true);
-        }
-
+        
         public void OnDropDownChange(int itemIndex)
         {
             if (itemIndex >= dropDown.options.Count)
@@ -57,10 +67,7 @@ namespace Game.Lobby
                 itemIndex = 0;
             dropDown.value = itemIndex;
         }
-
-        public async void OnCreateRoomBtnClick()
-        {
-            await lobbyManager.CreateRoom(roomNameInputField.text, 4);
-        }
+        #endregion
+        
     }
 }
