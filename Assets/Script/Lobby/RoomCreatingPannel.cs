@@ -48,7 +48,6 @@ namespace Game.Lobby
         {
             DisplayPannel(false);
             roomListPannel.DisplayPannel(true);
-            
         }
 
         public void OnDropDownChange(int itemIndex)
