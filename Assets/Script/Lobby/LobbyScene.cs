@@ -29,6 +29,7 @@ namespace Game.Lobby
         {
             DisplayRoomCreating(false);
             DisplayRoomList(true);
+            
         }
 
         private void DisplayRoomList(bool value)
