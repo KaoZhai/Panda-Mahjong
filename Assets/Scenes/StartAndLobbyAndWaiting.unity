@@ -830,7 +830,7 @@ PrefabInstance:
       objectReference: {fileID: 1869068032}
     - target: {fileID: 5615451934587918541, guid: 6ac6fb57d3440774386ba1d46a99b810, type: 3}
       propertyPath: m_Name
-      value: Background (1)
+      value: Background
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ac6fb57d3440774386ba1d46a99b810, type: 3}
@@ -887,7 +887,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8877933618631241864, guid: 1ea86d384a56c994eb1db422fe8a156a, type: 3}
       propertyPath: m_Name
-      value: BackgroundCamera (1)
+      value: BackgroundCamera
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ea86d384a56c994eb1db422fe8a156a, type: 3}
@@ -3504,7 +3504,7 @@ GameObject:
   - component: {fileID: 987252866}
   - component: {fileID: 987252865}
   m_Layer: 0
-  m_Name: GameManager (1)
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

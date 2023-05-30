@@ -21,7 +21,7 @@ namespace Game.Lobby
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
         [SerializeField] private GameObject waitingRoomPanel = null;
         [SerializeField] private GameObject lobbyPanel = null;
-        [SerializeField] private Game.Room.SettingPanel waitingSettingPanel = null;
+        [SerializeField] private Game.Room.RoomSettingPanel waitingSettingPanel = null;
         
         public async void Start()
         {

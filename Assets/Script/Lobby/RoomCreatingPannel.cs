@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -47,6 +48,7 @@ namespace Game.Lobby
         {
             DisplayPannel(false);
             roomListPannel.DisplayPannel(true);
+            
         }
 
         public void OnDropDownChange(int itemIndex)

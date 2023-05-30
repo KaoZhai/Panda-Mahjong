@@ -13,7 +13,7 @@ namespace Game.Room
         private GameManager gameManager = null;
 
         [SerializeField] private CanvasGroup canvasGroup = null;
-        [SerializeField] private SettingPanel settingPanel = null;
+        [SerializeField] private RoomSettingPanel settingPanel = null;
         // [SerializeField] private PlayerListPannel playerListPannel = null;
 
         public void Start()
