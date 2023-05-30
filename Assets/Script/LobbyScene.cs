@@ -25,6 +25,12 @@ namespace Game.Lobby
             DisplayRoomList(false);
         }
 
+        public void OnWaitingLeaveBtnClick()
+        {
+            DisplayRoomCreating(false);
+            DisplayRoomList(true);
+        }
+
         private void DisplayRoomList(bool value)
         {
             roomListPannel.DisplayPannel(value);
