@@ -14,12 +14,12 @@ public class StartScene : MonoBehaviour
 
     public void StartButton()
     {
-        SceneManager.LoadScene("Lobby");
+        
     }
 
     public void SettingButton()
     {
-        SceneManager.LoadScene("Setting");
+        // Setting Panel
     }
 
     public void ExitButton()

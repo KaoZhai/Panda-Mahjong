@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using Fusion;
 using Fusion.Sockets;
 using Game.Core;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace Game.Lobby
@@ -22,7 +23,7 @@ namespace Game.Lobby
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
         [SerializeField] private GameObject waitingRoomPanel = null;
         [SerializeField] private GameObject lobbyPanel = null;
-        [SerializeField] private Room.SettingPanel waitingSettingPanel = null;
+        [FormerlySerializedAs("waitingSettingPanel")] [SerializeField] private Room.RoomSettingPanel waitingRoomSettingPanel = null;
         
         public async void Start()
         {
@@ -70,7 +71,7 @@ namespace Game.Lobby
                 {
                     waitingRoomPanel.SetActive(true);
                     lobbyPanel.SetActive(false);
-                    waitingSettingPanel.DisplayPannel(true);
+                    waitingRoomSettingPanel.DisplayPannel(true);
                 }
                 
                 else
