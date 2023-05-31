@@ -4,15 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Fusion;
+using Game.Core;
 
 namespace Game.Lobby
 {
     public class LobbyScene : MonoBehaviour
     {
         // [SerializeField] private LobbyManager lobbyManager = null;
+        [SerializeField] private Text roomName = null;
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
-        [SerializeField] private Game.Lobby.LobbyManager lobbyManager = null;
+        [SerializeField] private LobbyManager lobbyManager = null;
 
         #region BtnCallBack
 

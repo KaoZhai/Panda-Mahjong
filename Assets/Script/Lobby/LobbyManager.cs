@@ -33,7 +33,7 @@ namespace Game.Lobby
         [SerializeField] private GameObject startPanel = null;
         [SerializeField] private GameObject lobbyPanel = null;
         [SerializeField] private GameObject waitingRoomPanel = null;
-        [FormerlySerializedAs("waitingSettingPanel")] [SerializeField] private Room.RoomSettingPanel waitingRoomSettingPanel = null;
+        [SerializeField] private RoomSettingPanel waitingRoomSettingPanel = null;
         
         public async void Start()
         {

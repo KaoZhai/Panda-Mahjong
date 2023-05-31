@@ -2624,10 +2624,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f85e54281020d04fb3db6f54adf61b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomName: {fileID: 79025960}
   roomListPannel: {fileID: 1976841573}
   roomCreatingPannel: {fileID: 243208895}
   lobbyManager: {fileID: 394493917}
-  roomName: {fileID: 79025960}
 --- !u!225 &637258882
 CanvasGroup:
   m_ObjectHideFlags: 0
