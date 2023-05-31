@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Fusion;
 
 
-namespace Game.Room
+namespace Game.Lobby
 {
     public class RoomSettingPanel : MonoBehaviour
     {
