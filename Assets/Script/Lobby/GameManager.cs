@@ -36,6 +36,11 @@ namespace Game.Core
 
         private bool isRoomCreater = false;
 
+        public void Disconnect()
+        {
+            Runner.Shutdown(false);
+        }
+
         public void Awake()
         {
             Runner.ProvideInput = true;

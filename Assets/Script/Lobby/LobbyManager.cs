@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +6,6 @@ using UnityEngine.SceneManagement;
 using Fusion;
 using Fusion.Sockets;
 using Game.Core;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace Game.Lobby
@@ -23,7 +21,7 @@ namespace Game.Lobby
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
         [SerializeField] private GameObject waitingRoomPanel = null;
         [SerializeField] private GameObject lobbyPanel = null;
-        [FormerlySerializedAs("waitingSettingPanel")] [SerializeField] private Room.RoomSettingPanel waitingRoomSettingPanel = null;
+        [SerializeField] private RoomSettingPanel waitingSettingPanel = null;
         
         public async void Start()
         {
@@ -35,6 +33,8 @@ namespace Game.Lobby
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
         }
+        
+        #region - Lobby Related
 
         public async Task JoinLobby(NetworkRunner runner)
         {
@@ -45,7 +45,10 @@ namespace Game.Lobby
             if (!result.Ok)
                 Debug.LogError($"Fail to start: {result.ShutdownReason}");
         }
+        
+        #endregion
 
+        #region - Room Related
         public async Task CreateRoom(string roomName, int maxPlayerNum)
         {
             if (roomNameSet.Count <= maxRoomNum && !roomNameSet.Contains(roomName))
@@ -71,7 +74,7 @@ namespace Game.Lobby
                 {
                     waitingRoomPanel.SetActive(true);
                     lobbyPanel.SetActive(false);
-                    waitingRoomSettingPanel.DisplayPannel(true);
+                    waitingSettingPanel.DisplayPannel(true);
                 }
                 
                 else
@@ -98,6 +101,8 @@ namespace Game.Lobby
             else
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
         }
+        
+        #endregion
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
@@ -119,18 +124,29 @@ namespace Game.Lobby
             if (gameManager.PlayerList.TryGetValue(player, out PlayerNetworkData playerNetworkData))
             {
                 runner.Despawn(playerNetworkData.Object);
-
                 gameManager.PlayerList.Remove(player);
                 gameManager.UpdatePlayerList();
             }
         }
 
+        private async void Disconnect()
+        {
+        }
+        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+        {
+            OnPlayerLeft(runner, runner.LocalPlayer);
+            Disconnect();
+        }
+        
+        public void OnDisconnectedFromServer(NetworkRunner runner)
+        {
+            GameManager.Instance.Runner.Shutdown();
+        }
+
         #region - unused callbacks
         public void OnInput(NetworkRunner runner, NetworkInput input) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
         public void OnConnectedToServer(NetworkRunner runner) { }
-        public void OnDisconnectedFromServer(NetworkRunner runner) { }
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }

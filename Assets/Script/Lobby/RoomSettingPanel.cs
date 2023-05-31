@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using Fusion;
 
-
-namespace Game.Room
+namespace Game.Lobby
 {
     public class RoomSettingPanel : MonoBehaviour
     {
