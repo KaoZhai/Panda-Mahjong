@@ -95,7 +95,9 @@ namespace Game.Lobby
             var result = await gameManager.Runner.StartGame(new StartGameArgs()
             {
                 GameMode = GameMode.Client,
-                SessionName = roomName
+                SessionName = roomName,
+                Scene = SceneManager.GetActiveScene().buildIndex,
+                SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>()
             });
 
 
@@ -129,9 +131,6 @@ namespace Game.Lobby
             if (gameManager.PlayerList.TryGetValue(player, out PlayerNetworkData playerNetworkData))
             {
                 runner.Despawn(playerNetworkData.Object);
-
-                gameManager.PlayerList.Remove(player);
-                gameManager.UpdatePlayerList();
             }
         }
 
@@ -157,12 +156,28 @@ namespace Game.Lobby
             }
         }
 
+        public void Disconnect()
+        {
+        }
+
         #region - unused callbacks
         public void OnInput(NetworkRunner runner, NetworkInput input) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+
+        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+        {
+            if (gameManager.PlayerList.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+            {
+                runner.Despawn(playerNetworkData.Object);
+            }
+            Disconnect();
+        }
         public void OnConnectedToServer(NetworkRunner runner) { }
-        public void OnDisconnectedFromServer(NetworkRunner runner) { }
+
+        public void OnDisconnectedFromServer(NetworkRunner runner)
+        {
+            runner.Shutdown(false);
+        }
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
