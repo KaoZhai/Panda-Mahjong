@@ -1,26 +1,158 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public enum TileType
+namespace Game.PlayingRoom
 {
-    Flower, 
-    Season,
-    Wind,
-    Dragon, 
-    Character,
-    Bamboo,
-    Dot
+    public enum TileType
+    {
+        Flower,
+        Season,
+        Wind,
+        Dragon,
+        Character,
+        Bamboo,
+        Dot
+    }
+
+    public class TileGameObjectComparer : IComparer<GameObject>
+    {
+        public int Compare(GameObject x, GameObject y)
+        {
+            return string.Compare(x.GetComponent<Tile>().TileId, y.GetComponent<Tile>().TileId);
+        }
+    }
+
+    public class TileComparer : IComparer<Tile>
+    {
+        public int Compare(Tile x, Tile y)
+        {
+            return string.Compare(x.TileId, y.TileId);
+        }
+    }
+
+    public class Tile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    {
+        // {tile_type}_{tile_number}_{1..4}
+        private string id;
+        private TileType tileType;
+        private int tileNumber;
+        private int cardFaceIndex;
+        private Player player;
+        private TableManager tableManager;
+        private Transform self;
+        private Vector3 oriPosition;
+
+        void Start()
+        {
+            self = GetComponent<Transform>();
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
+            {
+                oriPosition = self.transform.position;
+            }
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
+            {
+                self.transform.position = eventData.position;
+            }
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
+            {
+                if (transform.localPosition.y > 0)
+                {
+                    player.Discard(id);
+                }
+                else
+                {
+                    self.transform.position = oriPosition;
+                }
+            }
+        }
+        
+
+        private bool IsValidDrag(Transform parent, int id)
+        {
+            return parent == player.Hand && id == player.PlayerId;
+        }
+
+        public int PlayerId
+        {
+            get { return player.PlayerId; }
+        }
+
+        public TileType TileType
+        {
+            get { return tileType; }
+            set { tileType = value; }
+        }
+
+        public int TileNumber
+        {
+            get { return tileNumber; }
+            set { tileNumber = value; }
+        }
+
+        public int CardFaceIndex
+        {
+            get { return cardFaceIndex; }
+            set { cardFaceIndex = value; }
+        }
+
+        public string TileId
+        {
+            get { return id; }
+        }
+        public void SetTileId(int serialNumber) 
+        {
+            id = tileType.ToString() + "_" + 
+                tileNumber.ToString() + "_" +
+                serialNumber.ToString();
+        }
+
+        public Player Player
+        {
+            get { return player; }
+            set { player = value; }
+        } 
+        public void SetTableManager(TableManager tableManager)
+        {
+            this.tableManager = tableManager;
+        }
+        // Flower Season
+        public bool IsFlower()
+        {
+            return (tileType == TileType.Flower) || (tileType == TileType.Season);
+        }
+
+        // Wind Dragon
+        public bool IsHonor()
+        {
+            return (tileType == TileType.Wind) || (tileType == TileType.Dragon);
+        }
+        // Dot Bamboo Character
+        public bool IsSuit()
+        {
+            return (tileType == TileType.Dot) || (tileType == TileType.Bamboo) || (tileType == TileType.Character);
+        }
+
+        public bool IsSame(Tile tile)
+        {
+            return tile.CardFaceIndex == this.CardFaceIndex;
+        }
+    }
 }
 
 
-public class Tile : MonoBehaviour
-{
-    // {tile_type}_{tile_number}_{1..4}
-    public string id;
-    public TileType tile_type;
-    public int tile_number;
-    public int cardFace_index;
 
 
-}
