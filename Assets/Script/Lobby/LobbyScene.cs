@@ -12,8 +12,9 @@ namespace Game.Lobby
         // [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
-        
-        
+
+        #region BtnCallBack
+
         public void OnLeaveBtnClick()
         {
         }
@@ -31,6 +32,10 @@ namespace Game.Lobby
             
         }
 
+        #endregion
+
+        #region Helper Functions
+
         private void DisplayRoomList(bool value)
         {
             roomListPannel.DisplayPannel(value);
@@ -40,5 +45,8 @@ namespace Game.Lobby
         {
             roomCreatingPannel.DisplayPannel(value);
         }
+
+        #endregion
+
     }
 }
