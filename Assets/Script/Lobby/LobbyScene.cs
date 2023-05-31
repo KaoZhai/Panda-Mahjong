@@ -1,5 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Game.Core;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using Fusion;
 
 namespace Game.Lobby
 {
@@ -28,6 +32,7 @@ namespace Game.Lobby
             DisplayRoomCreating(false);
             DisplayRoomList(true);
             GameManager.Instance.Disconnect();
+            roomName.text = "";
         }
 
         #endregion
