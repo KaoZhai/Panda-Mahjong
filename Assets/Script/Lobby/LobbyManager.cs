@@ -12,17 +12,27 @@ using Utils;
 
 namespace Game.Lobby
 {
+    public enum PanelState
+    {
+        Start,
+        Lobby,
+        Waiting,
+        Setting
+    }
+
     public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         private const int maxRoomNum = 100;
         private RoomID roomID = new RoomID();
         private GameManager gameManager = null;
         private SortedSet<string> roomNameSet = new SortedSet<string>();
+        private PanelState panelState = PanelState.Start;
 
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
-        [SerializeField] private GameObject waitingRoomPanel = null;
+        [SerializeField] private GameObject startPanel = null;
         [SerializeField] private GameObject lobbyPanel = null;
+        [SerializeField] private GameObject waitingRoomPanel = null;
         [FormerlySerializedAs("waitingSettingPanel")] [SerializeField] private Room.RoomSettingPanel waitingRoomSettingPanel = null;
         
         public async void Start()
@@ -34,6 +44,8 @@ namespace Game.Lobby
 
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
+
+
         }
 
         public async Task JoinLobby(NetworkRunner runner)
@@ -122,6 +134,28 @@ namespace Game.Lobby
 
                 gameManager.PlayerList.Remove(player);
                 gameManager.UpdatePlayerList();
+            }
+        }
+
+        public void SetPairState(string state)
+        {
+            startPanel.SetActive(false);
+            lobbyPanel.SetActive(false);
+            waitingRoomPanel.SetActive(false);
+            switch (state)
+            {
+                case "Start":
+                    startPanel.SetActive(true);
+                    break;
+                case "Lobby":
+                    lobbyPanel.SetActive(true);
+                    break;
+                case "Waiting":
+                    waitingRoomPanel.SetActive(true);
+                    break;
+                default :
+                    startPanel.SetActive(true);
+                    break;
             }
         }
 
