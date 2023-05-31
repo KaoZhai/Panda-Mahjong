@@ -58,12 +58,16 @@ namespace Game.PlayingRoom {
 
             DealTiles();
             OpenDoor();
+            while()
+            {
+                
+            }
             StartCoroutine(PlayRound());
         }
 
         IEnumerator PlayRound()
         {
-            
+
         }
 
         void OpenDoor()
