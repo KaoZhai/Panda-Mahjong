@@ -124,13 +124,13 @@ namespace Game.PlayingRoom {
 
         public void DefaultDiscard()
         {
-            Discord(handTiles[Random.Range(0, HandTilesCnt)].GetComponent<Tile>().TileId);
+            Discard(handTiles[Random.Range(0, HandTilesCnt)].GetComponent<Tile>().TileId);
 
             
-            // Discord(handTiles[handTiles.Count-1].GetComponent<Tile>().TileId);
+            // Discard(handTiles[handTiles.Count-1].GetComponent<Tile>().TileId);
         }
 
-        public void Discord(string tileId)
+        public void Discard(string tileId)
         {
             for(int i = 0; i < handTiles.Count; ++i)
             {
