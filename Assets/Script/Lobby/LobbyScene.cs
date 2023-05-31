@@ -13,6 +13,9 @@ namespace Game.Lobby
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
         [SerializeField] private Game.Lobby.LobbyManager lobbyManager = null;
+        [SerializeField] private Text roomName;
+
+
 
         #region BtnCallBack
 
@@ -31,7 +34,7 @@ namespace Game.Lobby
         {
             DisplayRoomCreating(false);
             DisplayRoomList(true);
-            
+            roomName.text = "";
         }
 
         #endregion
@@ -49,6 +52,5 @@ namespace Game.Lobby
         }
 
         #endregion
-
     }
 }

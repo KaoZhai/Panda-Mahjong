@@ -137,7 +137,6 @@ namespace Game.Lobby
 
         public void SetPairState(PanelState newState)
         {
-            
             startPanel.SetActive(false);
             lobbyPanel.SetActive(false);
             waitingRoomPanel.SetActive(false);
