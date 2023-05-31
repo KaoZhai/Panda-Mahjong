@@ -4416,7 +4416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyManager: {fileID: 394493917}
-  lobbyScene: {fileID: 0}
+  lobbyScene: {fileID: 637258881}
 --- !u!225 &1288045314
 CanvasGroup:
   m_ObjectHideFlags: 0
