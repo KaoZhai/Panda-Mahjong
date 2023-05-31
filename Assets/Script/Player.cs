@@ -153,7 +153,7 @@ namespace Game.PlayingRoom {
             {
                 return false;
             }
-            bool isCanGand = false;
+            bool isCanGang = false;
             int numSame = 0;
             foreach(GameObject tile in handTiles)
             {
@@ -162,10 +162,10 @@ namespace Game.PlayingRoom {
             }
             if (numSame == 3)
             {
-                isCanGand = true;
+                isCanGang = true;
 
             }
-            return isCanGand;
+            return isCanGang;
         }
         
         public bool IsPlayerCanPong()
@@ -190,6 +190,8 @@ namespace Game.PlayingRoom {
         private List<List<GameObject>> canChiTileSet = new List<List<GameObject>>();
         bool Find(TileType tileType, int lostA, int lostB)
         {
+            if (lostA < 1 || lostB > 9)
+                return false; 
             GameObject a = handTiles.Find(t => t.GetComponent<Tile>().TileType == tileType &&
                                                 t.GetComponent<Tile>().TileNumber == lostA);
             GameObject b = handTiles.Find(t => t.GetComponent<Tile>().TileType == tileType &&
@@ -218,40 +220,14 @@ namespace Game.PlayingRoom {
             bool isCanChi = false;
             if (!newTile.IsSuit())
                 return false;
-            if (newTile.TileNumber == 1)
-            {
-                // 1, 2, 3
-                isCanChi |= Find(newTile.TileType, 2, 3);
-            }
-            else if (newTile.TileNumber == 2)
-            {
-                // 1, 2, 3
-                isCanChi |= Find(newTile.TileType, 1, 3);
-                // 2, 3, 4
-                isCanChi |= Find(newTile.TileType, 3, 4);
-            }
-            else if (newTile.TileNumber == 8)
-            {
-                // 6, 7, 8
-                isCanChi |= Find(newTile.TileType, 6, 7);
-                // 7, 8, 9
-                isCanChi |= Find(newTile.TileType, 7, 9);
-            }
-            else if (newTile.TileNumber == 9)
-            {
-                // 7, 8, 9
-                isCanChi |= Find(newTile.TileType, 7, 8);
-            }
-            else
-            {
-                int i = newTile.TileNumber;
-                // i-2, i-1, i
-                isCanChi |= Find(newTile.TileType, i-2, i-1);
-                // i-1, i, i+1
-                isCanChi |= Find(newTile.TileType, i-1, i+1);
-                // i, i+1, i+2
-                isCanChi |= Find(newTile.TileType, i+1, i+2);
-            }
+           
+            int i = newTile.TileNumber;
+            // i-2, i-1, i
+            isCanChi |= Find(newTile.TileType, i-2, i-1);
+            // i-1, i, i+1
+            isCanChi |= Find(newTile.TileType, i-1, i+1);
+            // i, i+1, i+2
+            isCanChi |= Find(newTile.TileType, i+1, i+2);
 
             return isCanChi;
         }

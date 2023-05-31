@@ -71,7 +71,7 @@ namespace Game.PlayingRoom
             {
                 if (transform.localPosition.y > 0)
                 {
-                    player.Discord(id);
+                    player.Discard(id);
                 }
                 else
                 {
