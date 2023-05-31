@@ -1802,9 +1802,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomListPannel: {fileID: 1976841573}
   playerNetworkDataPrefab: {fileID: -3488874529639845621, guid: eefe55435cafb2c438003a77d6f748a2, type: 3}
-  waitingRoomPanel: {fileID: 1288045309}
+  startPanel: {fileID: 2019386928}
   lobbyPanel: {fileID: 637258877}
-  waitingSettingPanel: {fileID: 1696768617}
+  waitingRoomPanel: {fileID: 1288045309}
+  waitingRoomSettingPanel: {fileID: 1696768617}
 --- !u!1 &443425664
 GameObject:
   m_ObjectHideFlags: 0
@@ -2545,7 +2546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &637258878
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5579,29 +5580,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 637258877}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 394493917}
+        m_TargetAssemblyTypeName: Game.Lobby.LobbyManager, Assembly-CSharp
+        m_MethodName: SetPairState
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Lobby
           m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 2019386928}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1613701339
 MonoBehaviour:
@@ -6883,29 +6872,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 637258877}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 394493917}
+        m_TargetAssemblyTypeName: Game.Lobby.LobbyManager, Assembly-CSharp
+        m_MethodName: SetPairState
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Start
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2019386928}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1876503111
 MonoBehaviour:
@@ -7501,29 +7478,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1288045309}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 394493917}
+        m_TargetAssemblyTypeName: Game.Lobby.LobbyManager, Assembly-CSharp
+        m_MethodName: SetPairState
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Lobby
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 637258877}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 789331925}
         m_TargetAssemblyTypeName: Game.Lobby.LobbyScene, Assembly-CSharp
