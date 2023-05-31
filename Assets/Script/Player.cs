@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.PlayingRoom {
+    public enum KongType
+    {
+        Normal,
+        Plus,
+        Dark,
+        None
+    }
     public class Player : MonoBehaviour
     {
         private List<GameObject> handTiles = new List<GameObject>();
@@ -25,6 +32,7 @@ namespace Game.PlayingRoom {
 
         private int playerId = -1;
         private int point;
+        private KongType kongStatus = KongType.None;
 
         private TableManager tableManager;
 
@@ -98,6 +106,14 @@ namespace Game.PlayingRoom {
             handTiles.RemoveAt(indexOfHandTiles);
         }
 
+        void ShowBackTile(int indexOfHandTiles)
+        {
+            GameObject blankTile = handTiles[indexOfHandTiles].transform.GetChild(0).gameObject;
+            blankTile.SetActive(false);
+            GameObject face = handTiles[indexOfHandTiles].transform.GetChild(1).gameObject;
+            face.SetActive(false);
+            ShowTile(indexOfHandTiles);
+        }
         void TakeTileFromOther()
         {
             tableManager.LastTile.transform.SetParent(showPool, false);
@@ -147,12 +163,52 @@ namespace Game.PlayingRoom {
             StartCoroutine(tableManager.BeforeNextPlayer());
         }
 
+        public bool IsPlayerCanKongBySelf()
+        {
+            
+            // (pinyin) An Gang
+            Dictionary<int, int> tileCounter = new Dictionary<int, int>();
+            foreach(GameObject tile in handTiles)
+            {
+                int cardFaceIndex = tile.GetComponent<Tile>().CardFaceIndex;
+                if (tileCounter.ContainsKey(cardFaceIndex))
+                {
+                    ++ tileCounter[cardFaceIndex];
+                }
+                else
+                {
+                    tileCounter.Add(cardFaceIndex, 1);
+                }
+            }
+            foreach(KeyValuePair<int, int> cnt in tileCounter)
+            {
+                if (cnt.Value == 4)
+                {
+                    kongStatus = KongType.Dark;
+                    return true;
+                }
+            }
+            // (pinyin) Jia Gang
+            foreach(GameObject handTile in handTiles)
+            {
+                foreach(List<GameObject> pongTiles in showPongTiles)
+                {
+                    if (handTile.GetComponent<Tile>().IsSame(pongTiles[0].GetComponent<Tile>()))
+                    {
+                        kongStatus = KongType.Plus;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         public bool IsPlayerCanKong()
         {
-            if ((tableManager.ActivePlayerId + 1) % 4 == playerId)
+            if ((tableManager.ActivePlayerId + 1) % 4 == playerId || tableManager.ActivePlayerId == playerId)
             {
                 return false;
             }
+            
             bool isCanGang = false;
             int numSame = 0;
             foreach(GameObject tile in handTiles)
@@ -163,9 +219,10 @@ namespace Game.PlayingRoom {
             if (numSame == 3)
             {
                 isCanGang = true;
-
+                kongStatus = KongType.Normal;
             }
             return isCanGang;
+            
         }
         
         public bool IsPlayerCanPong()
@@ -309,23 +366,83 @@ namespace Game.PlayingRoom {
             showPongTiles.Add(tileSet);
         }
         
+        
+
+
+        // todo
         public void Kong()
         {
-            List<GameObject> tileSet = new List<GameObject>();
-            TakeTileFromOther();
-            int cnt = 0;
-            for(int i = handTiles.Count-1; i >= 0; --i)
+            if(kongStatus == KongType.Normal)
             {
-                if (handTiles[i].GetComponent<Tile>().IsSame(tableManager.LastTile.GetComponent<Tile>()))
+                List<GameObject> tileSet = new List<GameObject>();
+                TakeTileFromOther();
+                int cnt = 0;
+                for(int i = handTiles.Count-1; i >= 0; --i)
                 {
-                    ++cnt;
-                    tileSet.Add(handTiles[i]);
-                    ShowTile(i);
+                    if (handTiles[i].GetComponent<Tile>().IsSame(tableManager.LastTile.GetComponent<Tile>()))
+                    {
+                        ++cnt;
+                        tileSet.Add(handTiles[i]);
+                        ShowTile(i);
+                    }
+                    if (cnt == 3)
+                        break;
                 }
-                if (cnt == 3)
-                    break;
+                showKongTiles.Add(tileSet);
             }
-            showKongTiles.Add(tileSet);
+            else if(kongStatus == KongType.Dark)
+            {
+                Dictionary<int, List<int>> tileCounter = new Dictionary<int, List<int>>();
+                for(int i = handTiles.Count - 1; i >= 0 ; --i)
+                {
+                    int cardFaceIndex = handTiles[i].GetComponent<Tile>().CardFaceIndex;
+                    if (!tileCounter.ContainsKey(cardFaceIndex))
+                    {
+                        tileCounter.Add(cardFaceIndex, new List<int>());
+                    }
+                        
+                    tileCounter[cardFaceIndex].Add(i);
+                  
+                }
+                List<GameObject> tileSet = new List<GameObject>();
+                foreach(KeyValuePair<int, List<int>> cnt in tileCounter)
+                {
+                    if (cnt.Value.Count == 4)
+                    {
+                        foreach(int i in cnt.Value)
+                        {
+                            tileSet.Add(handTiles[i]);
+                            ShowBackTile(i);
+                        }
+                        showKongTiles.Add(tileSet);
+                        break;
+                    }
+                }
+            }
+            else if(kongStatus == KongType.Plus)
+            {
+                List<GameObject> tileSet = new List<GameObject>();
+                
+                for(int i = handTiles.Count-1; i >= 0; --i)
+                {
+                    for(int j = showPongTiles.Count - 1; j >= 0; --j)
+                    {
+                        if (showPongTiles[j][0].GetComponent<Tile>().IsSame(handTiles[i].GetComponent<Tile>()))
+                        {
+                            showPongTiles[j].Add(handTiles[i]);
+                            ShowTile(i);
+                            handTiles.RemoveAt(i);
+                            showKongTiles.Add(showPongTiles[j]);
+                            showPongTiles.RemoveAt(j);
+                        }
+                    }
+                }
+                showKongTiles.Add(tileSet);
+            }
+            else
+            {
+                Debug.Log("kong status error");
+            }
         }
         
     }

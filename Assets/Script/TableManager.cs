@@ -43,7 +43,6 @@ namespace Game.PlayingRoom {
         private bool kongActive = false;
         private bool winningActive = false;
 
-
         void Start() 
         {
 
@@ -55,15 +54,17 @@ namespace Game.PlayingRoom {
                 players[i].TableManager = this;
             }
 
-            // PickSeatsAndDecideDealer();
+            // DecideDealer();
 
             DealTiles();
             OpenDoor();
-
+            StartCoroutine(PlayRound());
         }
 
-
-
+        IEnumerator PlayRound()
+        {
+            
+        }
 
         void OpenDoor()
         {
@@ -87,6 +88,10 @@ namespace Game.PlayingRoom {
             {
                 player.SortHandTiles();
             }
+            if(activePlayerId == 0 && players[0].IsPlayerCanKongBySelf())
+            {
+                SetButton(kongBtn, true);
+            }
         }
 
         void DealTiles()
@@ -103,7 +108,7 @@ namespace Game.PlayingRoom {
             }
         }
 
-        void PickSeatsAndDecideDealer()
+        void DecideDealer()
         {
 
             for(int i = 0; i < players.Count; ++i)
@@ -124,7 +129,7 @@ namespace Game.PlayingRoom {
                 players[activePlayerId].ReplaceFlower();
             }
 
-            if(activePlayerId == 0 && players[0].IsPlayerCanKong())
+            if(activePlayerId == 0 && players[0].IsPlayerCanKongBySelf())
             {
                 SetButton(kongBtn, true);
             }
@@ -132,10 +137,16 @@ namespace Game.PlayingRoom {
 
         public void BuKong()
         {
+            
             tileWall.BuPai(players[activePlayerId]);
             while(!players[activePlayerId].IsDoneReplace())
             {
                 players[activePlayerId].ReplaceFlower();
+            }
+            kongActive = false;
+            if(activePlayerId == 0 && players[0].IsPlayerCanKongBySelf())
+            {
+                SetButton(kongBtn, true);
             }
         }
 
@@ -169,23 +180,34 @@ namespace Game.PlayingRoom {
 
         public void Chi()
         {
+            TurnToPlayer(0);
             chiActive = true;
+            SetButton(chiBtn, false);
         }
         public void Pong()
         {
+            TurnToPlayer(0);
             pongActive = true;
+            SetButton(pongBtn, false);
         }
         public void Kong()
         {
+            TurnToPlayer(0);
             kongActive = true;
+            SetButton(kongBtn, false);
+            BuKong();
         }
         public void Win()
         {
             winningActive = true;
+            SetButton(winningBtn, false);
         }
 
         public IEnumerator BeforeNextPlayer()
         {
+            SetButton(chiBtn, false);   
+            SetButton(pongBtn, false); 
+            SetButton(kongBtn, false);
             // only control local player's button
             if(players[0].IsPlayerCanChi())
             {
@@ -199,10 +221,7 @@ namespace Game.PlayingRoom {
             {
                 SetButton(kongBtn, true);
             }
-            Debug.Log("開始停頓");
-            // StartCoroutine(Countdown(3));
             yield return new WaitForSeconds(2f);
-            Debug.Log("停頓結束");
             SetButton(chiBtn, false);   
             SetButton(pongBtn, false); 
             SetButton(kongBtn, false);
@@ -213,18 +232,14 @@ namespace Game.PlayingRoom {
             }
             else if ( kongActive )
             {
-                TurnToPlayer(0);
                 kongActive = false;
-                BuKong();
             }
             else if ( pongActive )
             {
-                TurnToPlayer(0);
                 pongActive = false;
             }
             else if ( chiActive )
             {
-                TurnToPlayer(0);
                 chiActive = false;
             }
             else
