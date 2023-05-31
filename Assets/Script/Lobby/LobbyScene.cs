@@ -8,11 +8,13 @@ namespace Game.Lobby
         // [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
+        [SerializeField] private Game.Lobby.LobbyManager lobbyManager = null;
 
         #region BtnCallBack
 
         public void OnLeaveBtnClick()
         {
+            lobbyManager.SetPairState(Game.Lobby.PanelState.Start);
         }
 
         public void OnCreateRoomBtnClick()
