@@ -4,271 +4,237 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TableManager : MonoBehaviour
-{
-    public GameObject mahjongPrefab; // 麻將Prefab
-    public Vector3 startPosition; // 生成起始位置
-    public float spacing = 2.0f; // 麻將間距
-    public Transform transform_tileWall;
-    public Transform transform_localPlayer;
-    List<int> players = new List<int>();
-    List<GameObject> tile_wall = new List<GameObject>();
-    List<List<GameObject>> players_tiles = new List<List<GameObject>>();
-    int localPlayerId = 1;
-    void Start() 
+namespace Game.PlayingRoom {
+    
+    public class TableManager : MonoBehaviour
     {
-        // GenerateAllMahjong();
-        GenerateAllTile();
-        Shuffle();
-        PickSeatsAndDecideDealer();
-        DealTiles();
-    }
+        public static TableManager Instance
+        {
+            get;
+            private set;
+        }
+        [SerializeField] private List<Player> players = new List<Player>();
+        [SerializeField] private TileWall tileWall;
 
+        private int activePlayerId = 0;
 
-    void DealTiles()
-    {
-        for(int i = 0; i < 4; ++i)
-        {
-            players_tiles.Add(new List<GameObject>());
-        }
-        for(int k = 0; k < 4; ++k)
-        {
-            for(int i = 0; i < 4; ++i)
-            {
-                for(int j = 0; j < 4; ++j)
-                {
-                    players_tiles[i].Add(tile_wall[0]);
-                    tile_wall.RemoveAt(0);
-                }
-            }
-        }
-        for(int i = 0; i < 4; ++i)
-        {
-            Debug.Log("玩家" + i.ToString());
-            for(int j = 0; j < players_tiles[i].Count; ++j)
-            {
-                Debug.Log(players_tiles[i][j]);
-                if(i == localPlayerId)
-                {
-                    players_tiles[i][j].transform.position = startPosition + new Vector3(j * spacing, 0, 0);
-                    players_tiles[i][j].transform.parent = transform_localPlayer;
-                    players_tiles[i][j].SetActive(true);
-                }
-            }
-        }
-    }
-
-    void PickSeatsAndDecideDealer()
-    {
-        for(int i = 1; i <= 4; ++i)
-        {
-            players.Add(i);
-        }
-        for(int i = 0; i < players.Count; ++i)
-        {
-            int j = Random.Range(0, players.Count);
-            int tmp = players[i];
-            players[i] = players[j];
-            players[j] = tmp;
-        }
-    }
-
-    void SetTileFace(GameObject mahjong)
-    {
-        int cardFace_index = mahjong.GetComponent<Tile>().cardFace_index;
-        GameObject face = mahjong.transform.Find("Face").gameObject;
-        Image faceImage = face.GetComponent<Image>();
-        Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFace_index.ToString());
-        if (img) 
-        {
-            faceImage.sprite = img;
-            // Debug.Log("成功設定圖像" + "Image/Mahjong/" + cardFace_index.ToString());
-        }
-        else
-        {
-            Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardFace_index.ToString());
-        }
+        private GameObject lastTile = null;
         
-    }
+        [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
+        
 
-    void GenerateTileId(Tile tile, int cnt)
-    {
-        tile.id = tile.tile_type.ToString() + "_" + 
-                    tile.tile_number.ToString() + "_" +
-                    cnt.ToString();
-    }
+        public TileWall TileWall
+        {
+            get { return tileWall;}
+        }
+        public GameObject LastTile
+        {
+            set { lastTile = value; }
+            get { return lastTile; }
+        }
+        public int ActivePlayerId
+        {
+            get { return activePlayerId; }
+        }
 
-    void GenerateAllTile()
-    {
-        int cardFace_index = 1;
-        // Season       1-4
-        for (int i = 1; i <= 4; ++i)
+
+        private bool chiActive = false;
+        private bool pongActive = false;
+        private bool kongActive = false;
+        private bool winningActive = false;
+
+
+        void Start() 
         {
 
-            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-            Tile tile =  tile_obj.GetComponent<Tile>();
-            if(tile==null)
+            tileWall.GetReady(this);
+            // todo: player will set player id, now is 0-3
+            for(int i = 0; i < 4; i++)
             {
-                Debug.LogError("沒有 tile_script");
+                players[i].PlayerId = i;
+                players[i].TableManager = this;
             }
-            tile.tile_type = TileType.Season;
-            tile.tile_number = i;
-            tile.cardFace_index = cardFace_index;
-            GenerateTileId(tile, 1);
-            Debug.Log(tile.id);
-            tile_wall.Add(tile_obj);
-            tile_obj.name = tile.id;
-            SetTileFace(tile_obj);
-            ++cardFace_index;
+
+            // PickSeatsAndDecideDealer();
+
+            DealTiles();
+            OpenDoor();
+
+        }
+
+
+
+
+        void OpenDoor()
+        {
+            tileWall.DealTile(players[activePlayerId]);
+            int cnt = 0;
+            while(cnt < 4)
+            {
+                foreach(Player player in players)
+                {
+                    if (player.IsDoneReplace())
+                    {
+                        cnt += 1;
+                    }
+                    else
+                    {
+                        player.ReplaceFlower();
+                    }
+                }
+            }
+            foreach(Player player in players)
+            {
+                player.SortHandTiles();
+            }
+        }
+
+        void DealTiles()
+        {
+            for(int round = 0; round < 4; ++round)
+            {
+                for(int playerId = 0; playerId < 4; ++playerId)
+                {
+                    for(int i = 0; i < 4; ++i)
+                    {
+                        tileWall.DealTile(players[playerId]);
+                    }
+                }
+            }
+        }
+
+        void PickSeatsAndDecideDealer()
+        {
+
+            for(int i = 0; i < players.Count; ++i)
+            {
+                int j = Random.Range(0, players.Count);
+                Player tmp = players[i];
+                players[i] = players[j];
+                players[j] = tmp;
+            }
+            activePlayerId = players[0].PlayerId;
+        }
+
+        public void Draw()
+        {
+            tileWall.DealTile(players[activePlayerId]);
+            while(!players[activePlayerId].IsDoneReplace())
+            {
+                players[activePlayerId].ReplaceFlower();
+            }
+
+            if(activePlayerId == 0 && players[0].IsPlayerCanKong())
+            {
+                SetButton(kongBtn, true);
+            }
+        }
+
+        public void BuKong()
+        {
+            tileWall.BuPai(players[activePlayerId]);
+            while(!players[activePlayerId].IsDoneReplace())
+            {
+                players[activePlayerId].ReplaceFlower();
+            }
+        }
+
+        public void NextPlayer() 
+        {
+            activePlayerId = (activePlayerId + 1) % 4;
+        }
+
+        public void TurnToPlayer(int playerId)
+        {
+            activePlayerId = playerId;
+        }
+        //  only from single player
+        public void AutoPlay()
+        {
+            if(activePlayerId != 0)
+            {
+                
+                players[activePlayerId].DefaultDiscard();
+            }
+        }
+
+        IEnumerator Countdown(int second)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        void SetButton(GameObject btn, bool isInteractable)
+        {
+            btn.GetComponent<Button>().interactable = isInteractable;
+        }
+
+        public void Chi()
+        {
+            chiActive = true;
+        }
+        public void Pong()
+        {
+            pongActive = true;
+        }
+        public void Kong()
+        {
+            kongActive = true;
+        }
+        public void Win()
+        {
+            winningActive = true;
+        }
+
+        public IEnumerator BeforeNextPlayer()
+        {
+            // only control local player's button
+            if(players[0].IsPlayerCanChi())
+            {
+                SetButton(chiBtn, true);
+            }
+            if(players[0].IsPlayerCanPong())
+            {
+                SetButton(pongBtn, true);
+            }
+            if(players[0].IsPlayerCanKong())
+            {
+                SetButton(kongBtn, true);
+            }
+            Debug.Log("開始停頓");
+            // StartCoroutine(Countdown(3));
+            yield return new WaitForSeconds(2f);
+            Debug.Log("停頓結束");
+            SetButton(chiBtn, false);   
+            SetButton(pongBtn, false); 
+            SetButton(kongBtn, false);
+            // todo: need to deal multiplayer move
+            if ( winningActive )
+            {
+                
+            }
+            else if ( kongActive )
+            {
+                TurnToPlayer(0);
+                kongActive = false;
+                BuKong();
+            }
+            else if ( pongActive )
+            {
+                TurnToPlayer(0);
+                pongActive = false;
+            }
+            else if ( chiActive )
+            {
+                TurnToPlayer(0);
+                chiActive = false;
+            }
+            else
+            {
+                NextPlayer();
+                Draw();
+                AutoPlay();
+            }
             
         }
-        // Flower       5-8
-        for (int i = 1; i <= 4; ++i)
-        {
 
-            GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-            Tile tile =  tile_obj.GetComponent<Tile>();
-            if(tile==null)
-            {
-                Debug.LogError("沒有 tile_script");
-            }
-            tile.tile_type = TileType.Flower;
-            tile.tile_number = i;
-            tile.cardFace_index = cardFace_index;
-            GenerateTileId(tile, 1);
-            Debug.Log(tile.id);
-            tile_wall.Add(tile_obj);
-            tile_obj.name = tile.id;
-            SetTileFace(tile_obj);
-            ++cardFace_index;
-            
-        }
-        // Wind         9-12 
-        for (int i = 1; i <= 4; ++i)
-        {
-            for (int j = 1; j <= 4; ++j)
-            {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
-                if(tile==null)
-                {
-                    Debug.LogError("沒有 tile_script");
-                }
-                tile.tile_type = TileType.Wind;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                GenerateTileId(tile, j);
-                Debug.Log(tile.id);
-                tile_wall.Add(tile_obj);
-                tile_obj.name = tile.id;
-                SetTileFace(tile_obj);
-            }
-            ++cardFace_index; 
-        }
-        // Dragon       13-15
-        for (int i = 1; i <= 3; ++i)
-        {
-            for (int j = 1; j <= 4; ++j)
-            {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
-                if(tile==null)
-                {
-                    Debug.LogError("沒有 tile_script");
-                }
-                tile.tile_type = TileType.Dragon;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                GenerateTileId(tile, j);
-                Debug.Log(tile.id);
-                tile_wall.Add(tile_obj);
-                tile_obj.name = tile.id;
-                SetTileFace(tile_obj);
-            }
-            ++cardFace_index; 
-        }
-        // Character    16-24
-        for (int i = 1; i <= 9; ++i)
-        {
-            for (int j = 1; j <= 4; ++j)
-            {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
-                if(tile==null)
-                {
-                    Debug.LogError("沒有 tile_script");
-                }
-                tile.tile_type = TileType.Character;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                GenerateTileId(tile, j);
-                Debug.Log(tile.id);
-                tile_wall.Add(tile_obj);
-                tile_obj.name = tile.id;
-                SetTileFace(tile_obj);
-            }
-            ++cardFace_index; 
-        }
-        // Bamboo       25-33
-        for (int i = 1; i <= 9; ++i)
-        {
-            for (int j = 1; j <= 4; ++j)
-            {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
-                if(tile==null)
-                {
-                    Debug.LogError("沒有 tile_script");
-                }
-                tile.tile_type = TileType.Bamboo;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                GenerateTileId(tile, j);
-                Debug.Log(tile.id);
-                tile_wall.Add(tile_obj);
-                tile_obj.name = tile.id;
-                SetTileFace(tile_obj);
-            }
-            ++cardFace_index; 
-        }
-        // Dot          34-42
-        for (int i = 1; i <= 9; ++i)
-        {
-            for (int j = 1; j <= 4; ++j)
-            {
-                GameObject tile_obj = Instantiate(mahjongPrefab, startPosition + new Vector3(i * spacing, 0, 0), Quaternion.identity, transform_tileWall);
-                Tile tile =  tile_obj.GetComponent<Tile>();
-                if(tile==null)
-                {
-                    Debug.LogError("沒有 tile_script");
-                }
-                tile.tile_type = TileType.Dot;
-                tile.tile_number = i;
-                tile.cardFace_index = cardFace_index;
-                GenerateTileId(tile, j);
-                Debug.Log(tile.id);
-                tile_wall.Add(tile_obj);
-                tile_obj.name = tile.id;
-                SetTileFace(tile_obj);
-            }
-            ++cardFace_index; 
-        }
-    }
-
-    void Shuffle()
-    {
-        for(int i = 0; i < tile_wall.Count; ++i)
-        {
-            int j = Random.Range(0, tile_wall.Count);
-            GameObject tmp = tile_wall[i];
-            tile_wall[i] = tile_wall[j];
-            tile_wall[j] = tmp;
-        }
-        Debug.Log("洗牌後的牌牆");
-        for(int i = 0; i < tile_wall.Count; ++i)
-        {
-
-            Debug.Log(tile_wall[i]);
-        }
     }
 }

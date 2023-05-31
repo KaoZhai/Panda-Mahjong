@@ -1,0 +1,160 @@
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Fusion;
+using Fusion.Sockets;
+using Game.Core;
+using Utils;
+
+namespace Game.Lobby
+{
+    public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
+    {
+        private const int maxRoomNum = 100;
+        private RoomID roomID = new RoomID();
+        private GameManager gameManager = null;
+        private SortedSet<string> roomNameSet = new SortedSet<string>();
+
+        [SerializeField] private RoomListPannel roomListPannel = null;
+        [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
+        [SerializeField] private GameObject waitingRoomPanel = null;
+        [SerializeField] private GameObject lobbyPanel = null;
+        [SerializeField] private RoomSettingPanel waitingSettingPanel = null;
+        
+        public async void Start()
+        {
+            gameManager = GameManager.Instance;
+
+            // AddCallbacks to trigger callback function
+            gameManager.Runner.AddCallbacks(this);
+
+            // TODO: user can not operate until join session completely
+            await JoinLobby(gameManager.Runner);
+        }
+        
+        #region - Lobby Related
+
+        public async Task JoinLobby(NetworkRunner runner)
+        {
+            var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
+            
+            gameManager.IsRoomCreater = false;
+
+            if (!result.Ok)
+                Debug.LogError($"Fail to start: {result.ShutdownReason}");
+        }
+        
+        #endregion
+
+        #region - Room Related
+        public async Task CreateRoom(string roomName, int maxPlayerNum)
+        {
+            if (roomNameSet.Count <= maxRoomNum && !roomNameSet.Contains(roomName))
+            {
+                // TODO: session add unique id
+                var customProps = new Dictionary<string, int>(){
+                    {"roomID", (int)roomID.Get(roomName)}
+                };
+
+                // TODO: add fusion object pool
+                var result = await gameManager.Runner.StartGame(new StartGameArgs()
+                {
+                    GameMode = GameMode.Host,
+                    SessionName = roomName,
+                    PlayerCount = maxPlayerNum,
+                    Scene = SceneManager.GetActiveScene().buildIndex,
+                    SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>()
+                });
+
+                gameManager.IsRoomCreater = true;
+
+                if (result.Ok)
+                {
+                    waitingRoomPanel.SetActive(true);
+                    lobbyPanel.SetActive(false);
+                    waitingSettingPanel.DisplayPannel(true);
+                }
+                
+                else
+                    Debug.LogError($"Failed to Start: {result.ShutdownReason}");
+            }
+            // TODO: display error message
+        }
+
+        public async Task JoinRoom(string roomName)
+        {
+            var result = await gameManager.Runner.StartGame(new StartGameArgs()
+            {
+                GameMode = GameMode.Client,
+                SessionName = roomName
+            });
+
+
+            if (result.Ok)
+            {
+                waitingRoomPanel.SetActive(true);
+                lobbyPanel.SetActive(false);
+            }
+
+            else
+                Debug.LogError($"Failed to Start: {result.ShutdownReason}");
+        }
+        
+        #endregion
+
+        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+        {
+            roomNameSet.Clear();
+            foreach (var session in sessionList)
+            {
+                roomNameSet.Add(session.Name);
+            }
+            roomListPannel.UpdateRoomList(sessionList);
+        }
+
+        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        {
+            runner.Spawn(playerNetworkDataPrefab, Vector3.zero, Quaternion.identity, player);
+        }
+
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        {
+            if (gameManager.PlayerList.TryGetValue(player, out PlayerNetworkData playerNetworkData))
+            {
+                runner.Despawn(playerNetworkData.Object);
+                gameManager.PlayerList.Remove(player);
+                gameManager.UpdatePlayerList();
+            }
+        }
+
+        private async void Disconnect()
+        {
+        }
+        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+        {
+            OnPlayerLeft(runner, runner.LocalPlayer);
+            Disconnect();
+        }
+        
+        public void OnDisconnectedFromServer(NetworkRunner runner)
+        {
+            GameManager.Instance.Runner.Shutdown();
+        }
+
+        #region - unused callbacks
+        public void OnInput(NetworkRunner runner, NetworkInput input) { }
+        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+        public void OnConnectedToServer(NetworkRunner runner) { }
+        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
+        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
+        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
+        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) { }
+        public void OnSceneLoadDone(NetworkRunner runner) { }
+        public void OnSceneLoadStart(NetworkRunner runner) { }
+        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
+        #endregion
+    }
+}
