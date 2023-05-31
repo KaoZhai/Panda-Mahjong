@@ -44,8 +44,6 @@ namespace Game.Lobby
 
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
-
-
         }
 
         public async Task JoinLobby(NetworkRunner runner)
@@ -137,20 +135,21 @@ namespace Game.Lobby
             }
         }
 
-        public void SetPairState(string state)
+        public void SetPairState(PanelState newState)
         {
+            
             startPanel.SetActive(false);
             lobbyPanel.SetActive(false);
             waitingRoomPanel.SetActive(false);
-            switch (state)
+            switch (newState)
             {
-                case "Start":
+                case PanelState.Start:
                     startPanel.SetActive(true);
                     break;
-                case "Lobby":
+                case PanelState.Lobby:
                     lobbyPanel.SetActive(true);
                     break;
-                case "Waiting":
+                case PanelState.Waiting:
                     waitingRoomPanel.SetActive(true);
                     break;
                 default :
