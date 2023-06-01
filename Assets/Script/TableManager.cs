@@ -126,6 +126,11 @@ namespace Game.PlayingRoom {
             {
                 SetButton(kongBtn, true);
             }
+
+            if (activePlayerId == 0 && players[0].IsPlayerCanHu())
+            {
+                SetButton(winningBtn, true);
+            }
         }
 
         public void BuKong()
