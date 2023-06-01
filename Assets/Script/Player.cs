@@ -188,14 +188,17 @@ namespace Game.PlayingRoom {
             return isCanPong;
         }
 
-        public bool IsPlayerCanHu()
+        public bool IsPlayerCanHu(bool isSelfDraw)
         {
             bool isCanHu = false;
             int[] tileCountArray = new int[50];
-            GameObject[] LastTileArray = {tableManager.LastTile};
-            List<GameObject> lastTile = new List<GameObject>(LastTileArray);
             TransToArray(tileCountArray, handTiles);
-            TransToArray(tileCountArray, lastTile);
+            if (!isSelfDraw)
+            {
+                GameObject[] LastTileArray = {tableManager.LastTile};
+                List<GameObject> lastTile = new List<GameObject>(LastTileArray);
+                TransToArray(tileCountArray, lastTile);
+            }
 
             isCanHu = checkHu((int[])tileCountArray.Clone(), false);
             return isCanHu;

@@ -127,7 +127,7 @@ namespace Game.PlayingRoom {
                 SetButton(kongBtn, true);
             }
 
-            if (activePlayerId == 0 && players[0].IsPlayerCanHu())
+            if (activePlayerId == 0 && players[0].IsPlayerCanHu(true))
             {
                 SetButton(winningBtn, true);
             }
@@ -202,7 +202,7 @@ namespace Game.PlayingRoom {
             {
                 SetButton(kongBtn, true);
             }
-            if(players[0].IsPlayerCanHu())
+            if(players[0].IsPlayerCanHu(false))
             {
                 SetButton(winningBtn, true);
             }
