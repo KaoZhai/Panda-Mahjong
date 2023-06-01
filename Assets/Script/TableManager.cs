@@ -208,6 +208,7 @@ namespace Game.PlayingRoom {
             SetButton(chiBtn, false);   
             SetButton(pongBtn, false); 
             SetButton(kongBtn, false);
+            SetButton(winningBtn, false);
             // todo: need to deal multiplayer move
             if ( winningActive )
             {
