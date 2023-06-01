@@ -17,7 +17,7 @@ namespace Game.PlayingRoom {
             set { tableManager = value; }
         }
 
-        public int RemainTile {
+        public int RemainTiles {
             get { return tileList.Count - 16; }
         }
 

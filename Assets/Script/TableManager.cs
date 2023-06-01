@@ -6,6 +6,17 @@ using UnityEngine.UI;
 
 namespace Game.PlayingRoom {
     
+    public enum MovementType {
+        None,
+        Win,
+        PlayTile,
+        MingGang,
+        AnGang,
+        JiaGang,
+        Pong,
+        Chi
+    }
+
     public class TableManager : MonoBehaviour
     {
         public static TableManager Instance
@@ -16,11 +27,11 @@ namespace Game.PlayingRoom {
         [SerializeField] private List<Player> players = new List<Player>();
         [SerializeField] private TileWall tileWall;
 
-        private int activePlayerId = 0;
+        private string activePlayerId = 0;
 
         private GameObject lastTile = null;
         
-        [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
+        [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, gangBtn;
         
 
         public TileWall TileWall
@@ -37,11 +48,12 @@ namespace Game.PlayingRoom {
             get { return activePlayerId; }
         }
 
+        private MovementType moveStatus = MovementType.None;
 
-        private bool chiActive = false;
-        private bool pongActive = false;
-        private bool kongActive = false;
-        private bool winningActive = false;
+        public bool MoveStatus {
+            get { return moveStatus; }
+            set { moveStatus = value; }
+        }
 
         void Start() 
         {
@@ -50,7 +62,7 @@ namespace Game.PlayingRoom {
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
             {
-                players[i].PlayerId = i;
+                players[i].PlayerId = i.ToString();
                 players[i].TableManager = this;
             }
 
@@ -58,19 +70,155 @@ namespace Game.PlayingRoom {
 
             DealTiles();
             OpenDoor();
-            while()
-            {
-                
-            }
+            AfterDraw();
+        }
+        
+        IEnumerator AfterDraw()
+        {
+            yield return StartCoroutine(CheckBuhua());
+            yield return StartCoroutine(CheckSelfDrawWin());
+            yield return StartCoroutine(CheckSelfDrawGang());
             StartCoroutine(PlayRound());
+        }
+        IEnumerator CheckSelfDrawGang()
+        {
+            if(players[activePlayerId].IsCanSelfDrawGang())
+            {
+                SetButton(gangBtn, true);
+            }
+            yield return null;
+        }
+        IEnumerator CheckSelfDrawWin()
+        {
+            if(players[activePlayerId].IsCanSelfDrawWin())
+            {
+                SetButton(winningBtn, true);
+            }
+            yield return null;
+        }
+
+        IEnumerator CheckBuhua()
+        {
+            while (!players[activePlayerId].IsDoneBuHua())
+            {
+                yield return StartCoroutine(BuHua(players[activePlayerId]));
+            }
+            yield return null;
+        }
+
+        public IEnumerator BuHua(Player player)
+        {
+            int replaceTileNum = player.ShowFlower();
+            for (int i = 0; i < replaceTileNum; ++i)
+            {
+                tileWall.BuPai(player);
+            }
+        }
+
+        public void Draw()
+        {
+            tileWall.DealTile(players[activePlayerId]);
         }
 
         IEnumerator PlayRound()
         {
+            moveStatus = MovementType.None;
+            // int time_limit = 10;
+            // todo time limit not add now
+            while(moveStatus == MovementType.None)
+            {
+                yield return new WaitForSeconds(1f);
+            }
+
+            if (moveStatus == MovementType.Win)
+            {
+                // todo 算台
+            }
+            else if (moveStatus == MovementType.AnGang)
+            {
+                yield return StartCoroutine(BuHua(players[activePlayerId]));
+                StartCoroutine(AfterDraw());
+            }
+            else if (moveStatus == MovementType.JiaGang)
+            {
+                yield return StartCoroutine(BuHua(players[activePlayerId]));
+                StartCoroutine(AfterDraw());
+            }
+            else if(moveStatus == MovementType.PlayTile)
+            {
+                StartCoroutine(AfterPlay());
+            }
+            else
+            {
+                Debug.Log("error status in play round");
+                yield return null;
+            }
+            
 
         }
+        IEnumerable CheckWin()
+        {
+            if(players[activePlayerId].IsCanWin())
+            {
+                SetButton(winningBtn, true);
+            }
+            int time_limit = 2;
+            while(moveStatus == MovementType.None && time_limit)
+            {
+                yield return new WaitForSeconds(1f);
+                --time_limit;
+            }
 
-        void OpenDoor()
+            if (moveStatus == MovementType.Win)
+            {
+                // todo 算台
+            }
+
+            // todo 流局
+            if (tileWall.RemainTiles == 0)
+            {
+                
+            }
+        }
+
+
+        IEnumerable AfterPlay()
+        {
+            yield return StartCoroutine(CheckWin());
+            yield return StartCoroutine(CheckGang());
+            yield return StartCoroutine(CheckPong());
+            yield return StartCoroutine(CheckChi());
+            int time_limit = 2;
+            while(moveStatus == MovementType.None && time_limit)
+            {
+                yield return new WaitForSeconds(1f);
+                --time_limit;
+            }
+
+
+            if (moveStatus == MovementType.MingGang)
+            {
+                // todo 算台
+            }
+            else if (moveStatus == MovementType.Pong)
+            {
+                yield return StartCoroutine(BuHua(players[activePlayerId]));
+                yield return StartCoroutine(AfterDraw());
+            }
+            else if (moveStatus == MovementType.Chi)
+            {
+                yield return StartCoroutine(BuHua(players[activePlayerId]));
+                yield return StartCoroutine(AfterDraw());
+            }
+            else
+            {
+                Debug.Log("error status in play round");
+                yield return null;
+            }
+            
+
+        }
+        IEnumerator OpenDoor()
         {
             tileWall.DealTile(players[activePlayerId]);
             int cnt = 0;
@@ -78,13 +226,13 @@ namespace Game.PlayingRoom {
             {
                 foreach(Player player in players)
                 {
-                    if (player.IsDoneReplace())
+                    if (player.IsDoneBuHua())
                     {
                         cnt += 1;
                     }
                     else
                     {
-                        player.ReplaceFlower();
+                        yield return StartCoroutine(BuHua(player));
                     }
                 }
             }
@@ -92,10 +240,7 @@ namespace Game.PlayingRoom {
             {
                 player.SortHandTiles();
             }
-            if(activePlayerId == 0 && players[0].IsPlayerCanKongBySelf())
-            {
-                SetButton(kongBtn, true);
-            }
+
         }
 
         void DealTiles()
@@ -122,138 +267,27 @@ namespace Game.PlayingRoom {
                 players[i] = players[j];
                 players[j] = tmp;
             }
-            activePlayerId = players[0].PlayerId;
+            activePlayerId = 0;
         }
 
-        public void Draw()
-        {
-            tileWall.DealTile(players[activePlayerId]);
-            while(!players[activePlayerId].IsDoneReplace())
-            {
-                players[activePlayerId].ReplaceFlower();
-            }
+        
 
-            if(activePlayerId == 0 && players[0].IsPlayerCanKongBySelf())
-            {
-                SetButton(kongBtn, true);
-            }
-        }
-
-        public void BuKong()
-        {
-            
-            tileWall.BuPai(players[activePlayerId]);
-            while(!players[activePlayerId].IsDoneReplace())
-            {
-                players[activePlayerId].ReplaceFlower();
-            }
-            kongActive = false;
-            if(activePlayerId == 0 && players[0].IsPlayerCanKongBySelf())
-            {
-                SetButton(kongBtn, true);
-            }
-        }
-
+        
         public void NextPlayer() 
         {
             activePlayerId = (activePlayerId + 1) % 4;
         }
 
-        public void TurnToPlayer(int playerId)
+        public void TurnToPlayer(string playerId)
         {
-            activePlayerId = playerId;
-        }
-        //  only from single player
-        public void AutoPlay()
-        {
-            if(activePlayerId != 0)
-            {
-                
-                players[activePlayerId].DefaultDiscard();
-            }
+            activePlayerId = IndexOF(players, playerId);
         }
 
-        IEnumerator Countdown(int second)
-        {
-            yield return new WaitForSeconds(1f);
-        }
         void SetButton(GameObject btn, bool isInteractable)
         {
             btn.GetComponent<Button>().interactable = isInteractable;
         }
 
-        public void Chi()
-        {
-            TurnToPlayer(0);
-            chiActive = true;
-            SetButton(chiBtn, false);
-        }
-        public void Pong()
-        {
-            TurnToPlayer(0);
-            pongActive = true;
-            SetButton(pongBtn, false);
-        }
-        public void Kong()
-        {
-            TurnToPlayer(0);
-            kongActive = true;
-            SetButton(kongBtn, false);
-            BuKong();
-        }
-        public void Win()
-        {
-            winningActive = true;
-            SetButton(winningBtn, false);
-        }
-
-        public IEnumerator BeforeNextPlayer()
-        {
-            SetButton(chiBtn, false);   
-            SetButton(pongBtn, false); 
-            SetButton(kongBtn, false);
-            // only control local player's button
-            if(players[0].IsPlayerCanChi())
-            {
-                SetButton(chiBtn, true);
-            }
-            if(players[0].IsPlayerCanPong())
-            {
-                SetButton(pongBtn, true);
-            }
-            if(players[0].IsPlayerCanKong())
-            {
-                SetButton(kongBtn, true);
-            }
-            yield return new WaitForSeconds(2f);
-            SetButton(chiBtn, false);   
-            SetButton(pongBtn, false); 
-            SetButton(kongBtn, false);
-            // todo: need to deal multiplayer move
-            if ( winningActive )
-            {
-                
-            }
-            else if ( kongActive )
-            {
-                kongActive = false;
-            }
-            else if ( pongActive )
-            {
-                pongActive = false;
-            }
-            else if ( chiActive )
-            {
-                chiActive = false;
-            }
-            else
-            {
-                NextPlayer();
-                Draw();
-                AutoPlay();
-            }
-            
-        }
 
     }
 }

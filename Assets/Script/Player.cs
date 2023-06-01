@@ -3,36 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.PlayingRoom {
-    public enum KongType
+    
+    public enum TileStatus
     {
-        Normal,
-        Plus,
-        Dark,
-        None
+        Hand,
+        Flower,
+        Chi,
+        Pong, 
+        MingGang,
+        AnGang
     }
     public class Player : MonoBehaviour
     {
-        private List<GameObject> handTiles = new List<GameObject>();
-
-        private List<GameObject> showTiles = new List<GameObject>();
-
-        private List<List<GameObject>> showChiTiles = new List<List<GameObject>>();
-        private List<List<GameObject>> showPongTiles = new List<List<GameObject>>();
-        private List<List<GameObject>> showKongTiles = new List<List<GameObject>>();
-
-
+        private List<(GameObject tile, TileStatus tileStatus)> tilesList = new List<Tuple<GameObject, TileStatus>>();
+        private List<List<GameObject>> choiceGang = new List<List<GameObject>>();
+        private List<List<GameObject>> choiceChi = new List<List<GameObject>>();
         [SerializeField] private Transform hand = null;
         [SerializeField] private Transform tilePool = null;
         [SerializeField] private Transform showPool = null;
 
-        [SerializeField] private GameObject chiTileSets = null;
-        [SerializeField] private Transform chiTileSetsTransform = null;
-        
+        [SerializeField] private GameObject choicePanel = null;
         [SerializeField] private GameObject setPrefab = null;
 
-        private int playerId = -1;
+        private string playerId = "-1";
+
+        private string lastPlayerId = "-1";
         private int point;
-        private KongType kongStatus = KongType.None;
 
         private TableManager tableManager;
 
@@ -42,51 +38,43 @@ namespace Game.PlayingRoom {
             set { tableManager = value; }
         }
 
-        public int PlayerId {
+        public string PlayerId {
             set { playerId = value; }
             get { return playerId; }
         }
 
-        public Transform Hand
-        {
-            get { return hand; }
-        }
-
-        public Transform TilePool
-        {
-            get { return tilePool; }
-        }
-
-        public Transform ShowPool
-        {
-            get { return showPool; }
-        }
         public int Point {
             get { return point; }
             set { point = value; }
+        }   
+        public Transform Hand {
+            get { return hand; }
         }
 
+        public string PlayerId {
+            get { return playerId; }
+        }
         public void SortHandTiles()
         {
-            handTiles.Sort(new TileGameObjectComparer());
-            foreach(GameObject t in handTiles)
+            tilesList.Sort(new TileGameObjectComparer());
+            foreach(GameObject t in tilesList)
             {
-                t.transform.SetAsLastSibling();
+                tilesList.transform.SetAsLastSibling();
             }
         }
         public int HandTilesCnt
         {
-            get { return handTiles.Count; }
+            get { return tilesList.Count; }
         }
         public void GetTile(GameObject tile)
         {
-            handTiles.Add(tile);
+            tilesList.Add((tile, TileStatus.Hand));
             tile.GetComponent<Tile>().Player = this;
             tile.transform.SetParent(hand, false);
             tile.SetActive(true);
         }
 
-        public bool IsDoneReplace()
+        public bool IsDoneBuHua()
         {
             bool isDone = true;
             for(int i = 0; i < handTiles.Count; ++i)
@@ -99,27 +87,26 @@ namespace Game.PlayingRoom {
             return isDone;
         }
         
-        void ShowTile(int indexOfHandTiles)
+        void ShowTile(int indexOfHandTiles, TileStatus tileStatus)
         {
             handTiles[indexOfHandTiles].transform.SetParent(showPool, false);
-            showTiles.Add(handTiles[indexOfHandTiles]);
-            handTiles.RemoveAt(indexOfHandTiles);
+            tilesList[indexOfHandTiles].tileStatus = tileStatus;
         }
 
-        void ShowBackTile(int indexOfHandTiles)
+        void ShowBackTile(int indexOfHandTiles, TileStatus tileStatus)
         {
             GameObject blankTile = handTiles[indexOfHandTiles].transform.GetChild(0).gameObject;
             blankTile.SetActive(false);
             GameObject face = handTiles[indexOfHandTiles].transform.GetChild(1).gameObject;
             face.SetActive(false);
-            ShowTile(indexOfHandTiles);
+            ShowTile(indexOfHandTiles, tileStatus);
         }
-        void TakeTileFromOther()
+        void TakeTileFromOther(TileStatus tileStatus)
         {
             tableManager.LastTile.transform.SetParent(showPool, false);
-            showTiles.Add(tableManager.LastTile);
+            tilesList.Add((tableManager.LastTile, tileStatus));
         }
-        public void ReplaceFlower()
+        public int ShowFlower()
         {
             int cnt = 0;
             for(int i = handTiles.Count-1; i >= 0; --i)
@@ -130,24 +117,19 @@ namespace Game.PlayingRoom {
                     ++cnt;
                 }
             }
-
-            for(int i = 0; i < cnt; ++i)
-            {
-                tableManager.TileWall.BuPai(this);
-            }
+            return cnt;
         }
 
 
         public void DefaultDiscard()
         {
-            Discard(handTiles[Random.Range(0, HandTilesCnt)].GetComponent<Tile>().TileId);
-
-            
-            // Discard(handTiles[handTiles.Count-1].GetComponent<Tile>().TileId);
+            Discard(handTiles[tilesList.Count-1].GetComponent<Tile>().TileId);
         }
 
         public void Discard(string tileId)
         {
+            if (tableManager.MoveStatus != MovementType.None)
+                return;
             for(int i = 0; i < handTiles.Count; ++i)
             {
                 if (handTiles[i].GetComponent<Tile>().TileId == tileId)
@@ -160,51 +142,64 @@ namespace Game.PlayingRoom {
                 }
             }
             SortHandTiles();
-            StartCoroutine(tableManager.BeforeNextPlayer());
+            tableManager.MoveStatus = MovementType.PlayTile;
         }
 
-        public bool IsPlayerCanKongBySelf()
+        public bool IsCanSelfDrawGang()
         {
-            
-            // (pinyin) An Gang
-            Dictionary<int, int> tileCounter = new Dictionary<int, int>();
-            foreach(GameObject tile in handTiles)
+            choiceGang.Clear();
+            // An Gang
+            Dictionary<int, List<GameObject>> tileCounter = new Dictionary<int, List<GameObject>>();
+            for(int i = 0; i < tilesList.Count; ++i)
             {
-                int cardFaceIndex = tile.GetComponent<Tile>().CardFaceIndex;
-                if (tileCounter.ContainsKey(cardFaceIndex))
+                if (tilesList[i].status != TileStatus.Hand)
+                    continue;
+                int cardFaceIndex = tilesList[i].tile.GetComponent<Tile>().CardFaceIndex;
+                if (!tileCounter.ContainsKey(cardFaceIndex))
                 {
-                    ++ tileCounter[cardFaceIndex];
+                    tileCounter.Add(cardFaceIndex, new List<GameObject>());
                 }
-                else
-                {
-                    tileCounter.Add(cardFaceIndex, 1);
-                }
+                tileCounter[cardFaceIndex].Add(tilesList[i].tile);
             }
             foreach(KeyValuePair<int, int> cnt in tileCounter)
             {
-                if (cnt.Value == 4)
+                if (cnt.Value.Count == 4)
                 {
-                    kongStatus = KongType.Dark;
-                    return true;
+                    choiceGang.Add(cnt.Value);
+
                 }
             }
-            // (pinyin) Jia Gang
-            foreach(GameObject handTile in handTiles)
+            // Jia Gang
+            for(int i = 0; i < tilesList.Count; ++i)
             {
-                foreach(List<GameObject> pongTiles in showPongTiles)
+                if (tilesList[i].status != TileStatus.Hand)
+                    continue;
+                List<GameObject> set = new List<GameObject>();
+                Tile tile = tilesList[i].tile.GetComponent<Tile>();
+                for(int j = 0; j < tilesList.Count; ++j)
                 {
-                    if (handTile.GetComponent<Tile>().IsSame(pongTiles[0].GetComponent<Tile>()))
+                    if ( tilesList[j].tileStatus == TileStatus.Pong && tile.IsSame(tilesList[j].tile.GetComponent<Tile>()))
                     {
-                        kongStatus = KongType.Plus;
-                        return true;
+                        set.Add(tilesList[j].tile);
                     }
                 }
+                choiceGang.Add(set);
             }
-            return false;
+            return choiceGang.Count > 0;
         }
-        public bool IsPlayerCanKong()
+
+        public bool IsCanSelfDrawWin()
         {
-            if ((tableManager.ActivePlayerId + 1) % 4 == playerId || tableManager.ActivePlayerId == playerId)
+
+        }
+        public bool IsPlayerCanWin()
+        {
+
+        }
+
+        public bool IsPlayerCanGang()
+        {
+            if ( tableManager.ActivePlayerId == lastPlayerId)
             {
                 return false;
             }
@@ -244,7 +239,7 @@ namespace Game.PlayingRoom {
             return isCanPong;
         }
 
-        private List<List<GameObject>> canChiTileSet = new List<List<GameObject>>();
+        
         bool Find(TileType tileType, int lostA, int lostB)
         {
             if (lostA < 1 || lostB > 9)
@@ -291,10 +286,27 @@ namespace Game.PlayingRoom {
 
         public void DecideHowToChi()
         {
-            chiTileSets.SetActive(true);
+            choicePanel.SetActive(true);
             for (int i = 0; i < canChiTileSet.Count; ++i)
             {
-                GameObject set = Instantiate(setPrefab, new Vector3(0, 0, 0), Quaternion.identity, chiTileSetsTransform);
+                GameObject set = Instantiate(setPrefab, new Vector3(0, 0, 0), Quaternion.identity, choicePanel.transform);
+                set.SetActive(true);
+                GameObject a = Instantiate(canChiTileSet[i][0]);
+                a.transform.SetParent(set.transform, false);
+                a.name = canChiTileSet[i][0].GetComponent<Tile>().TileId;
+                GameObject b = Instantiate(canChiTileSet[i][1]);
+                b.transform.SetParent(set.transform, false);
+                b.name = canChiTileSet[i][1].GetComponent<Tile>().TileId;
+            }
+        }
+
+        // only when an gang or jia gang 
+        public void DecideHowToKong()
+        {
+            choicePanel.SetActive(true);
+            for (int i = 0; i < canChiTileSet.Count; ++i)
+            {
+                GameObject set = Instantiate(setPrefab, new Vector3(0, 0, 0), Quaternion.identity, choicePanel.transform);
                 set.SetActive(true);
                 GameObject a = Instantiate(canChiTileSet[i][0]);
                 a.transform.SetParent(set.transform, false);
@@ -307,11 +319,11 @@ namespace Game.PlayingRoom {
 
         void CloseChiSelection()
         {
-            chiTileSets.SetActive(false);
-            Transform[] children = chiTileSets.GetComponentsInChildren<Transform>();
+            choicePanel.SetActive(false);
+            Transform[] children = choicePanel.GetComponentsInChildren<Transform>();
             foreach (Transform child in children)
             {
-                if (child == chiTileSets.transform) continue;
+                if (child == choicePanel.transform) continue;
                 string tileId = child.name;
                 Destroy(child.gameObject);
             }
