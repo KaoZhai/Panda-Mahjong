@@ -185,6 +185,7 @@ namespace Game.PlayingRoom {
         public void Win()
         {
             winningActive = true;
+            Debug.Log("Winning");
         }
 
         public IEnumerator BeforeNextPlayer()
@@ -219,7 +220,6 @@ namespace Game.PlayingRoom {
             {
                 TurnToPlayer(0);
                 winningActive = false;
-                Debug.Log("Winning");
             }
             else if ( kongActive )
             {
