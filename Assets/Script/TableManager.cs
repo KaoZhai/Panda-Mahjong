@@ -46,7 +46,6 @@ namespace Game.PlayingRoom {
 
         void Start() 
         {
-
             tileWall.GetReady(this);
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
@@ -59,7 +58,6 @@ namespace Game.PlayingRoom {
 
             DealTiles();
             OpenDoor();
-
         }
 
 
@@ -199,6 +197,10 @@ namespace Game.PlayingRoom {
             {
                 SetButton(kongBtn, true);
             }
+            if(players[0].IsPlayerCanHu())
+            {
+                SetButton(winningBtn, true);
+            }
             Debug.Log("開始停頓");
             // StartCoroutine(Countdown(3));
             yield return new WaitForSeconds(2f);
@@ -209,7 +211,9 @@ namespace Game.PlayingRoom {
             // todo: need to deal multiplayer move
             if ( winningActive )
             {
-                
+                TurnToPlayer(0);
+                winningActive = false;
+                Debug.Log("Winning");
             }
             else if ( kongActive )
             {
