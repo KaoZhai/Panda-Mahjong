@@ -150,7 +150,7 @@ namespace Game.PlayingRoom {
 
         public bool IsPlayerCanKong()
         {
-            if ((tableManager.ActivePlayerId + 1) % 4 == playerId)
+            if (((tableManager.ActivePlayerId + 1) % 4 == playerId) || tableManager.LastTile.GetComponent<Tile>().PlayerId == playerId)
             {
                 return false;
             }
