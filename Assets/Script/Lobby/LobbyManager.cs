@@ -12,20 +12,11 @@ using Utils;
 
 namespace Game.Lobby
 {
-    public enum PanelState
-    {
-        Start,
-        Lobby,
-        Waiting,
-        Setting
-    }
-
     public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         private const int maxRoomNum = 100;
         private RoomID roomID = new RoomID();
         private GameManager gameManager = null;
-        private PanelState panelState = PanelState.Start;
         private SortedSet<string> roomNameSet = new SortedSet<string>();
         private PreparePanelController preparePanelController = new PreparePanelController();
 
