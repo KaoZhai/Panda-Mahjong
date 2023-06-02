@@ -424,9 +424,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2be76399b458ba4fa1c1b9a33da68fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlayerNum: 0
-  curPlayerNum: 0
-  roomName: 
+  roomName: {fileID: 8684547623171236084}
+  curPlayerNum: {fileID: 5757961149050870901}
+  maxPlayerNum: {fileID: 1472439382972038788}
 --- !u!1 &2936447650799017125
 GameObject:
   m_ObjectHideFlags: 0

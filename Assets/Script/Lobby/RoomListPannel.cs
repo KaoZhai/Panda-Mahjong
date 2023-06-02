@@ -28,6 +28,12 @@ namespace Game.Lobby
 
         public void UpdateRoomList(List<SessionInfo> sessionList)
         {
+            foreach (Transform parentPos in parentPostitions)
+            {
+                if (parentPos.childCount > 0)
+                    Destroy(parentPos.GetChild(0).gameObject);
+            }
+
             foreach (Transform child in hideTrans)
             {
                 Destroy(child.gameObject);
@@ -37,7 +43,7 @@ namespace Game.Lobby
             foreach (var session in sessionList)
             {
                 RoomUnit roomUnit = Instantiate(roomUnitPrefab, hideTrans);
-                roomUnit.SetInfo(lobbyManager, session.Name, session.PlayerCount, session.MaxPlayers);
+                roomUnit.GetComponent<RoomUnit>().SetInfo(lobbyManager, session.Name, session.PlayerCount, session.MaxPlayers);
                 roomList.Add(roomUnit);
             }
 
@@ -58,7 +64,7 @@ namespace Game.Lobby
         public void Previous()
         {
             pageIndex -= 1;
-            UpdatePage();            
+            UpdatePage();
         }
 
         private void UpdatePage()
