@@ -978,7 +978,6 @@ GameObject:
   - component: {fileID: 243208894}
   - component: {fileID: 243208898}
   - component: {fileID: 243208897}
-  - component: {fileID: 243208896}
   - component: {fileID: 243208895}
   m_Layer: 5
   m_Name: RoomCreatingPanel
@@ -1026,22 +1025,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropDown: {fileID: 1806687340}
-  canvasGroup: {fileID: 243208896}
   lobbyManager: {fileID: 394493917}
   roomListPannel: {fileID: 1976841573}
   roomNameInputField: {fileID: 1636545394}
---- !u!225 &243208896
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 243208893}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!114 &243208897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1781,12 +1767,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 394493915}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -332.2188, y: -611.62427, z: -12.570433}
+  m_LocalPosition: {x: 627.7812, y: -71.62427, z: -12.570433}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 789331924}
-  m_RootOrder: 3
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &394493917
 MonoBehaviour:
@@ -1802,10 +1788,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomListPannel: {fileID: 1976841573}
   playerNetworkDataPrefab: {fileID: -3488874529639845621, guid: eefe55435cafb2c438003a77d6f748a2, type: 3}
-  startPanel: {fileID: 2019386928}
-  lobbyPanel: {fileID: 637258877}
-  waitingRoomPanel: {fileID: 1288045309}
-  waitingRoomSettingPanel: {fileID: 1696768617}
 --- !u!1 &443425664
 GameObject:
   m_ObjectHideFlags: 0
@@ -2548,7 +2530,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &637258878
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2937,7 +2919,6 @@ RectTransform:
   - {fileID: 637258878}
   - {fileID: 2019386929}
   - {fileID: 1288045310}
-  - {fileID: 394493916}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4339,7 +4320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1288045310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6060,7 +6041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5adf37549f7e04297972cd6f56cc60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasGroup: {fileID: 1696768616}
+  lobbyManager: {fileID: 394493917}
 --- !u!114 &1696768618
 MonoBehaviour:
   m_ObjectHideFlags: 0

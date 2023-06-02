@@ -1,25 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Game.Core;
 
-public class WaitingRoomScene : MonoBehaviour
+namespace Game.Lobby
 {
-    [SerializeField] private Game.Lobby.LobbyManager lobbyManager = null;
-    [SerializeField] private Game.Lobby.LobbyScene lobbyScene;
-
-    #region BtnCallBack
-
-    public void OnLeaveBtnClick()
+    public class WaitingRoomScene : MonoBehaviour
     {
-        lobbyManager.SetPairState(Game.Lobby.PanelState.Lobby);
-        lobbyScene.OnWaitingLeaveBtnClick();
-    }
+        [SerializeField] private LobbyManager lobbyManager = null;
 
-    public void OnCreateRoomBtnClick()
-    {
-        // DisplayRoomCreating(true);
-        // DisplayRoomList(false);
-    }
+        public void Start()
+        {
+            lobbyManager.PanelController.AddPanel(EnumPanel.Waiting, gameObject);
+        }
 
-    #endregion
+        #region BtnCallBack
+
+        public void OnLeaveBtnClick()
+        {
+            GameManager.Instance.Disconnect();
+            lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
+        }
+
+        public void OnCreateRoomBtnClick()
+        {
+            // wait for all client ready and start game
+        }
+
+        #endregion
+    }
 }

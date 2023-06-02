@@ -4,13 +4,11 @@ namespace Game.Lobby
 {
     public class RoomSettingPanel : MonoBehaviour
     {
-        [SerializeField] private CanvasGroup canvasGroup = null;
+        [SerializeField] private LobbyManager lobbyManager = null;
 
-        public void DisplayPannel(bool value)
+        public void Start()
         {
-            canvasGroup.alpha = value ? 1 : 0;
-            canvasGroup.interactable = value;
-            canvasGroup.blocksRaycasts = value;
+            lobbyManager.PanelController.AddPanel(EnumPanel.WaitingSetting, gameObject);
         }
     }
 }

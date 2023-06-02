@@ -10,7 +10,6 @@ namespace Game.Lobby
     {
         [SerializeField] private Text panelText;
         [SerializeField] private Transform hideTrans = null;
-        [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private RoomUnit roomUnitPrefab = null;
         [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private List<Transform> parentPostitions = new List<Transform>();
@@ -19,11 +18,9 @@ namespace Game.Lobby
         private int roomCount = 0;
         private List<RoomUnit> roomList = new List<RoomUnit>();
 
-        public void DisplayPannel(bool value)
+        public void Start()
         {
-            canvasGroup.alpha = value ? 1 : 0;
-            canvasGroup.interactable = value;
-            canvasGroup.blocksRaycasts = value;
+            lobbyManager.PanelController.AddPanel(EnumPanel.RoomList, gameObject);
         }
 
         public void UpdateRoomList(List<SessionInfo> sessionList)
@@ -58,7 +55,7 @@ namespace Game.Lobby
         public void Previous()
         {
             pageIndex -= 1;
-            UpdatePage();            
+            UpdatePage();
         }
 
         private void UpdatePage()

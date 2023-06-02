@@ -25,16 +25,21 @@ namespace Game.Lobby
         private const int maxRoomNum = 100;
         private RoomID roomID = new RoomID();
         private GameManager gameManager = null;
-        private SortedSet<string> roomNameSet = new SortedSet<string>();
         private PanelState panelState = PanelState.Start;
+        private SortedSet<string> roomNameSet = new SortedSet<string>();
+        private PreparePanelController preparePanelController = new PreparePanelController();
 
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
-        [SerializeField] private GameObject startPanel = null;
-        [SerializeField] private GameObject lobbyPanel = null;
-        [SerializeField] private GameObject waitingRoomPanel = null;
-        [SerializeField] private RoomSettingPanel waitingRoomSettingPanel = null;
-        
+
+        public PreparePanelController PanelController
+        {
+            get
+            {
+                return preparePanelController;
+            }
+        }
+
         public async void Start()
         {
             gameManager = GameManager.Instance;
@@ -49,7 +54,7 @@ namespace Game.Lobby
         public async Task JoinLobby(NetworkRunner runner)
         {
             var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
-            
+
             gameManager.IsRoomCreater = false;
 
             if (!result.Ok)
@@ -75,15 +80,13 @@ namespace Game.Lobby
                     SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>()
                 });
 
-                gameManager.IsRoomCreater = true;
 
                 if (result.Ok)
                 {
-                    waitingRoomPanel.SetActive(true);
-                    lobbyPanel.SetActive(false);
-                    waitingRoomSettingPanel.DisplayPannel(true);
+                    gameManager.IsRoomCreater = true;
+                    preparePanelController.IsRoomCreater = true;
+                    preparePanelController.OpenPanel(EnumPanel.Waiting);
                 }
-                
                 else
                     Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
@@ -102,11 +105,7 @@ namespace Game.Lobby
 
 
             if (result.Ok)
-            {
-                waitingRoomPanel.SetActive(true);
-                lobbyPanel.SetActive(false);
-            }
-
+                preparePanelController.OpenPanel(EnumPanel.Waiting);
             else
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
         }
@@ -131,28 +130,6 @@ namespace Game.Lobby
             if (gameManager.PlayerList.TryGetValue(player, out PlayerNetworkData playerNetworkData))
             {
                 runner.Despawn(playerNetworkData.Object);
-            }
-        }
-
-        public void SetPairState(PanelState newState)
-        {
-            startPanel.SetActive(false);
-            lobbyPanel.SetActive(false);
-            waitingRoomPanel.SetActive(false);
-            switch (newState)
-            {
-                case PanelState.Start:
-                    startPanel.SetActive(true);
-                    break;
-                case PanelState.Lobby:
-                    lobbyPanel.SetActive(true);
-                    break;
-                case PanelState.Waiting:
-                    waitingRoomPanel.SetActive(true);
-                    break;
-                default :
-                    startPanel.SetActive(true);
-                    break;
             }
         }
 

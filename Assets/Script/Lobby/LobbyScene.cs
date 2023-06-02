@@ -10,48 +10,26 @@ namespace Game.Lobby
 {
     public class LobbyScene : MonoBehaviour
     {
-        // [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private Text roomName = null;
-        [SerializeField] private RoomListPannel roomListPannel = null;
-        [SerializeField] private RoomCreatingPannel roomCreatingPannel = null;
         [SerializeField] private LobbyManager lobbyManager = null;
+
+        public void Start()
+        {
+            lobbyManager.PanelController.AddPanel(EnumPanel.Lobby, gameObject);
+        }
 
         #region BtnCallBack
 
         public void OnLeaveBtnClick()
         {
-            lobbyManager.SetPairState(Game.Lobby.PanelState.Start);
+            lobbyManager.PanelController.OpenPanel(EnumPanel.Start);
         }
 
         public void OnCreateRoomBtnClick()
         {
-            DisplayRoomCreating(true);
-            DisplayRoomList(false);
-        }
-
-        public void OnWaitingLeaveBtnClick()
-        {
-            DisplayRoomCreating(false);
-            DisplayRoomList(true);
-            GameManager.Instance.Disconnect();
-            roomName.text = "";
+            lobbyManager.PanelController.OpenPanel(EnumPanel.RoomCreating);
         }
 
         #endregion
-
-        #region Helper Functions
-
-        private void DisplayRoomList(bool value)
-        {
-            roomListPannel.DisplayPannel(value);
-        }
-
-        private void DisplayRoomCreating(bool value)
-        {
-            roomCreatingPannel.DisplayPannel(value);
-        }
-
-        #endregion
-
     }
 }
