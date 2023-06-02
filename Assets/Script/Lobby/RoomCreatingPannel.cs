@@ -6,12 +6,13 @@ namespace Game.Lobby
 {
     public class RoomCreatingPannel : MonoBehaviour
     {
+        private LobbyManager lobbyManager = null;
         [SerializeField] private Dropdown dropDown = null;
-        [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private InputField roomNameInputField = null;
 
         public void Start()
         {
+            lobbyManager = LobbyManager.Instance;
             lobbyManager.PanelController.AddPanel(EnumPanel.RoomCreating, gameObject);
 
             List<int> valueList = new List<int>();

@@ -31,6 +31,18 @@ namespace Game.Lobby
             }
         }
 
+        public static LobbyManager Instance
+        {
+            get;
+            private set;
+        }
+
+        public void Awake()
+        {
+            if (Instance == null)
+                Instance = this;
+        }
+
         public async void Start()
         {
             gameManager = GameManager.Instance;

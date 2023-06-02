@@ -7,10 +7,11 @@ namespace Game.Lobby
 {
     public class WaitingRoomScene : MonoBehaviour
     {
-        [SerializeField] private LobbyManager lobbyManager = null;
+        private LobbyManager lobbyManager = null;
 
         public void Start()
         {
+            lobbyManager = LobbyManager.Instance;
             lobbyManager.PanelController.AddPanel(EnumPanel.Waiting, gameObject);
         }
 

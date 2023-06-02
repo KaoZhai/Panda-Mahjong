@@ -4,10 +4,11 @@ namespace Game.Lobby
 {
     public class StartScene : MonoBehaviour
     {
-        [SerializeField] private LobbyManager lobbyManager = null;
+        private LobbyManager lobbyManager = null;
 
-        void Start()
+        public void Start()
         {
+            lobbyManager = LobbyManager.Instance;
             lobbyManager.PanelController.AddPanel(EnumPanel.Start, gameObject);
             lobbyManager.PanelController.OpenPanel(EnumPanel.Start);
         }

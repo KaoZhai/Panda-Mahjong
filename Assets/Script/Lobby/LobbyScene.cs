@@ -10,11 +10,12 @@ namespace Game.Lobby
 {
     public class LobbyScene : MonoBehaviour
     {
+        private LobbyManager lobbyManager = null;
         [SerializeField] private Text roomName = null;
-        [SerializeField] private LobbyManager lobbyManager = null;
 
         public void Start()
         {
+            lobbyManager = LobbyManager.Instance;
             lobbyManager.PanelController.AddPanel(EnumPanel.Lobby, gameObject);
         }
 

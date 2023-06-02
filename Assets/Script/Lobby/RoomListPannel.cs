@@ -11,15 +11,16 @@ namespace Game.Lobby
         [SerializeField] private Text panelText;
         [SerializeField] private Transform hideTrans = null;
         [SerializeField] private RoomUnit roomUnitPrefab = null;
-        [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private List<Transform> parentPostitions = new List<Transform>();
         private int pageIndex = 1;
         private int pageCount = 0;
         private int roomCount = 0;
+        private LobbyManager lobbyManager = null;
         private List<RoomUnit> roomList = new List<RoomUnit>();
 
         public void Start()
         {
+            lobbyManager = LobbyManager.Instance;
             lobbyManager.PanelController.AddPanel(EnumPanel.RoomList, gameObject);
         }
 
