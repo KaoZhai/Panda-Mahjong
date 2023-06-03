@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Game.PlayingRoom
+namespace Game.Play
 {
     public class TaiCounter : MonoBehaviour
     {
