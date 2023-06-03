@@ -630,98 +630,42 @@ namespace Game.Play
 
         private bool MenQing() //門清
         {
-            if (deckGangCnt + deckPonCnt + deckStraightCnt == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return deckGangCnt + deckPonCnt + deckStraightCnt == 0;
         }
 
         private bool Zhong(int[] tileCountArray) //中
         {
-            if (tileCountArray[45] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[45] >= 3;
         }
 
         private bool Fa(int[] tileCountArray) //發
         {
-            if (tileCountArray[46] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[46] >= 3;
         }
 
         private bool Bai(int[] tileCountArray) //白
         {
-            if (tileCountArray[47] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[47] >= 3;
         }
 
         private bool Dong(int[] tileCountArray) //東
         {
-            if (tileCountArray[31] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[31] >= 3;
         }
 
         private bool Nan(int[] tileCountArray)//南
         {
-            if (tileCountArray[32] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[32] >= 3;
         }
 
         private bool Xi(int[] tileCountArray)//西
         {
-            if (tileCountArray[33] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[33] >= 3;
         }
 
         private bool Bei(int[] tileCountArray)//北
         {
-            if (tileCountArray[34] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[34] >= 3;
         }
 
         private bool HuaGang(int[] tileCountArray, bool isSeason)//花槓
@@ -742,14 +686,7 @@ namespace Game.Play
 
         private bool HuaTai(int[] tileCountArray, int pos)//花台
         {
-            if (tileCountArray[pos] == 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[pos] == 1;
         }
 
         private bool DuTing()//獨聽
@@ -774,14 +711,7 @@ namespace Game.Play
 
         private bool QuanQiuRen()//全求人
         {
-            if (deckGangCnt + deckPonCnt + deckStraightCnt == 5)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (!isSelfDraw) && deckGangCnt + deckPonCnt + deckStraightCnt == 5;
         }
 
         private bool PingHu(int[] tileCountArray, int handPonCnt)//平胡
@@ -793,38 +723,17 @@ namespace Game.Play
                 check += tileCountArray[i];
             }
 
-            if ((!isSelfDraw) && deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + check == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (!isSelfDraw) && deckGangCnt + deckPonCnt + hideGangCnt + handPonCnt + check == 0;
         }
 
         private bool SanAnKe(int handPonCnt)//三暗刻
         {
-            if (handPonCnt + hideGangCnt == 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return handPonCnt + hideGangCnt == 3;
         }
 
         private bool PengPengHu(int handPonCnt)//碰碰胡
         {
-            if (handPonCnt + hideGangCnt + deckPonCnt + deckGangCnt == 5)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return handPonCnt + hideGangCnt + deckPonCnt + deckGangCnt == 5;
         }
 
         private bool HunYiSe(int[] tileCountArray)//混一色
@@ -851,50 +760,22 @@ namespace Game.Play
                 letterCnt += tileCountArray[i];
             }
 
-            if ((letterCnt > 0) && ((characterCnt + dotCnt == 0) || (characterCnt + bambooCnt == 0) || (dotCnt + bambooCnt == 0)))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (letterCnt > 0) && ((characterCnt + dotCnt == 0) || (characterCnt + bambooCnt == 0) || (dotCnt + bambooCnt == 0));
         }
 
         private bool XiaoSanYuan(int[] tileCountArray)//小三元
         {
-            if (tileCountArray[35] >= 2 && tileCountArray[36] >= 2 && tileCountArray[37] >= 2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[35] >= 2 && tileCountArray[36] >= 2 && tileCountArray[37] >= 2;
         }
 
         private bool SiAnKe(int handPonCnt)//四暗刻
         {
-            if (handPonCnt + hideGangCnt == 4)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return handPonCnt + hideGangCnt == 4;
         }
 
         private bool WuAnKe(int handPonCnt)//五暗刻
         {
-            if (handPonCnt + hideGangCnt == 5)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return handPonCnt + hideGangCnt == 5;
         }
 
         private bool QingYiSe(int[] tileCountArray)//清一色
@@ -921,62 +802,27 @@ namespace Game.Play
                 letterCnt += tileCountArray[i];
             }
 
-            if ((letterCnt == 0) && ((characterCnt + dotCnt == 0) || (characterCnt + bambooCnt == 0) || (dotCnt + bambooCnt == 0)))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (letterCnt == 0) && ((characterCnt + dotCnt == 0) || (characterCnt + bambooCnt == 0) || (dotCnt + bambooCnt == 0));
         }
 
         private bool XiaoSiXi(int[] tileCountArray)//小四喜
         {
-            if (tileCountArray[31] >= 2 && tileCountArray[32] >= 2 && tileCountArray[33] >= 2 && tileCountArray[34] >= 2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[31] >= 2 && tileCountArray[32] >= 2 && tileCountArray[33] >= 2 && tileCountArray[34] >= 2;
         }
 
         private bool DaSanYuan(int[] tileCountArray)//大三元
         {
-            if (tileCountArray[35] >= 3 && tileCountArray[36] >= 3 && tileCountArray[37] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[35] >= 3 && tileCountArray[36] >= 3 && tileCountArray[37] >= 3;
         }
 
         private bool QiQiangYi()//七搶一
         {
-            if ((!isSelfDraw) && (winningTile.GetComponent<Tile>().TileType == TileType.Season || winningTile.GetComponent<Tile>().TileType == TileType.Flower))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (!isSelfDraw) && (winningTile.GetComponent<Tile>().TileType == TileType.Season || winningTile.GetComponent<Tile>().TileType == TileType.Flower);
         }
 
         private bool BaXianGuoHai()//八仙過海
         {
-            if (isSelfDraw && (winningTile.GetComponent<Tile>().TileType == TileType.Season || winningTile.GetComponent<Tile>().TileType == TileType.Flower))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return isSelfDraw && (winningTile.GetComponent<Tile>().TileType == TileType.Season || winningTile.GetComponent<Tile>().TileType == TileType.Flower);
         }
 
         private bool ZiYiSe(int[] tileCountArray)//字一色
@@ -988,50 +834,22 @@ namespace Game.Play
                 cnt += tileCountArray[i];
             }
 
-            if (cnt == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return cnt == 0;
         }
 
         private bool DaSiXi(int[] tileCountArray)//大四喜
         {
-            if (tileCountArray[31] >= 3 && tileCountArray[32] >= 3 && tileCountArray[33] >= 3 && tileCountArray[34] >= 3)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return tileCountArray[31] >= 3 && tileCountArray[32] >= 3 && tileCountArray[33] >= 3 && tileCountArray[34] >= 3;
         }
 
         private bool DiHu()//地胡
         {
-            if (isFirstTile && isSelfDraw && (!isDealer))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return isFirstTile && isSelfDraw && (!isDealer);
         }
 
         private bool TianHu()//天胡
         {
-            if (isFirstTile && isSelfDraw && isDealer)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return isFirstTile && isSelfDraw && isDealer;
         }
     }
 }
