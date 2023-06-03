@@ -96,37 +96,34 @@ namespace Game.Play
         {
             foreach (var tile in tileList)
             {
-                if (tile.GetComponent<Tile>().TileType == TileType.Character)
+                TileType tileType = tile.GetComponent<Tile>().TileType;
+
+                switch (tileType)
                 {
-                    tileCountArray[0 + tile.GetComponent<Tile>().TileNumber] += 1; // 1~9 萬
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Dot)
-                {
-                    tileCountArray[10 + tile.GetComponent<Tile>().TileNumber] += 1; // 11~19 筒
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Bamboo)
-                {
-                    tileCountArray[20 + tile.GetComponent<Tile>().TileNumber] += 1; // 21~29 條
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Wind)
-                {
-                    tileCountArray[30 + tile.GetComponent<Tile>().TileNumber] += 1; // 31~34 東南西北
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Dragon)
-                {
-                    tileCountArray[34 + tile.GetComponent<Tile>().TileNumber] += 1; // 35~37 中發白
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Season)
-                {
-                    tileCountArray[40 + tile.GetComponent<Tile>().TileNumber] += 1; // 41~44 春夏秋冬
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Flower)
-                {
-                    tileCountArray[44 + tile.GetComponent<Tile>().TileNumber] += 1; // 45~48 梅蘭竹菊
-                }
-                else
-                {
-                    Debug.Log("Error tile type: " + tile.GetComponent<Tile>().TileType);
+                    case TileType.Character:
+                        tileCountArray[0 + tile.GetComponent<Tile>().TileNumber] += 1; // 1~9 萬
+                        break;
+                    case TileType.Dot:
+                        tileCountArray[10 + tile.GetComponent<Tile>().TileNumber] += 1; // 11~19 筒
+                        break;
+                    case TileType.Bamboo:
+                        tileCountArray[20 + tile.GetComponent<Tile>().TileNumber] += 1; // 21~29 條
+                        break;
+                    case TileType.Wind:
+                        tileCountArray[30 + tile.GetComponent<Tile>().TileNumber] += 1; // 31~34 東南西北
+                        break;
+                    case TileType.Dragon:
+                        tileCountArray[34 + tile.GetComponent<Tile>().TileNumber] += 1; // 35~37 中發白
+                        break;
+                    case TileType.Season:
+                        tileCountArray[40 + tile.GetComponent<Tile>().TileNumber] += 1; // 41~44 春夏秋冬
+                        break;
+                    case TileType.Flower:
+                        tileCountArray[44 + tile.GetComponent<Tile>().TileNumber] += 1; // 45~48 梅蘭竹菊
+                        break;
+                    default:
+                        Debug.Log("Error tile type: " + tileType);
+                        break;   
                 }
             }
         }
