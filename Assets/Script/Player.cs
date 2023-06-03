@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.PlayingRoom {
+namespace Game.Play {
     public class Player : MonoBehaviour
     {
         private List<GameObject> handTiles = new List<GameObject>();

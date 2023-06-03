@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.PlayingRoom {
+namespace Game.Play {
     
     public class TableManager : MonoBehaviour
     {
