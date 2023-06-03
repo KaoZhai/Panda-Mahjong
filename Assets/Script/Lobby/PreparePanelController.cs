@@ -19,16 +19,7 @@ namespace Game.Lobby
 
     public class PreparePanelController
     {
-        private bool isRoomCreater = false;
         private Dictionary<EnumPanel, GameObject> panelDict = new Dictionary<EnumPanel, GameObject>();
-
-        public bool IsRoomCreater
-        {
-            set
-            {
-                isRoomCreater = value;
-            }
-        }
 
         public void AddPanel(EnumPanel enumPanel, GameObject panel)
         {
@@ -102,7 +93,7 @@ namespace Game.Lobby
                     {
                         panelDict[EnumPanel.Waiting].SetActive(true);
                         // if current user is host, it will show game setting panel
-                        if (isRoomCreater)
+                        if (GameManager.Instance.Runner.GameMode == Fusion.GameMode.Host)
                             panelDict[EnumPanel.WaitingSetting].SetActive(true);
                     }
                     catch (ArgumentException error)

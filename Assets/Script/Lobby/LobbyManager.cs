@@ -58,8 +58,6 @@ namespace Game.Lobby
         {
             var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
 
-            gameManager.IsRoomCreater = false;
-
             if (!result.Ok)
                 Debug.LogError($"Fail to start: {result.ShutdownReason}");
         }
@@ -85,11 +83,7 @@ namespace Game.Lobby
 
 
                 if (result.Ok)
-                {
-                    gameManager.IsRoomCreater = true;
-                    preparePanelController.IsRoomCreater = true;
                     preparePanelController.OpenPanel(EnumPanel.Waiting);
-                }
                 else
                     Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
