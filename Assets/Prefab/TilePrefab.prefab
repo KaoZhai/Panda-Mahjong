@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4264947169360804689}
   - component: {fileID: 4264947169360804692}
   - component: {fileID: 4264947169360804691}
-  - component: {fileID: 4264947169360804690}
   - component: {fileID: 4264947169360804693}
+  - component: {fileID: 7646392413579146086}
   m_Layer: 5
   m_Name: TilePrefab
   m_TagString: Untagged
@@ -80,20 +80,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4264947169360804690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4264947169360804688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baa6345a8b9b91c48b88d4b9c9c10eef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tilePool: {fileID: 0}
-  hand: {fileID: 0}
 --- !u!61 &4264947169360804693
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -120,6 +106,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7646392413579146086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4264947169360804688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b90b10b2d7a324b849e6bba9e10e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8124654872113876823
 GameObject:
   m_ObjectHideFlags: 0

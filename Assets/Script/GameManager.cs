@@ -34,7 +34,10 @@ namespace Game.Core
 
         public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
 
-        private bool isRoomCreater = false;
+        public void Disconnect()
+        {
+            Runner.Shutdown(false);
+        }
 
         public void Awake()
         {
@@ -77,12 +80,6 @@ namespace Game.Core
             {
                 Runner.SetActiveScene("GamePlay");
             }
-        }
-
-        public bool IsRoomCreater
-        {
-            get { return isRoomCreater; }
-            set { isRoomCreater = value; }
         }
     }
 }
