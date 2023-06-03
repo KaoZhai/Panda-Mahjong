@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Play
 {
-    public class TaiCounter : MonoBehaviour
+    public class TaiCalculator : MonoBehaviour
     {
         private List<GameObject> handTilesList = new List<GameObject>();
         private List<GameObject> showTilesList = new List<GameObject>();
