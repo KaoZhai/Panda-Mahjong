@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.PlayingRoom {
+namespace Game.Play {
     public class TileWall : MonoBehaviour
     {
         private Vector3 startPosition;
