@@ -43,20 +43,20 @@ namespace Game.Play
         public void TaiCount(
             List<GameObject> handTilesList,
             List<GameObject> showTilesList,
-            int deckGangCnt,
-            int deckPonCnt,
-            int deckStraightCnt,
-            int faceWind,
-            int courtWind,
-            int hideGangCnt,
-            int dealerWinStreak,
-            bool isDealer,
-            bool isFirstTile,
-            bool isLastTile,
-            bool isSelfDraw,
-            bool isAfterGang,
-            bool isOnly,
-            GameObject winningTile)
+            int deckGangCnt = 0,
+            int deckPonCnt = 0,
+            int deckStraightCnt = 0,
+            int faceWind = 0,
+            int courtWind = 0,
+            int hideGangCnt = 0,
+            int dealerWinStreak = 0,
+            bool isDealer = false,
+            bool isFirstTile = false,
+            bool isLastTile = false,
+            bool isSelfDraw = false,
+            bool isAfterGang = false,
+            bool isOnly = false,
+            GameObject winningTile = null)
         {
             int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
