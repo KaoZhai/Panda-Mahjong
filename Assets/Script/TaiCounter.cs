@@ -131,7 +131,7 @@ namespace Game.Play
             }
         }
 
-        private void FindHighestTai(int[] nowTileArray, bool havePair = false, int ponCnt = 0, int straightCnt = 0)
+        private void FindHighestTai(int[] nowTileArray, bool havePair, int ponCnt, int straightCnt)
         {
             if(nowTileArray.Sum() == 0)
             {
