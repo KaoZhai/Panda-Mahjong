@@ -41,5 +41,9 @@ namespace Game.Lobby
                 playerUnits.Add(unit);
             }
         }
+
+        public void DespawnPlayerList()
+        {
+        }
     }
 }

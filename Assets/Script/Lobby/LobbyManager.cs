@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine.SceneManagement;
 using Fusion;
 using Fusion.Sockets;
 using Game.Core;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace Game.Lobby
@@ -16,13 +18,31 @@ namespace Game.Lobby
         private RoomID roomID = new RoomID();
         private GameManager gameManager = null;
         private SortedSet<string> roomNameSet = new SortedSet<string>();
+        private PreparePanelController preparePanelController = new PreparePanelController();
 
         [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
-        [SerializeField] private GameObject waitingRoomPanel = null;
-        [SerializeField] private GameObject lobbyPanel = null;
-        [SerializeField] private RoomSettingPanel waitingSettingPanel = null;
-        
+
+        public PreparePanelController PanelController
+        {
+            get
+            {
+                return preparePanelController;
+            }
+        }
+
+        public static LobbyManager Instance
+        {
+            get;
+            private set;
+        }
+
+        public void Awake()
+        {
+            if (Instance == null)
+                Instance = this;
+        }
+
         public async void Start()
         {
             gameManager = GameManager.Instance;
@@ -33,22 +53,15 @@ namespace Game.Lobby
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
         }
-        
-        #region - Lobby Related
 
         public async Task JoinLobby(NetworkRunner runner)
         {
             var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
-            
-            gameManager.IsRoomCreater = false;
 
             if (!result.Ok)
                 Debug.LogError($"Fail to start: {result.ShutdownReason}");
         }
-        
-        #endregion
 
-        #region - Room Related
         public async Task CreateRoom(string roomName, int maxPlayerNum)
         {
             if (roomNameSet.Count <= maxRoomNum && !roomNameSet.Contains(roomName))
@@ -68,15 +81,9 @@ namespace Game.Lobby
                     SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>()
                 });
 
-                gameManager.IsRoomCreater = true;
 
                 if (result.Ok)
-                {
-                    waitingRoomPanel.SetActive(true);
-                    lobbyPanel.SetActive(false);
-                    waitingSettingPanel.DisplayPannel(true);
-                }
-                
+                    preparePanelController.OpenPanel(EnumPanel.Waiting);
                 else
                     Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
@@ -88,21 +95,17 @@ namespace Game.Lobby
             var result = await gameManager.Runner.StartGame(new StartGameArgs()
             {
                 GameMode = GameMode.Client,
-                SessionName = roomName
+                SessionName = roomName,
+                Scene = SceneManager.GetActiveScene().buildIndex,
+                SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>()
             });
 
 
             if (result.Ok)
-            {
-                waitingRoomPanel.SetActive(true);
-                lobbyPanel.SetActive(false);
-            }
-
+                preparePanelController.OpenPanel(EnumPanel.Waiting);
             else
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
         }
-        
-        #endregion
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
@@ -124,29 +127,31 @@ namespace Game.Lobby
             if (gameManager.PlayerList.TryGetValue(player, out PlayerNetworkData playerNetworkData))
             {
                 runner.Despawn(playerNetworkData.Object);
-                gameManager.PlayerList.Remove(player);
-                gameManager.UpdatePlayerList();
             }
         }
 
-        private async void Disconnect()
+        public void Disconnect()
         {
-        }
-        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-        {
-            OnPlayerLeft(runner, runner.LocalPlayer);
-            Disconnect();
-        }
-        
-        public void OnDisconnectedFromServer(NetworkRunner runner)
-        {
-            GameManager.Instance.Runner.Shutdown();
         }
 
         #region - unused callbacks
         public void OnInput(NetworkRunner runner, NetworkInput input) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+
+        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+        {
+            if (gameManager.PlayerList.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+            {
+                runner.Despawn(playerNetworkData.Object);
+            }
+            Disconnect();
+        }
         public void OnConnectedToServer(NetworkRunner runner) { }
+
+        public void OnDisconnectedFromServer(NetworkRunner runner)
+        {
+            runner.Shutdown(false);
+        }
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }

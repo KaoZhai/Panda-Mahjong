@@ -25,6 +25,12 @@ namespace Game.Core
             }
         }
 
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            gameManager.PlayerList.Remove(Object.InputAuthority);
+            gameManager.UpdatePlayerList();
+        }
+
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void SetReady_RPC(bool isReady)
         {

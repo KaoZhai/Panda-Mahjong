@@ -1,15 +1,33 @@
 using UnityEngine;
-public class StartScene : MonoBehaviour
+
+namespace Game.Lobby
 {
-    // Start is called before the first frame update
-
-    public void SettingButton()
+    public class StartScene : MonoBehaviour
     {
-        // Setting Panel
-    }
+        private LobbyManager lobbyManager = null;
 
-    public void ExitButton()
-    {
-        Application.Quit();
+        public void Start()
+        {
+            lobbyManager = LobbyManager.Instance;
+            lobbyManager.PanelController.AddPanel(EnumPanel.Start, gameObject);
+            lobbyManager.PanelController.OpenPanel(EnumPanel.Start);
+        }
+
+        #region BtnCallBack
+        public void StartButton()
+        {
+            lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
+        }
+
+        public void SettingButton()
+        {
+            // Setting Panel
+        }
+
+        public void ExitButton()
+        {
+            Application.Quit();
+        }
+        #endregion
     }
 }
