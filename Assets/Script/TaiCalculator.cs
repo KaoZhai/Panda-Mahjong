@@ -84,13 +84,13 @@ namespace Game.Play
             }
             else
             {
-                TransToArray(tileCountArray, handTilesList);
+                tileCountArray = TransToArray((int[])tileCountArray.Clone(), handTilesList);
                 //recursion
                 FindHighestTai((int[])tileCountArray.Clone(), false, 0, 0);
             }
         }
 
-        private void TransToArray(int[] tileCountArray, List<GameObject> tileList)
+        private int[] TransToArray(int[] tileCountArray, List<GameObject> tileList)
         {
             foreach (var tile in tileList)
             {
@@ -124,6 +124,8 @@ namespace Game.Play
                         break;   
                 }
             }
+
+            return tileCountArray;
         }
 
         private void FindHighestTai(int[] nowTileArray, bool havePair, int ponCnt, int straightCnt)
@@ -186,8 +188,8 @@ namespace Game.Play
             int[] tileCountArray = new int[50];
 
             //將所有手牌和擺牌轉為 array
-            TransToArray(tileCountArray, handTilesList);
-            TransToArray(tileCountArray, showTilesList);
+            tileCountArray = TransToArray((int[])tileCountArray.Clone(), handTilesList);
+            tileCountArray = TransToArray((int[])tileCountArray.Clone(), showTilesList);
 
             //地胡不計門清、自摸、不求人
             //天胡不計門清、自摸、不求人、獨聽、槓上開花
@@ -404,8 +406,8 @@ namespace Game.Play
             int[] tileCountArray = new int[50];
 
             //將所有手牌和擺牌轉為 array
-            TransToArray(tileCountArray, handTilesList);
-            TransToArray(tileCountArray, showTilesList);
+            tileCountArray = TransToArray((int[])tileCountArray.Clone(), handTilesList);
+            tileCountArray = TransToArray((int[])tileCountArray.Clone(), showTilesList);
 
             //地胡不計門清、自摸、不求人
             //天胡不計門清、自摸、不求人、獨聽、槓上開花
