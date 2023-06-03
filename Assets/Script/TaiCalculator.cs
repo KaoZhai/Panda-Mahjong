@@ -40,7 +40,7 @@ namespace Game.Play
             get { return tai; }
         }
 
-        public void TaiCount(
+        public TaiCalculator(
             List<GameObject> handTilesList,
             List<GameObject> showTilesList,
             int deckGangCnt = 0,
@@ -88,8 +88,6 @@ namespace Game.Play
                 //recursion
                 FindHighestTai((int[])tileCountArray.Clone(), false, 0, 0);
             }
-
-            return;
         }
 
         private void TransToArray(int[] tileCountArray, List<GameObject> tileList)
