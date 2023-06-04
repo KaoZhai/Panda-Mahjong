@@ -19,7 +19,7 @@ namespace Game.Lobby
             gameManager = GameManager.Instance;
         }
 
-        public void Update()
+        public void OnEnable()
         {
             if (GameManager.Instance.Runner.GameMode == Fusion.GameMode.Host)
             {
