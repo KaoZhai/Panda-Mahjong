@@ -24,7 +24,7 @@ namespace Game.PlayingRoom {
         
         [SerializeField] private GameObject setPrefab = null;
 
-        private int playerId = -1;
+        private int playerIndex = -1;
         private int point;
 
         private TableManager tableManager;
@@ -35,9 +35,9 @@ namespace Game.PlayingRoom {
             set { tableManager = value; }
         }
 
-        public int PlayerId {
-            set { playerId = value; }
-            get { return playerId; }
+        public int PlayerIndex {
+            set { playerIndex = value; }
+            get { return playerIndex; }
         }
 
         public Transform Hand
@@ -150,7 +150,7 @@ namespace Game.PlayingRoom {
 
         public bool IsPlayerCanKong()
         {
-            if (((tableManager.ActivePlayerId + 1) % 4 == playerId) || tableManager.LastTile.GetComponent<Tile>().PlayerId == playerId)
+            if (((tableManager.ActivePlayerIndex + 1) % 4 == playerIndex) || tableManager.LastTile.GetComponent<Tile>().PlayerIndex == playerIndex)
             {
                 return false;
             }
@@ -171,7 +171,7 @@ namespace Game.PlayingRoom {
         
         public bool IsPlayerCanPong()
         {
-            if (tableManager.ActivePlayerId == playerId)
+            if (tableManager.ActivePlayerIndex == playerIndex)
                 return false;
             bool isCanPong = false;
             int numSame = 0;
@@ -324,9 +324,9 @@ namespace Game.PlayingRoom {
         }
         public bool IsPlayerCanChi()
         {
-            if (tableManager.ActivePlayerId == playerId)
+            if (tableManager.ActivePlayerIndex == playerIndex)
                 return false;
-            if ((tableManager.ActivePlayerId + 1) % 4 != playerId)
+            if ((tableManager.ActivePlayerIndex + 1) % 4 != playerIndex)
                 return false;
             canChiTileSet.Clear();
             Tile newTile = tableManager.LastTile.GetComponent<Tile>();

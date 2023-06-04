@@ -16,7 +16,7 @@ namespace Game.PlayingRoom {
         [SerializeField] private List<Player> players = new List<Player>();
         [SerializeField] private TileWall tileWall;
 
-        private int activePlayerId = 0;
+        private int activePlayerIndex = 0;
 
         private GameObject lastTile = null;
         
@@ -32,9 +32,9 @@ namespace Game.PlayingRoom {
             set { lastTile = value; }
             get { return lastTile; }
         }
-        public int ActivePlayerId
+        public int ActivePlayerIndex
         {
-            get { return activePlayerId; }
+            get { return activePlayerIndex; }
         }
 
 
@@ -50,7 +50,7 @@ namespace Game.PlayingRoom {
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
             {
-                players[i].PlayerId = i;
+                players[i].PlayerIndex = i;
                 players[i].TableManager = this;
             }
 
@@ -65,7 +65,7 @@ namespace Game.PlayingRoom {
 
         void OpenDoor()
         {
-            tileWall.DealTile(players[activePlayerId]);
+            tileWall.DealTile(players[activePlayerIndex]);
             int cnt = 0;
             while(cnt < 4)
             {
@@ -91,11 +91,11 @@ namespace Game.PlayingRoom {
         {
             for(int round = 0; round < 4; ++round)
             {
-                for(int playerId = 0; playerId < 4; ++playerId)
+                for(int playerIndex = 0; playerIndex < 4; ++playerIndex)
                 {
                     for(int i = 0; i < 4; ++i)
                     {
-                        tileWall.DealTile(players[playerId]);
+                        tileWall.DealTile(players[playerIndex]);
                     }
                 }
             }
@@ -111,23 +111,23 @@ namespace Game.PlayingRoom {
                 players[i] = players[j];
                 players[j] = tmp;
             }
-            activePlayerId = players[0].PlayerId;
+            activePlayerIndex = 0;
         }
 
         public void Draw()
         {
-            tileWall.DealTile(players[activePlayerId]);
-            while(!players[activePlayerId].IsDoneReplace())
+            tileWall.DealTile(players[activePlayerIndex]);
+            while(!players[activePlayerIndex].IsDoneReplace())
             {
-                players[activePlayerId].ReplaceFlower();
+                players[activePlayerIndex].ReplaceFlower();
             }
 
-            if(activePlayerId == 0 && players[0].IsPlayerCanKong())
+            if(activePlayerIndex == 0 && players[0].IsPlayerCanKong())
             {
                 SetButton(kongBtn, true);
             }
 
-            if (activePlayerId == 0 && players[0].IsPlayerCanHu(true))
+            if (activePlayerIndex == 0 && players[0].IsPlayerCanHu(true))
             {
                 SetButton(winningBtn, true);
             }
@@ -135,29 +135,29 @@ namespace Game.PlayingRoom {
 
         public void BuKong()
         {
-            tileWall.BuPai(players[activePlayerId]);
-            while(!players[activePlayerId].IsDoneReplace())
+            tileWall.BuPai(players[activePlayerIndex]);
+            while(!players[activePlayerIndex].IsDoneReplace())
             {
-                players[activePlayerId].ReplaceFlower();
+                players[activePlayerIndex].ReplaceFlower();
             }
         }
 
         public void NextPlayer() 
         {
-            activePlayerId = (activePlayerId + 1) % 4;
+            activePlayerIndex = (activePlayerIndex + 1) % 4;
         }
 
-        public void TurnToPlayer(int playerId)
+        public void TurnToPlayer(int playerIndex)
         {
-            activePlayerId = playerId;
+            activePlayerIndex = playerIndex;
         }
         //  only from single player
         public void AutoPlay()
         {
-            if(activePlayerId != 0)
+            if(activePlayerIndex != 0)
             {
                 
-                players[activePlayerId].DefaultDiscard();
+                players[activePlayerIndex].DefaultDiscard();
             }
         }
 
