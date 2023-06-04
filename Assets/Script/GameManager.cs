@@ -28,7 +28,7 @@ namespace Game.Core
             }
         }
 
-        public string PlayerName = "施衡";
+        public string playerName = "施衡";
 
         public event Action OnPlayerListUpdated = null;
 
