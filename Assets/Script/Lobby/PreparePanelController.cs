@@ -93,7 +93,7 @@ namespace Game.Lobby
                     {
                         panelDict[EnumPanel.Waiting].SetActive(true);
                         // if current user is host, it will show game setting panel
-                        if (GameManager.Instance.Runner.GameMode == Fusion.GameMode.Host)
+                        if (GameManager.Instance.Runner.IsServer)
                             panelDict[EnumPanel.WaitingSetting].SetActive(true);
                     }
                     catch (ArgumentException error)

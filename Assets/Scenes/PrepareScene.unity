@@ -6196,7 +6196,6 @@ GameObject:
   - component: {fileID: 1696768619}
   - component: {fileID: 1696768618}
   - component: {fileID: 1696768617}
-  - component: {fileID: 1696768616}
   m_Layer: 5
   m_Name: SettingPanel
   m_TagString: Untagged
@@ -6226,18 +6225,6 @@ RectTransform:
   m_AnchoredPosition: {x: 379.65796, y: -75.37158}
   m_SizeDelta: {x: -1399.2212, y: -815.52747}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &1696768616
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1696768614}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!114 &1696768617
 MonoBehaviour:
   m_ObjectHideFlags: 0
