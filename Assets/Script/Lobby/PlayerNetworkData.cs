@@ -21,7 +21,7 @@ namespace Game.Core
 
             if (Object.HasInputAuthority)
             {
-                PlayerName = gameManager.PlayerName;
+                PlayerName = gameManager.playerName;
             }
         }
 
