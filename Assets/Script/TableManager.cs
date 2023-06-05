@@ -21,6 +21,7 @@ namespace Game.Play {
         private GameObject lastTile = null;
         
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
+        [SerializeField] private GameObject roundPoints;
         
 
         public TileWall TileWall
