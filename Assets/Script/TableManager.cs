@@ -16,7 +16,7 @@ namespace Game.Play {
         [SerializeField] private List<Player> players = new List<Player>();
         [SerializeField] private TileWall tileWall;
 
-        private int activePlayerId = 0;
+        private int activePlayerIndex = 0;
 
         private GameObject lastTile = null;
         
@@ -33,9 +33,9 @@ namespace Game.Play {
             set { lastTile = value; }
             get { return lastTile; }
         }
-        public int ActivePlayerId
+        public int ActivePlayerIndex
         {
-            get { return activePlayerId; }
+            get { return activePlayerIndex; }
         }
 
 
@@ -47,12 +47,11 @@ namespace Game.Play {
 
         void Start() 
         {
-
             tileWall.GetReady(this);
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
             {
-                players[i].PlayerId = i;
+                players[i].PlayerIndex = i;
                 players[i].TableManager = this;
             }
 
@@ -60,7 +59,6 @@ namespace Game.Play {
 
             DealTiles();
             OpenDoor();
-
         }
 
 
@@ -68,7 +66,7 @@ namespace Game.Play {
 
         void OpenDoor()
         {
-            tileWall.DealTile(players[activePlayerId]);
+            tileWall.DealTile(players[activePlayerIndex]);
             int cnt = 0;
             while(cnt < 4)
             {
@@ -94,11 +92,11 @@ namespace Game.Play {
         {
             for(int round = 0; round < 4; ++round)
             {
-                for(int playerId = 0; playerId < 4; ++playerId)
+                for(int playerIndex = 0; playerIndex < 4; ++playerIndex)
                 {
                     for(int i = 0; i < 4; ++i)
                     {
-                        tileWall.DealTile(players[playerId]);
+                        tileWall.DealTile(players[playerIndex]);
                     }
                 }
             }
@@ -114,48 +112,53 @@ namespace Game.Play {
                 players[i] = players[j];
                 players[j] = tmp;
             }
-            activePlayerId = players[0].PlayerId;
+            activePlayerIndex = 0;
         }
 
         public void Draw()
         {
-            tileWall.DealTile(players[activePlayerId]);
-            while(!players[activePlayerId].IsDoneReplace())
+            tileWall.DealTile(players[activePlayerIndex]);
+            while(!players[activePlayerIndex].IsDoneReplace())
             {
-                players[activePlayerId].ReplaceFlower();
+                players[activePlayerIndex].ReplaceFlower();
             }
 
-            if(activePlayerId == 0 && players[0].IsPlayerCanKong())
+            if(activePlayerIndex == 0 && players[0].IsPlayerCanKong())
             {
                 SetButton(kongBtn, true);
+            }
+
+            if (activePlayerIndex == 0 && players[0].IsPlayerCanHu(true))
+            {
+                SetButton(winningBtn, true);
             }
         }
 
         public void BuKong()
         {
-            tileWall.BuPai(players[activePlayerId]);
-            while(!players[activePlayerId].IsDoneReplace())
+            tileWall.BuPai(players[activePlayerIndex]);
+            while(!players[activePlayerIndex].IsDoneReplace())
             {
-                players[activePlayerId].ReplaceFlower();
+                players[activePlayerIndex].ReplaceFlower();
             }
         }
 
         public void NextPlayer() 
         {
-            activePlayerId = (activePlayerId + 1) % 4;
+            activePlayerIndex = (activePlayerIndex + 1) % 4;
         }
 
-        public void TurnToPlayer(int playerId)
+        public void TurnToPlayer(int playerIndex)
         {
-            activePlayerId = playerId;
+            activePlayerIndex = playerIndex;
         }
         //  only from single player
         public void AutoPlay()
         {
-            if(activePlayerId != 0)
+            if(activePlayerIndex != 0)
             {
                 
-                players[activePlayerId].DefaultDiscard();
+                players[activePlayerIndex].DefaultDiscard();
             }
         }
 
@@ -183,6 +186,7 @@ namespace Game.Play {
         public void Win()
         {
             winningActive = true;
+            Debug.Log("Winning");
         }
 
         public IEnumerator BeforeNextPlayer()
@@ -200,6 +204,10 @@ namespace Game.Play {
             {
                 SetButton(kongBtn, true);
             }
+            if(players[0].IsPlayerCanHu(false))
+            {
+                SetButton(winningBtn, true);
+            }
             Debug.Log("開始停頓");
             // StartCoroutine(Countdown(3));
             yield return new WaitForSeconds(2f);
@@ -207,10 +215,12 @@ namespace Game.Play {
             SetButton(chiBtn, false);   
             SetButton(pongBtn, false); 
             SetButton(kongBtn, false);
+            SetButton(winningBtn, false);
             // todo: need to deal multiplayer move
             if ( winningActive )
             {
-                
+                TurnToPlayer(0);
+                winningActive = false;
             }
             else if ( kongActive )
             {

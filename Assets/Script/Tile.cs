@@ -51,7 +51,7 @@ namespace Game.Play
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
             {
                 oriPosition = self.transform.position;
             }
@@ -59,7 +59,7 @@ namespace Game.Play
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
             {
                 self.transform.position = eventData.position;
             }
@@ -67,7 +67,7 @@ namespace Game.Play
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
             {
                 if (transform.localPosition.y > 0)
                 {
@@ -83,12 +83,12 @@ namespace Game.Play
 
         private bool IsValidDrag(Transform parent, int id)
         {
-            return parent == player.Hand && id == player.PlayerId;
+            return parent == player.Hand && id == player.PlayerIndex;
         }
 
-        public int PlayerId
+        public int PlayerIndex
         {
-            get { return player.PlayerId; }
+            get { return player.PlayerIndex; }
         }
 
         public TileType TileType
