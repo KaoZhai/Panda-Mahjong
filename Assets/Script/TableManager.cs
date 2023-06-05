@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game.Core;
 
 namespace Game.Play {
     
@@ -19,9 +20,17 @@ namespace Game.Play {
         private int activePlayerIndex = 0;
 
         private GameObject lastTile = null;
+
+        private GameManager gameManager = null;
         
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
         [SerializeField] private GameObject roundPoints;
+        [SerializeField] private Text points;
+        [SerializeField] private Text underPointsChange;
+        [SerializeField] private Text upperPointsChange;
+        [SerializeField] private Text rightPointsChange;
+        [SerializeField] private Text leftPointsChange;
+        [SerializeField] private List<Text> WinningType;
         
 
         public TileWall TileWall
@@ -42,11 +51,11 @@ namespace Game.Play {
         private bool chiActive = false;
         private bool pongActive = false;
         private bool kongActive = false;
-        private bool winningActive = false;
 
 
         void Start() 
         {
+            gameManager = GameManager.Instance;
             tileWall.GetReady(this);
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
@@ -185,8 +194,57 @@ namespace Game.Play {
         }
         public void Win()
         {
-            winningActive = true;
-            Debug.Log("Winning");
+            roundPoints.SetActive(true);
+            players[0].callCalculator();
+
+            points.text = "共 "+players[0].TaiCalculator.Tai+" 台";
+            int pointsChange = 300 + 100 * players[0].TaiCalculator.Tai;
+            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[0].TaiCalculator.Tai;
+            if (players[0].IsSelfDraw)
+            {
+                underPointsChange.text = "+" + (pointsChange * 3).ToString();
+                rightPointsChange.text = "-" + pointsChange.ToString();
+                upperPointsChange.text = "-" + pointsChange.ToString();
+                leftPointsChange.text = "-" + pointsChange.ToString();
+            }
+            else if (LastTile.GetComponent<Tile>().PlayerIndex == 1)
+            {
+                underPointsChange.text = "+" + pointsChange.ToString();
+                rightPointsChange.text = "-" + pointsChange.ToString();
+                upperPointsChange.text = "+0";
+                leftPointsChange.text = "+0";
+            }
+            else if (LastTile.GetComponent<Tile>().PlayerIndex == 2)
+            {
+                underPointsChange.text = "+" + pointsChange.ToString();
+                rightPointsChange.text = "+0";
+                upperPointsChange.text = "-" + pointsChange.ToString();
+                leftPointsChange.text = "+0";
+            }
+            else if (LastTile.GetComponent<Tile>().PlayerIndex == 3)
+            {
+                underPointsChange.text = "+" + pointsChange.ToString();
+                rightPointsChange.text = "+0";
+                upperPointsChange.text = "+0";
+                leftPointsChange.text = "-" + pointsChange.ToString();
+            }
+
+            List<string> scoringList = players[0].TaiCalculator.ScoringList;
+
+            InitScoringList();
+
+            for (int i = 0; i < scoringList.Count; i++)
+            {
+                WinningType[i].text = scoringList[i];
+            }
+        }
+
+        private void InitScoringList()
+        {
+            for (int i = 0; i < 18; i++)
+            {
+                WinningType[i].text = "";
+            }
         }
 
         public IEnumerator BeforeNextPlayer()
@@ -217,12 +275,7 @@ namespace Game.Play {
             SetButton(kongBtn, false);
             SetButton(winningBtn, false);
             // todo: need to deal multiplayer move
-            if ( winningActive )
-            {
-                TurnToPlayer(0);
-                winningActive = false;
-            }
-            else if ( kongActive )
+            if ( kongActive )
             {
                 TurnToPlayer(0);
                 kongActive = false;

@@ -24,8 +24,17 @@ namespace Game.Play {
         
         [SerializeField] private GameObject setPrefab = null;
 
+        private TaiCalculator taiCalculator = new TaiCalculator(null, null);
+
         private int playerIndex = -1;
         private int point;
+        private int kongCnt = 0;
+        private int ponCnt = 0;
+        private int straightCnt = 0;
+
+        private bool isSelfDraw = false;
+        private bool isDealer = true;
+        private bool isOnly = false;
 
         private TableManager tableManager;
 
@@ -54,9 +63,19 @@ namespace Game.Play {
         {
             get { return showPool; }
         }
+
+        public TaiCalculator TaiCalculator
+        {
+            get { return taiCalculator; }
+        }
+
         public int Point {
             get { return point; }
             set { point = value; }
+        }
+
+        public bool IsSelfDraw {
+            get { return isSelfDraw; }
         }
 
         public void SortHandTiles()
@@ -193,6 +212,11 @@ namespace Game.Play {
             bool isCanHu = false;
             int[] tileCountArray = new int[50];
             TransToArray(tileCountArray, handTiles);
+
+            this.isOnly = CheckIsOnly((int[])tileCountArray.Clone());
+
+            this.isSelfDraw = isSelfDraw;
+
             if (!isSelfDraw)
             {
                 GameObject[] LastTileArray = {tableManager.LastTile};
@@ -202,6 +226,25 @@ namespace Game.Play {
 
             isCanHu = checkHu((int[])tileCountArray.Clone(), false);
             return isCanHu;
+        }
+
+        private bool CheckIsOnly(int[] nowHandArray)
+        {
+            int cnt = 0;
+            for (int i = 1; i <= 37; i++)
+            {
+                if (i == 10 || i == 20 || i == 30)
+                    continue;
+                
+                nowHandArray[i]++;
+                if (checkHu((int[])nowHandArray.Clone() ,false))
+                {
+                    cnt ++;
+                }
+                nowHandArray[i]--;
+            }
+
+            return cnt == 1;
         }
 
         // recursion
@@ -403,6 +446,7 @@ namespace Game.Play {
             
             showChiTiles.Add(tileSet);
             CloseChiSelection();
+            straightCnt++;
         }
         public void Pong()
         {
@@ -421,6 +465,7 @@ namespace Game.Play {
                     break;
             }
             showPongTiles.Add(tileSet);
+            ponCnt++;
         }
         
         public void Kong()
@@ -440,6 +485,18 @@ namespace Game.Play {
                     break;
             }
             showKongTiles.Add(tileSet);
+            kongCnt++;
+        }
+
+        public void callCalculator()
+        {
+            if (!isSelfDraw)
+            {
+                showTiles.Add(TableManager.LastTile);
+            }
+
+            this.taiCalculator = new TaiCalculator(handTiles, showTiles, kongCnt, ponCnt, straightCnt, 1, 1, 0, 0,
+            isDealer, false, false, isSelfDraw, false, isOnly);
         }
         
     }
