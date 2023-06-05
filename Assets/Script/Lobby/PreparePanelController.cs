@@ -48,7 +48,7 @@ namespace Game.Lobby
                 case EnumPanel.StartSetting:
                     try
                     {
-                        panelDict[EnumPanel.Start].SetActive(true);
+                        // panelDict[EnumPanel.Start].SetActive(true);
                         panelDict[EnumPanel.StartSetting].SetActive(true);
                     }
                     catch (ArgumentException error)

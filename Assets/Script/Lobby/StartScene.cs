@@ -21,7 +21,7 @@ namespace Game.Lobby
 
         public void SettingButton()
         {
-            // Setting Panel
+            lobbyManager.PanelController.OpenPanel(EnumPanel.StartSetting);
         }
 
         public void ExitButton()
