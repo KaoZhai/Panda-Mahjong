@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Play {
@@ -23,7 +24,7 @@ namespace Game.Play {
         
         [SerializeField] private GameObject setPrefab = null;
 
-        private int playerId = -1;
+        private int playerIndex = -1;
         private int point;
 
         private TableManager tableManager;
@@ -34,9 +35,9 @@ namespace Game.Play {
             set { tableManager = value; }
         }
 
-        public int PlayerId {
-            set { playerId = value; }
-            get { return playerId; }
+        public int PlayerIndex {
+            set { playerIndex = value; }
+            get { return playerIndex; }
         }
 
         public Transform Hand
@@ -149,7 +150,7 @@ namespace Game.Play {
 
         public bool IsPlayerCanKong()
         {
-            if ((tableManager.ActivePlayerId + 1) % 4 == playerId)
+            if (((tableManager.ActivePlayerIndex + 1) % 4 == playerIndex) || tableManager.LastTile.GetComponent<Tile>().PlayerIndex == playerIndex)
             {
                 return false;
             }
@@ -170,7 +171,7 @@ namespace Game.Play {
         
         public bool IsPlayerCanPong()
         {
-            if (tableManager.ActivePlayerId == playerId)
+            if (tableManager.ActivePlayerIndex == playerIndex)
                 return false;
             bool isCanPong = false;
             int numSame = 0;
@@ -185,6 +186,119 @@ namespace Game.Play {
 
             }
             return isCanPong;
+        }
+
+        public bool IsPlayerCanHu(bool isSelfDraw)
+        {
+            bool isCanHu = false;
+            int[] tileCountArray = new int[50];
+            TransToArray(tileCountArray, handTiles);
+            if (!isSelfDraw)
+            {
+                GameObject[] LastTileArray = {tableManager.LastTile};
+                List<GameObject> lastTile = new List<GameObject>(LastTileArray);
+                TransToArray(tileCountArray, lastTile);
+            }
+
+            isCanHu = checkHu((int[])tileCountArray.Clone(), false);
+            return isCanHu;
+        }
+
+        // recursion
+        private bool checkHu(int[] nowTileArray, bool havePair)
+        {
+            if(nowTileArray.Sum() == 0)
+            {
+                return true;
+            }
+
+            for(int i = 1; i <= 37; i++)
+            {
+                if(nowTileArray[i] == 0)
+                    continue;
+                
+                // have pair
+                if (havePair)
+                {
+                    // check straight
+                    if(nowTileArray[i] > 0 && nowTileArray[i - 1] > 0 && nowTileArray[i + 1] > 0)
+                    {
+                        nowTileArray[i - 1] -= 1;
+                        nowTileArray[i] -= 1;
+                        nowTileArray[i + 1] -= 1;
+                        if (checkHu((int[])nowTileArray.Clone(), true))
+                        {
+                            return true;
+                        }
+                        nowTileArray[i - 1] += 1;
+                        nowTileArray[i] += 1;
+                        nowTileArray[i + 1] += 1;
+                    }
+                    // check pon
+                    if(nowTileArray[i] >= 3)
+                    {
+                        nowTileArray[i] -= 3;
+                        if (checkHu((int[])nowTileArray.Clone(), true))
+                        {
+                            return true;
+                        }
+                        nowTileArray[i] += 3;
+                    }
+                }
+                // no pair yet
+                else
+                {
+                    if(nowTileArray[i] >= 2)
+                    {
+                        nowTileArray[i] -= 2;
+                        if (checkHu((int[])nowTileArray.Clone(), true))
+                        {
+                            return true;
+                        }
+                        nowTileArray[i] += 2;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void TransToArray(int[] tileCountArray, List<GameObject> tileList)
+        {
+            foreach (var tile in tileList)
+            {
+                if (tile.GetComponent<Tile>().TileType == TileType.Character)
+                {
+                    tileCountArray[0 + tile.GetComponent<Tile>().TileNumber] += 1; // 1~9 萬
+                }
+                else if (tile.GetComponent<Tile>().TileType == TileType.Dot)
+                {
+                    tileCountArray[10 + tile.GetComponent<Tile>().TileNumber] += 1; // 11~19 筒
+                }
+                else if (tile.GetComponent<Tile>().TileType == TileType.Bamboo)
+                {
+                    tileCountArray[20 + tile.GetComponent<Tile>().TileNumber] += 1; // 21~29 條
+                }
+                else if (tile.GetComponent<Tile>().TileType == TileType.Wind)
+                {
+                    tileCountArray[30 + tile.GetComponent<Tile>().TileNumber] += 1; // 31~34 東南西北
+                }
+                else if (tile.GetComponent<Tile>().TileType == TileType.Dragon)
+                {
+                    tileCountArray[34 + tile.GetComponent<Tile>().TileNumber] += 1; // 35~37 中發白
+                }
+                else if (tile.GetComponent<Tile>().TileType == TileType.Season)
+                {
+                    tileCountArray[40 + tile.GetComponent<Tile>().TileNumber] += 1; // 41~44 春夏秋冬
+                }
+                else if (tile.GetComponent<Tile>().TileType == TileType.Flower)
+                {
+                    tileCountArray[44 + tile.GetComponent<Tile>().TileNumber] += 1; // 45~48 梅蘭竹菊
+                }
+                else
+                {
+                    Debug.Log("Error tile type: " + tile.GetComponent<Tile>().TileType);
+                }
+            }
         }
 
         private List<List<GameObject>> canChiTileSet = new List<List<GameObject>>();
@@ -210,9 +324,9 @@ namespace Game.Play {
         }
         public bool IsPlayerCanChi()
         {
-            if (tableManager.ActivePlayerId == playerId)
+            if (tableManager.ActivePlayerIndex == playerIndex)
                 return false;
-            if ((tableManager.ActivePlayerId + 1) % 4 != playerId)
+            if ((tableManager.ActivePlayerIndex + 1) % 4 != playerIndex)
                 return false;
             canChiTileSet.Clear();
             Tile newTile = tableManager.LastTile.GetComponent<Tile>();
