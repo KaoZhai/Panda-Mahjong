@@ -51,6 +51,7 @@ namespace Game.Play {
         private bool chiActive = false;
         private bool pongActive = false;
         private bool kongActive = false;
+        private bool huActive = false;
 
 
         void Start() 
@@ -194,6 +195,9 @@ namespace Game.Play {
         }
         public void Win()
         {
+            huActive = true;
+            TurnToPlayer(0);
+
             roundPoints.SetActive(true);
             players[0].callCalculator();
 
@@ -275,7 +279,11 @@ namespace Game.Play {
             SetButton(kongBtn, false);
             SetButton(winningBtn, false);
             // todo: need to deal multiplayer move
-            if ( kongActive )
+            if ( huActive )
+            {
+
+            }
+            else if ( kongActive )
             {
                 TurnToPlayer(0);
                 kongActive = false;
