@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 namespace Game.Lobby
 {
@@ -6,21 +7,21 @@ namespace Game.Lobby
     {
         private LobbyManager lobbyManager = null;
 
-        [SerializeField] private int maxPlayerNum = 0;
-        [SerializeField] private int curPlayerNum = 0;
-        [SerializeField] private string roomName = null;
+        [SerializeField] private TextMeshProUGUI roomName = null;
+        [SerializeField] private TextMeshProUGUI curPlayerNum = null;
+        [SerializeField] private TextMeshProUGUI maxPlayerNum = null;
 
         public void SetInfo(LobbyManager lobbyManager, string roomName, int curPlayerNum, int maxPlayerNum)
         {
             this.lobbyManager = lobbyManager;
-            this.roomName = roomName;
-            this.curPlayerNum = curPlayerNum;
-            this.maxPlayerNum = maxPlayerNum;
+            this.roomName.text = roomName;
+            this.curPlayerNum.text = curPlayerNum.ToString();
+            this.maxPlayerNum.text = maxPlayerNum.ToString();
         }
 
         public async void OnMouseDown()
         {
-            await lobbyManager.JoinRoom(roomName);
+            await lobbyManager.JoinRoom(roomName.text);
         }
     }
 }

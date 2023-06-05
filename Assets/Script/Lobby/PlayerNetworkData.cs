@@ -21,8 +21,14 @@ namespace Game.Core
 
             if (Object.HasInputAuthority)
             {
-                PlayerName = gameManager.PlayerName;
+                PlayerName = gameManager.playerName;
             }
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            gameManager.PlayerList.Remove(Object.InputAuthority);
+            gameManager.UpdatePlayerList();
         }
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]

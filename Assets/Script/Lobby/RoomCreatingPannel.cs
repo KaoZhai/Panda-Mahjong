@@ -6,14 +6,15 @@ namespace Game.Lobby
 {
     public class RoomCreatingPannel : MonoBehaviour
     {
+        private LobbyManager lobbyManager = null;
         [SerializeField] private Dropdown dropDown = null;
-        [SerializeField] private CanvasGroup canvasGroup = null;
-        [SerializeField] private LobbyManager lobbyManager = null;
-        [SerializeField] private RoomListPannel roomListPannel = null;
         [SerializeField] private InputField roomNameInputField = null;
 
         public void Start()
         {
+            lobbyManager = LobbyManager.Instance;
+            lobbyManager.PanelController.AddPanel(EnumPanel.RoomCreating, gameObject);
+
             List<int> valueList = new List<int>();
             for (int i = 1; i <= 4; ++i)
                 valueList.Add(i);
@@ -24,25 +25,18 @@ namespace Game.Lobby
 
         public void OnCancelBtnClick()
         {
-            DisplayPannel(false);
-            roomListPannel.DisplayPannel(true);
+            lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
         }
-        
+
         public async void OnCreateRoomBtnClick()
         {
+            Debug.Log(roomNameInputField.text);
             await lobbyManager.CreateRoom(roomNameInputField.text, 4);
         }
 
         #endregion
 
         #region Helper Function
-        public void DisplayPannel(bool value)
-        {
-            canvasGroup.alpha = value ? 1 : 0;
-            canvasGroup.interactable = value;
-            canvasGroup.blocksRaycasts = value;
-        }
-        
         public void SetDropdownOptions(List<int> valueList)
         {
             if (valueList.Count > 0)
@@ -56,7 +50,7 @@ namespace Game.Lobby
                 }
             }
         }
-        
+
         public void OnDropDownChange(int itemIndex)
         {
             if (itemIndex >= dropDown.options.Count)
@@ -65,7 +59,7 @@ namespace Game.Lobby
                 itemIndex = 0;
             dropDown.value = itemIndex;
         }
+
         #endregion
-        
     }
 }

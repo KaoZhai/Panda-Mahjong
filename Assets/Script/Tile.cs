@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Game.PlayingRoom
+namespace Game.Play
 {
     public enum TileType
     {

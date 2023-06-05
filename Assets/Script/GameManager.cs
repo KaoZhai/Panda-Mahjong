@@ -28,13 +28,11 @@ namespace Game.Core
             }
         }
 
-        public string PlayerName = null;
+        public string playerName = "施衡";
 
         public event Action OnPlayerListUpdated = null;
 
         public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
-
-        private bool isRoomCreater = false;
 
         public void Disconnect()
         {
@@ -82,12 +80,6 @@ namespace Game.Core
             {
                 Runner.SetActiveScene("GamePlay");
             }
-        }
-
-        public bool IsRoomCreater
-        {
-            get { return isRoomCreater; }
-            set { isRoomCreater = value; }
         }
     }
 }

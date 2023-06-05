@@ -10,24 +10,28 @@ namespace Game.Lobby
     {
         [SerializeField] private Text panelText;
         [SerializeField] private Transform hideTrans = null;
-        [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private RoomUnit roomUnitPrefab = null;
-        [SerializeField] private LobbyManager lobbyManager = null;
         [SerializeField] private List<Transform> parentPostitions = new List<Transform>();
         private int pageIndex = 1;
         private int pageCount = 0;
         private int roomCount = 0;
+        private LobbyManager lobbyManager = null;
         private List<RoomUnit> roomList = new List<RoomUnit>();
 
-        public void DisplayPannel(bool value)
+        public void Start()
         {
-            canvasGroup.alpha = value ? 1 : 0;
-            canvasGroup.interactable = value;
-            canvasGroup.blocksRaycasts = value;
+            lobbyManager = LobbyManager.Instance;
+            lobbyManager.PanelController.AddPanel(EnumPanel.RoomList, gameObject);
         }
 
         public void UpdateRoomList(List<SessionInfo> sessionList)
         {
+            foreach (Transform parentPos in parentPostitions)
+            {
+                if (parentPos.childCount > 0)
+                    Destroy(parentPos.GetChild(0).gameObject);
+            }
+
             foreach (Transform child in hideTrans)
             {
                 Destroy(child.gameObject);
@@ -37,7 +41,7 @@ namespace Game.Lobby
             foreach (var session in sessionList)
             {
                 RoomUnit roomUnit = Instantiate(roomUnitPrefab, hideTrans);
-                roomUnit.SetInfo(lobbyManager, session.Name, session.PlayerCount, session.MaxPlayers);
+                roomUnit.GetComponent<RoomUnit>().SetInfo(lobbyManager, session.Name, session.PlayerCount, session.MaxPlayers);
                 roomList.Add(roomUnit);
             }
 
@@ -58,7 +62,7 @@ namespace Game.Lobby
         public void Previous()
         {
             pageIndex -= 1;
-            UpdatePage();            
+            UpdatePage();
         }
 
         private void UpdatePage()
