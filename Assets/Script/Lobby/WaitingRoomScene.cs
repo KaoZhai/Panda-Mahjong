@@ -17,6 +17,7 @@ namespace Game.Lobby
             lobbyManager = LobbyManager.Instance;
             lobbyManager.PanelController.AddPanel(EnumPanel.Waiting, gameObject);
             gameManager = GameManager.Instance;
+            On100BaseBtnClick();
         }
 
         public void OnEnable()
@@ -51,6 +52,24 @@ namespace Game.Lobby
             {
                 playerNetworkData.SetReady_RPC(true);
             }
+        }
+
+        public void On100BaseBtnClick()
+        {
+            gameManager.GameBasePoint = 100;
+            gameManager.GameTaiPoint = 30;
+        }
+
+        public void On300BaseBtnClick()
+        {
+            gameManager.GameBasePoint = 300;
+            gameManager.GameTaiPoint = 100;
+        }
+
+        public void On500BaseBtnClick()
+        {
+            gameManager.GameBasePoint = 500;
+            gameManager.GameTaiPoint = 200;
         }
 
         #endregion

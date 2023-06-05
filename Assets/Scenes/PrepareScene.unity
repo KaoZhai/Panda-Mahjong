@@ -1355,7 +1355,7 @@ GameObject:
   - component: {fileID: 298254673}
   - component: {fileID: 298254672}
   m_Layer: 5
-  m_Name: A
+  m_Name: 100/30
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1425,7 +1425,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 298254673}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1288045313}
+        m_TargetAssemblyTypeName: Game.Lobby.WaitingRoomScene, Assembly-CSharp
+        m_MethodName: On100BaseBtnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &298254673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2630,7 +2642,7 @@ GameObject:
   - component: {fileID: 722866494}
   - component: {fileID: 722866493}
   m_Layer: 5
-  m_Name: B
+  m_Name: 300/100
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2700,7 +2712,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 722866494}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1288045313}
+        m_TargetAssemblyTypeName: Game.Lobby.WaitingRoomScene, Assembly-CSharp
+        m_MethodName: On300BaseBtnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &722866494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3149,7 +3173,7 @@ GameObject:
   - component: {fileID: 839200098}
   - component: {fileID: 839200097}
   m_Layer: 5
-  m_Name: C
+  m_Name: 500/200
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3219,7 +3243,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 839200098}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1288045313}
+        m_TargetAssemblyTypeName: Game.Lobby.WaitingRoomScene, Assembly-CSharp
+        m_MethodName: On500BaseBtnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &839200098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3276,7 +3312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &877033380
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3716,6 +3752,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runner: {fileID: 0}
+  gameBasePoint: 0
+  gameTaiPoint: 0
   playerName: "\u65BD\u8861"
 --- !u!4 &987252866
 Transform:

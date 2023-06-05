@@ -28,9 +28,9 @@ namespace Game.Core
             }
         }
 
-        public int gameBasePoint = 0;
+        public int gameBasePoint = 100;
 
-        public int gameTaiPoint = 0;
+        public int gameTaiPoint = 30;
 
         public int GameBasePoint
         {
