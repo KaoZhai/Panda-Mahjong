@@ -12,6 +12,7 @@ namespace Game.Lobby
     {
         private LobbyManager lobbyManager = null;
         [SerializeField] private Text roomName = null;
+        [SerializeField] private Game.Music.MusicController musicController = null;
 
         public void Start()
         {
@@ -23,6 +24,7 @@ namespace Game.Lobby
 
         public void OnLeaveBtnClick()
         {
+            musicController.PlayMusic(Game.Music.EnumMusic.Start);
             lobbyManager.PanelController.OpenPanel(EnumPanel.Start);
         }
 
