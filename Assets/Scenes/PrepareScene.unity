@@ -6630,7 +6630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startBtn: {fileID: 92934254}
-  musicController: {fileID: 0}
+  musicController: {fileID: 1911474782}
 --- !u!225 &1288045314
 CanvasGroup:
   m_ObjectHideFlags: 0
