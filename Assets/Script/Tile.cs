@@ -24,14 +24,6 @@ namespace Game.Play
         }
     }
 
-    public class TileComparer : IComparer<Tile>
-    {
-        public int Compare(Tile x, Tile y)
-        {
-            return String.CompareOrdinal(x?.TileId, y?.TileId);
-        }
-    }
-
     public class Tile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         // {tile_type}_{tile_number}_{1..4}
@@ -101,9 +93,9 @@ namespace Game.Play
 
         public void SetTileId(int serialNumber) 
         {
-            id = TileType.ToString() + "_" + 
-                TileNumber.ToString() + "_" +
-                serialNumber.ToString();
+            id = TileType + "_" + 
+                TileNumber + "_" +
+                serialNumber;
         }
 
         public Player Player
