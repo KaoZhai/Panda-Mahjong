@@ -12,7 +12,7 @@ namespace Game.Music
         PlayingRoom
     }
 
-    public class MusicController : MonoBehaviour
+    public class BgmController : MonoBehaviour
     {
         private Dictionary<EnumMusic, AudioClip> musicDict = new Dictionary<EnumMusic, AudioClip>();
 
@@ -74,8 +74,14 @@ namespace Game.Music
                         Debug.Log(error);
                     }
                     break;
-                
             }
+        }
+
+        public void setVolume(float volume)
+        {
+            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+            audioSource.volume = volume;
+            audioSource.Play();
         }
     }
 

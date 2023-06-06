@@ -5,7 +5,7 @@ namespace Game.Lobby
     public class StartScene : MonoBehaviour
     {
         private LobbyManager lobbyManager = null;
-        [SerializeField] private Game.Music.MusicController musicController = null;
+        [SerializeField] private Game.Music.BgmController musicController = null;
 
         public void Start()
         {
@@ -18,7 +18,6 @@ namespace Game.Lobby
         #region BtnCallBack
         public void StartButton()
         {
-            musicController.PlayMusic(Game.Music.EnumMusic.Lobby);
             lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
         }
 
