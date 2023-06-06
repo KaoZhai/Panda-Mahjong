@@ -19,7 +19,8 @@ namespace Game.Play {
         [SerializeField] private Text points;
         [SerializeField] private List<Text> pointsChangeText;
         [SerializeField] private List<Text> winningType;
-        
+
+        private List<GameObject> buttons;
 
         public TileWall TileWall => tileWall;
 
@@ -37,12 +38,14 @@ namespace Game.Play {
         void Start() 
         {
             tileWall.GetReady();
-            // todo: player will set player id, now is 0-3
+            // TODO: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
             {
                 players[i].PlayerIndex = i;
                 players[i].TableManager = this;
             }
+
+            buttons = new List<GameObject>() { winningBtn, chiBtn, kongBtn, pongBtn };
 
             // PickSeatsAndDecideDealer();
 
@@ -50,27 +53,21 @@ namespace Game.Play {
             OpenDoor();
         }
 
-
-
+        #region - GameLogic
 
         void OpenDoor()
         {
             tileWall.DealTile(players[activePlayerIndex]);
             int cnt = 0;
+            
             while(cnt < 4)
             {
                 foreach(Player player in players)
                 {
-                    if (player.IsDoneReplace())
-                    {
-                        cnt += 1;
-                    }
-                    else
-                    {
-                        player.ReplaceFlower();
-                    }
+                    cnt += player.ReplaceFlower() ? 0 : 1;
                 }
             }
+            
             foreach(Player player in players)
             {
                 player.SortHandTiles();
@@ -93,10 +90,10 @@ namespace Game.Play {
 
         void PickSeatsAndDecideDealer()
         {
-
             for(int i = 0; i < players.Count; ++i)
             {
                 int j = Random.Range(0, players.Count);
+                
                 (players[i], players[j]) = (players[j], players[i]);
             }
             activePlayerIndex = 0;
@@ -105,10 +102,7 @@ namespace Game.Play {
         private void Draw()
         {
             tileWall.DealTile(players[activePlayerIndex]);
-            while(!players[activePlayerIndex].IsDoneReplace())
-            {
-                players[activePlayerIndex].ReplaceFlower();
-            }
+            while (players[activePlayerIndex].ReplaceFlower()) { }
 
             if(activePlayerIndex == 0 && players[0].IsPlayerCanKong())
             {
@@ -123,112 +117,10 @@ namespace Game.Play {
 
         private void BuKong()
         {
-            tileWall.BuPai(players[activePlayerIndex]);
-            while(!players[activePlayerIndex].IsDoneReplace())
-            {
-                players[activePlayerIndex].ReplaceFlower();
-            }
+            tileWall.Replenish(players[activePlayerIndex]);
+            while(players[activePlayerIndex].ReplaceFlower()) { }
         }
-
-        private void NextPlayer() 
-        {
-            activePlayerIndex = (activePlayerIndex + 1) % 4;
-        }
-
-        private void TurnToPlayer(int playerIndex)
-        {
-            activePlayerIndex = playerIndex;
-        }
-        //  only from single player
-        private void AutoPlay()
-        {
-            if(activePlayerIndex != 0)
-            {
-                
-                players[activePlayerIndex].DefaultDiscard();
-            }
-        }
-
-        IEnumerator Countdown(int second)
-        {
-            yield return new WaitForSeconds(second);
-        }
-        void SetButton(GameObject btn, bool isInteractable)
-        {
-            btn.GetComponent<Button>().interactable = isInteractable;
-        }
-
-        public void Chi()
-        {
-            chiActive = true;
-        }
-        public void Pong()
-        {
-            pongActive = true;
-        }
-        public void Kong()
-        {
-            kongActive = true;
-        }
-        public void Win()
-        {
-            huActive = true;
-            int winningPlayerIndex = 0;
-            TurnToPlayer(winningPlayerIndex);
-            EndGame(winningPlayerIndex);
-        }
-
-        private void EndGame(int winningPlayerIndex)
-        {
-            roundPoints.SetActive(true);
-            players[winningPlayerIndex].CallCalculator();
-
-            points.text = "共 "+players[winningPlayerIndex].TaiCalculator.Tai+" 台";
-
-            int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
-            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
-
-            if (players[winningPlayerIndex].IsSelfDraw)
-            {
-                pointsChangeText[winningPlayerIndex].text = "+" + (pointsChange * 3).ToString();
-                pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
-                pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
-                pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
-            }
-            else
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    if (LastTile.GetComponent<Tile>().PlayerIndex == i)
-                    {
-                        pointsChangeText[i].text = "-" + pointsChange.ToString();
-                    }
-                    else
-                    {
-                        pointsChangeText[i].text = "+0";
-                    }
-                }
-                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
-            }
-
-            List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
-
-            InitScoringList();
-
-            for (int i = 0; i < scoringList.Count; i++)
-            {
-                winningType[i].text = scoringList[i];
-            }
-        }
-
-        private void InitScoringList()
-        {
-            for (int i = 0; i < 18; i++)
-            {
-                winningType[i].text = "";
-            }
-        }
-
+        
         public IEnumerator BeforeNextPlayer()
         {
             // only control local player's button
@@ -248,15 +140,13 @@ namespace Game.Play {
             {
                 SetButton(winningBtn, true);
             }
-            Debug.Log("開始停頓");
             // StartCoroutine(Countdown(3));
             yield return new WaitForSeconds(2f);
-            Debug.Log("停頓結束");
-            SetButton(chiBtn, false);   
-            SetButton(pongBtn, false); 
-            SetButton(kongBtn, false);
-            SetButton(winningBtn, false);
-            // todo: need to deal multiplayer move
+            foreach (var button in buttons)
+            {
+                SetButton(button, false);
+            }
+            // TODO: need to deal multiplayer move
             if ( huActive )
             {
 
@@ -286,5 +176,115 @@ namespace Game.Play {
             
         }
 
+        #endregion
+
+        #region - BtnCallBack
+
+        public void Chi()
+        {
+            chiActive = true;
+        }
+        public void Pong()
+        {
+            pongActive = true;
+        }
+        public void Kong()
+        {
+            kongActive = true;
+        }
+        public void Win()
+        {
+            huActive = true;
+            // TODO: need to do multi player judge
+            int winningPlayerIndex = 0;
+            TurnToPlayer(winningPlayerIndex);
+            EndGame(winningPlayerIndex);
+        }
+
+        #endregion
+
+        #region - HelperFunction
+        
+        IEnumerator Countdown(int second)
+        {
+            yield return new WaitForSeconds(second);
+        }
+        
+        private void NextPlayer() 
+        {
+            activePlayerIndex = (activePlayerIndex + 1) % 4;
+        }
+
+        private void TurnToPlayer(int playerIndex)
+        {
+            activePlayerIndex = playerIndex;
+        }
+        //  only from single player
+
+        
+        private void AutoPlay()
+        {
+            if(activePlayerIndex != 0)
+            {
+                players[activePlayerIndex].DefaultDiscard();
+            }
+        }
+
+        private void SetButton(GameObject btn, bool isInteractable)
+        {
+            btn.GetComponent<Button>().interactable = isInteractable;
+        }
+        private void EndGame(int winningPlayerIndex)
+        {
+            roundPoints.SetActive(true);
+            players[winningPlayerIndex].CallCalculator();
+
+            points.text = "共 "+players[winningPlayerIndex].TaiCalculator.Tai+" 台";
+
+            int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
+            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
+
+            if (players[winningPlayerIndex].IsSelfDraw)
+            {
+                pointsChangeText[winningPlayerIndex].text = "+" + (pointsChange * 3);
+                pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange;
+                pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange;
+                pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange;
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (LastTile.GetComponent<Tile>().PlayerIndex == i)
+                    {
+                        pointsChangeText[i].text = "-" + pointsChange;
+                    }
+                    else
+                    {
+                        pointsChangeText[i].text = "+0";
+                    }
+                }
+                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange;
+            }
+
+            List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
+
+            InitScoringList();
+
+            for (int i = 0; i < scoringList.Count; i++)
+            {
+                winningType[i].text = scoringList[i];
+            }
+        }
+        
+        private void InitScoringList()
+        {
+            for (int i = 0; i < 18; i++)
+            {
+                winningType[i].text = "";
+            }
+        }
+
+        #endregion
     }
 }
