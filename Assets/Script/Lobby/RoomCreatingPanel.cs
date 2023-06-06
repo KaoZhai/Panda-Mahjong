@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 namespace Game.Lobby
 {
-    public class RoomCreatingPannel : MonoBehaviour
+    public class RoomCreatingPanel : MonoBehaviour
     {
         private LobbyManager lobbyManager = null;
         [SerializeField] private Dropdown dropDown = null;
         [SerializeField] private InputField roomNameInputField = null;
-        [SerializeField] private Game.Music.BgmController musicController = null;
+        [SerializeField] private Music.BgmController musicController = null;
 
         public void Start()
         {

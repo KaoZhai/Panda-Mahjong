@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using Game.Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.Lobby
 {
     public class StartSettingPanel : MonoBehaviour
     {
+        [SerializeField] private InputField playerName;
         private LobbyManager lobbyManager = null;
         // Start is called before the first frame update
         public void Start()
@@ -20,6 +21,11 @@ namespace Game.Lobby
         public void OnLeaveBtnClick()
         {
             lobbyManager.PanelController.OpenPanel(EnumPanel.Start);
+        }
+        
+        public void OnPlayerNameChanged()
+        {
+            GameManager.Instance.PlayerName = playerName.text;
         }
 
         #endregion
