@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Game.Core;
+using UnityEngine.SceneManagement;
 
 namespace Game.Play {
     
@@ -305,6 +306,15 @@ namespace Game.Play {
             }
             
         }
+
+        #region BtnCallBack
+
+        public void OnCloseBtn()
+        {
+            SceneManager.LoadScene("PrepareScene");
+        }
+
+        #endregion
 
     }
 }
