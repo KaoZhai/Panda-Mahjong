@@ -1,3 +1,4 @@
+using System;
 using Fusion;
 
 namespace Game.Core
@@ -9,7 +10,7 @@ namespace Game.Core
         [Networked] public string PlayerName { get; private set; }
 
         [Networked] public Guid PlayerID { get; set; }
-        [Networked] public string PlayerName { get; set; }
+
         [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 
         public override void Spawned()
