@@ -213,12 +213,11 @@ namespace Game.Play {
             int[] tileCountArray = new int[50];
             TransToArray(tileCountArray, handTiles);
 
-            this.isOnly = CheckIsOnly((int[])tileCountArray.Clone());
-
             this.isSelfDraw = isSelfDraw;
 
             if (!isSelfDraw)
             {
+                this.isOnly = CheckIsOnly((int[])tileCountArray.Clone());
                 GameObject[] LastTileArray = {tableManager.LastTile};
                 List<GameObject> lastTile = new List<GameObject>(LastTileArray);
                 TransToArray(tileCountArray, lastTile);
