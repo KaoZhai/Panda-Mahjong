@@ -24,7 +24,7 @@ namespace Game.Play {
             GenerateAllTile();
             Shuffle();
         }
-        void SetTileFace(GameObject mahjong)
+        private void SetTileFace(GameObject mahjong)
         {
             int cardFaceIndex = mahjong.GetComponent<Tile>().CardFaceIndex;
             GameObject face = mahjong.transform.Find("Face").gameObject;
@@ -41,7 +41,7 @@ namespace Game.Play {
             
         }
 
-        void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
+        private void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
         {
             GameObject tileObj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
             Tile tile =  tileObj.GetComponent<Tile>();
@@ -62,7 +62,7 @@ namespace Game.Play {
             SetTileFace(tileObj);
         }
 
-        void GenerateAllTile()
+        private void GenerateAllTile()
         {
             int cardFaceIndex = 1;
             // Season       1-4
@@ -155,7 +155,7 @@ namespace Game.Play {
         }
 
 
-        void Shuffle()
+        private void Shuffle()
         {
             for(int i = 0; i < tileList.Count; ++i)
             {

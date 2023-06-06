@@ -44,7 +44,7 @@ namespace Game.Play
         private Transform self;
         private Vector3 oriPosition;
 
-        void Start()
+        public void Start()
         {
             self = GetComponent<Transform>();
         }

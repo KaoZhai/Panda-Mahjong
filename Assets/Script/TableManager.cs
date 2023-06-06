@@ -51,7 +51,7 @@ namespace Game.Play {
         private bool huActive = false;
 
 
-        void Start() 
+        public void Start() 
         {
             gameManager = GameManager.Instance;
             tileWall.GetReady(this);
@@ -71,7 +71,7 @@ namespace Game.Play {
 
 
 
-        void OpenDoor()
+        private void OpenDoor()
         {
             tileWall.DealTile(players[activePlayerIndex]);
             int cnt = 0;
@@ -95,7 +95,7 @@ namespace Game.Play {
             }
         }
 
-        void DealTiles()
+        private void DealTiles()
         {
             for(int round = 0; round < 4; ++round)
             {
@@ -109,7 +109,7 @@ namespace Game.Play {
             }
         }
 
-        void PickSeatsAndDecideDealer()
+        private void PickSeatsAndDecideDealer()
         {
 
             for(int i = 0; i < players.Count; ++i)
@@ -169,11 +169,7 @@ namespace Game.Play {
             }
         }
 
-        IEnumerator Countdown(int second)
-        {
-            yield return new WaitForSeconds(1f);
-        }
-        void SetButton(GameObject btn, bool isInteractable)
+        private void SetButton(GameObject btn, bool isInteractable)
         {
             btn.GetComponent<Button>().interactable = isInteractable;
         }

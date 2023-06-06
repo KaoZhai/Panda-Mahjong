@@ -44,7 +44,8 @@ namespace Game.Play {
             set { tableManager = value; }
         }
 
-        public int PlayerIndex {
+        public int PlayerIndex 
+        {
             set { playerIndex = value; }
             get { return playerIndex; }
         }
@@ -69,12 +70,14 @@ namespace Game.Play {
             get { return taiCalculator; }
         }
 
-        public int Point {
+        public int Point 
+        {
             get { return point; }
             set { point = value; }
         }
 
-        public bool IsSelfDraw {
+        public bool IsSelfDraw 
+        {
             get { return isSelfDraw; }
         }
 
@@ -111,14 +114,14 @@ namespace Game.Play {
             return isDone;
         }
         
-        void ShowTile(int indexOfHandTiles)
+        private void ShowTile(int indexOfHandTiles)
         {
             handTiles[indexOfHandTiles].transform.SetParent(showPool, false);
             showTiles.Add(handTiles[indexOfHandTiles]);
             handTiles.RemoveAt(indexOfHandTiles);
         }
 
-        void TakeTileFromOther()
+        private void TakeTileFromOther()
         {
             tableManager.LastTile.transform.SetParent(showPool, false);
             showTiles.Add(tableManager.LastTile);
@@ -223,7 +226,7 @@ namespace Game.Play {
                 TransToArray(tileCountArray, lastTile);
             }
 
-            isCanHu = checkHu((int[])tileCountArray.Clone(), false);
+            isCanHu = CheckHu((int[])tileCountArray.Clone(), false);
             return isCanHu;
         }
 
@@ -236,7 +239,7 @@ namespace Game.Play {
                     continue;
                 
                 nowHandArray[i]++;
-                if (checkHu((int[])nowHandArray.Clone() ,false))
+                if (CheckHu((int[])nowHandArray.Clone() ,false))
                 {
                     cnt ++;
                 }
@@ -247,7 +250,7 @@ namespace Game.Play {
         }
 
         // recursion
-        private bool checkHu(int[] nowTileArray, bool havePair)
+        private bool CheckHu(int[] nowTileArray, bool havePair)
         {
             if(nowTileArray.Sum() == 0)
             {
@@ -268,7 +271,7 @@ namespace Game.Play {
                         nowTileArray[i - 1] -= 1;
                         nowTileArray[i] -= 1;
                         nowTileArray[i + 1] -= 1;
-                        if (checkHu((int[])nowTileArray.Clone(), true))
+                        if (CheckHu((int[])nowTileArray.Clone(), true))
                         {
                             return true;
                         }
@@ -280,7 +283,7 @@ namespace Game.Play {
                     if(nowTileArray[i] >= 3)
                     {
                         nowTileArray[i] -= 3;
-                        if (checkHu((int[])nowTileArray.Clone(), true))
+                        if (CheckHu((int[])nowTileArray.Clone(), true))
                         {
                             return true;
                         }
@@ -293,7 +296,7 @@ namespace Game.Play {
                     if(nowTileArray[i] >= 2)
                     {
                         nowTileArray[i] -= 2;
-                        if (checkHu((int[])nowTileArray.Clone(), true))
+                        if (CheckHu((int[])nowTileArray.Clone(), true))
                         {
                             return true;
                         }
@@ -344,7 +347,7 @@ namespace Game.Play {
         }
 
         private List<List<GameObject>> canChiTileSet = new List<List<GameObject>>();
-        bool Find(TileType tileType, int lostA, int lostB)
+        private bool Find(TileType tileType, int lostA, int lostB)
         {
             if (lostA < 1 || lostB > 9)
                 return false; 
@@ -404,7 +407,7 @@ namespace Game.Play {
             }
         }
 
-        void CloseChiSelection()
+        private void CloseChiSelection()
         {
             chiTileSets.SetActive(false);
             Transform[] children = chiTileSets.GetComponentsInChildren<Transform>();

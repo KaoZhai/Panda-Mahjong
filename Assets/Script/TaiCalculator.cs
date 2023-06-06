@@ -24,11 +24,6 @@ namespace Game.Play
         private bool isAfterGang = false;
         private bool isOnly = false;
         private int tai = 0;
-
-        public void Start()
-        {
-        }
-
         public List<string> ScoringList
         {
             get { return scoringList; }
