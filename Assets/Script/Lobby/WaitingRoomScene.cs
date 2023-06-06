@@ -11,6 +11,7 @@ namespace Game.Lobby
         private GameManager gameManager = null;
 
         [SerializeField] private GameObject startBtn = null;
+        [SerializeField] private Game.Music.BgmController musicController = null;
 
         public void Start()
         {
@@ -37,6 +38,7 @@ namespace Game.Lobby
         public void OnLeaveBtnClick()
         {
             GameManager.Instance.Disconnect();
+            musicController.PlayMusic(Game.Music.EnumMusic.Start);
             lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
         }
 

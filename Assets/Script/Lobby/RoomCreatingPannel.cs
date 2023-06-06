@@ -9,6 +9,7 @@ namespace Game.Lobby
         private LobbyManager lobbyManager = null;
         [SerializeField] private Dropdown dropDown = null;
         [SerializeField] private InputField roomNameInputField = null;
+        [SerializeField] private Game.Music.BgmController musicController = null;
 
         public void Start()
         {
@@ -25,6 +26,7 @@ namespace Game.Lobby
 
         public void OnCancelBtnClick()
         {
+            musicController.PlayMusic(Game.Music.EnumMusic.Start);
             lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
         }
 
@@ -32,6 +34,7 @@ namespace Game.Lobby
         {
             Debug.Log(roomNameInputField.text);
             await lobbyManager.CreateRoom(roomNameInputField.text, 4);
+            musicController.PlayMusic(Game.Music.EnumMusic.Lobby);
         }
 
         #endregion
