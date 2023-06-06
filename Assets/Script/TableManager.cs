@@ -215,29 +215,20 @@ namespace Game.Play {
                 pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
                 pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
             }
-            else if (LastTile.GetComponent<Tile>().PlayerIndex == 1)
+            else
             {
-                pointsChangeText[0].text = "+0";
-                pointsChangeText[2].text = "+0";
-                pointsChangeText[3].text = "+0";
+                for (int i = 0; i < 4; i++)
+                {
+                    if (LastTile.GetComponent<Tile>().PlayerIndex == i)
+                    {
+                        pointsChangeText[i].text = "-" + pointsChange.ToString();
+                    }
+                    else
+                    {
+                        pointsChangeText[i].text = "+0";
+                    }
+                }
                 pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
-                pointsChangeText[1].text = "-" + pointsChange.ToString();
-            }
-            else if (LastTile.GetComponent<Tile>().PlayerIndex == 2)
-            {
-                pointsChangeText[0].text = "+0";
-                pointsChangeText[1].text = "+0";
-                pointsChangeText[3].text = "+0";
-                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
-                pointsChangeText[2].text = "-" + pointsChange.ToString();
-            }
-            else if (LastTile.GetComponent<Tile>().PlayerIndex == 3)
-            {
-                pointsChangeText[0].text = "+0";
-                pointsChangeText[1].text = "+0";
-                pointsChangeText[2].text = "+0";
-                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
-                pointsChangeText[3].text = "-" + pointsChange.ToString();
             }
 
             List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
