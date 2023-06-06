@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UnityEngine.Serialization;
 
 namespace Game.Core
 {
@@ -13,7 +14,7 @@ namespace Game.Core
             private set;
         }
 
-        [SerializeField] private NetworkRunner runner = null;
+        [SerializeField] private NetworkRunner runner;
 
         public NetworkRunner Runner
         {
@@ -28,29 +29,18 @@ namespace Game.Core
             }
         }
 
-        public int gameBasePoint = 100;
+        public int GameBasePoint { get; set; } = 100;
 
-        public int gameTaiPoint = 30;
+        public int GameTaiPoint { get; set; } = 30;
 
-        public int GameBasePoint
-        {
-            get { return gameBasePoint; }
-            set { gameBasePoint = value; }
-        }
+        public string PlayerName { get; set; } = "User";
 
-        public int GameTaiPoint
-        {
-            get { return gameTaiPoint; }
-            set { gameTaiPoint = value; }
-        }
 
-        public string playerName = "施衡";
+        public event Action OnPlayerListUpdated;
 
         private Guid playerID = Guid.NewGuid();
 
-        public event Action OnPlayerListUpdated = null;
-
-        public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
+        [FormerlySerializedAs("playerList")] public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
 
         public Guid PlayerID
         {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.Core;
@@ -24,8 +23,7 @@ namespace Game.Lobby
         public void AddPanel(EnumPanel enumPanel, GameObject panel)
         {
             Debug.Log($"add panel: {enumPanel}");
-            if (!panelDict.ContainsKey(enumPanel))
-                panelDict.Add(enumPanel, panel);
+            panelDict.TryAdd(enumPanel, panel);
         }
 
         public void OpenPanel(EnumPanel enumPanel)

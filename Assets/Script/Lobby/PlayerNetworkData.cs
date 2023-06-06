@@ -1,10 +1,12 @@
-using System;
 using Fusion;
+
 namespace Game.Core
 {
     public class PlayerNetworkData : NetworkBehaviour
     {
-        private GameManager gameManager = null;
+        private GameManager gameManager;
+
+        [Networked] public string PlayerName { get; private set; }
 
         [Networked] public Guid PlayerID { get; set; }
         [Networked] public string PlayerName { get; set; }
@@ -21,8 +23,8 @@ namespace Game.Core
 
             if (Object.HasInputAuthority)
             {
+                PlayerName = gameManager.PlayerName;
                 PlayerID = gameManager.PlayerID;
-                PlayerName = gameManager.playerName;
             }
         }
 

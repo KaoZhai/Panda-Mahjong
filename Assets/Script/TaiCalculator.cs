@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,37 +6,31 @@ namespace Game.Play
 {
     public class TaiCalculator
     {
-        private List<GameObject> handTilesList = new List<GameObject>();
-        private List<GameObject> showTilesList = new List<GameObject>();
+        private readonly List<GameObject> handTilesList;
+        private readonly List<GameObject> showTilesList;
         private List<string> scoringList = new List<string>();
-        private int deckGangCnt = 0;
-        private int deckPonCnt = 0;
-        private int deckStraightCnt = 0;
-        private int faceWind = 0; //門風 1東2南3西4北
-        private int courtWind = 0; //場風 1東2南3西4北
-        private int hideGangCnt = 0;
-        private int dealerWinStreak = 0;
-        private bool isDealer = false;
-        private bool isFirstTile = false;
-        private bool isLastTile = false;
-        private bool isSelfDraw = false;
-        private bool isAfterGang = false;
-        private bool isOnly = false;
-        private int tai = 0;
+        private readonly int deckGangCnt;
+        private readonly int deckPonCnt;
+        private readonly int deckStraightCnt;
+        private readonly int faceWind; //門風 1東2南3西4北
+        private readonly int courtWind; //場風 1東2南3西4北
+        private readonly int hideGangCnt;
+        private readonly int dealerWinStreak;
+        private readonly bool isDealer;
+        private readonly bool isFirstTile;
+        private readonly bool isLastTile;
+        private readonly bool isSelfDraw;
+        private readonly bool isAfterGang;
+        private readonly bool isOnly;
+        private int tai;
 
         public void Start()
         {
         }
 
-        public List<string> ScoringList
-        {
-            get { return scoringList; }
-        }
+        public List<string> ScoringList => scoringList;
 
-        public int Tai
-        {
-            get { return tai; }
-        }
+        public int Tai => tai;
 
         public TaiCalculator(
             List<GameObject> handTilesList,
@@ -78,7 +71,7 @@ namespace Game.Play
             {
                 tileCountArray = TransToArray((int[])tileCountArray.Clone(), handTilesList);
                 //recursion
-                FindHighestTai((int[])tileCountArray.Clone(), false, 0, 0);
+                FindHighestTai((int[])tileCountArray.Clone(), false, 0);
             }
         }
 
@@ -120,15 +113,15 @@ namespace Game.Play
             return tileCountArray;
         }
 
-        private void FindHighestTai(int[] nowTileArray, bool havePair, int ponCnt, int straightCnt)
+        private void FindHighestTai(int[] nowTileArray, bool havePair, int ponCnt)
         {
             if((isSelfDraw && nowTileArray.Sum() == 0) || ((!isSelfDraw) && nowTileArray.Sum() == 2))
             {
-                int tmpTai = CalculateTai(ponCnt, straightCnt);
+                int tmpTai = CalculateTai(ponCnt);
                 if (tmpTai > this.tai)
                 {
                     this.tai = tmpTai;
-                    this.scoringList = CalculateScoring(ponCnt, straightCnt);
+                    this.scoringList = CalculateScoring(ponCnt);
                 }
                 return;
             }
@@ -147,7 +140,7 @@ namespace Game.Play
                         nowTileArray[i - 1] -= 1;
                         nowTileArray[i] -= 1;
                         nowTileArray[i + 1] -= 1;
-                        FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt, straightCnt + 1);
+                        FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt);
                         nowTileArray[i - 1] += 1;
                         nowTileArray[i] += 1;
                         nowTileArray[i + 1] += 1;
@@ -156,7 +149,7 @@ namespace Game.Play
                     if(nowTileArray[i] >= 3)
                     {
                         nowTileArray[i] -= 3;
-                        FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt + 1, straightCnt);
+                        FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt + 1);
                         nowTileArray[i] += 3;
                     }
                 }
@@ -166,15 +159,14 @@ namespace Game.Play
                     if(nowTileArray[i] >= 2)
                     {
                         nowTileArray[i] -= 2;
-                        FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt, straightCnt);
+                        FindHighestTai((int[])nowTileArray.Clone(), true, ponCnt);
                         nowTileArray[i] += 2;
                     }
                 }
             }
-            return;
         }
 
-        private int CalculateTai(int handPonCnt = 0, int handStraightCnt = 0)
+        private int CalculateTai(int handPonCnt = 0)
         {
             int calTai = 0;
             int[] tileCountArray = new int[50];
@@ -383,7 +375,7 @@ namespace Game.Play
             return calTai;
         }
 
-        private List<string> CalculateScoring(int handPonCnt = 0, int handStraightCnt = 0)
+        private List<string> CalculateScoring(int handPonCnt = 0)
         {
             List<string> calScoring = new List<string>();
             int[] tileCountArray = new int[50];

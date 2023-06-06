@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GenerateTile : MonoBehaviour
@@ -37,7 +34,7 @@ public class GenerateTile : MonoBehaviour
                 {
                     Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardIndex.ToString());
                 }
-                mahjong.name = string.Format("Mahjong_{0}_{1}", i + 1, j);
+                mahjong.name = $"Mahjong_{i + 1}_{j}";
                 ++cardIndex;
             }
         }

@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 namespace Game.Lobby
 {
-    public class RoomCreatingPannel : MonoBehaviour
+    public class RoomCreatingPanel : MonoBehaviour
     {
-        private LobbyManager lobbyManager = null;
-        [SerializeField] private Dropdown dropDown = null;
-        [SerializeField] private InputField roomNameInputField = null;
-        [SerializeField] private Game.Music.BgmController musicController = null;
+        private LobbyManager lobbyManager;
+        [SerializeField] private Dropdown dropDown;
+        [SerializeField] private InputField roomNameInputField;
+        [SerializeField] private Music.BgmController musicController;
 
         public void Start()
         {
@@ -22,11 +22,11 @@ namespace Game.Lobby
             SetDropdownOptions(valueList);
         }
 
-        #region BtnCallBack
+        #region - BtnCallBack
 
         public void OnCancelBtnClick()
         {
-            musicController.PlayMusic(Game.Music.EnumMusic.Start);
+            musicController.PlayMusic(Music.EnumMusic.Start);
             lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
         }
 
@@ -34,21 +34,24 @@ namespace Game.Lobby
         {
             Debug.Log(roomNameInputField.text);
             await lobbyManager.CreateRoom(roomNameInputField.text, 4);
-            musicController.PlayMusic(Game.Music.EnumMusic.Lobby);
+            musicController.PlayMusic(Music.EnumMusic.Lobby);
         }
 
         #endregion
 
-        #region Helper Function
-        public void SetDropdownOptions(List<int> valueList)
+        #region - Helper Function
+
+        private void SetDropdownOptions(List<int> valueList)
         {
             if (valueList.Count > 0)
             {
                 dropDown.ClearOptions();
                 foreach (int value in valueList)
                 {
-                    Dropdown.OptionData data = new Dropdown.OptionData();
-                    data.text = value.ToString();
+                    Dropdown.OptionData data = new Dropdown.OptionData
+                    {
+                        text = value.ToString()
+                    };
                     dropDown.options.Add(data);
                 }
             }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,17 +5,17 @@ using Fusion;
 
 namespace Game.Lobby
 {
-    public class RoomListPannel : MonoBehaviour
+    public class RoomListPanel : MonoBehaviour
     {
         [SerializeField] private Text panelText;
-        [SerializeField] private Transform hideTrans = null;
-        [SerializeField] private RoomUnit roomUnitPrefab = null;
-        [SerializeField] private List<Transform> parentPostitions = new List<Transform>();
+        [SerializeField] private Transform hideTrans;
+        [SerializeField] private RoomUnit roomUnitPrefab;
+        [SerializeField] private List<Transform> parentPositions = new List<Transform>();
         private int pageIndex = 1;
-        private int pageCount = 0;
-        private int roomCount = 0;
-        private LobbyManager lobbyManager = null;
-        private List<RoomUnit> roomList = new List<RoomUnit>();
+        private int pageCount;
+        private int roomCount;
+        private LobbyManager lobbyManager;
+        private readonly List<RoomUnit> roomList = new List<RoomUnit>();
 
         public void Start()
         {
@@ -26,7 +25,7 @@ namespace Game.Lobby
 
         public void UpdateRoomList(List<SessionInfo> sessionList)
         {
-            foreach (Transform parentPos in parentPostitions)
+            foreach (Transform parentPos in parentPositions)
             {
                 if (parentPos.childCount > 0)
                     Destroy(parentPos.GetChild(0).gameObject);
@@ -48,7 +47,7 @@ namespace Game.Lobby
             roomCount = roomList.Count;
             pageCount = (roomCount % 8) == 0 ? roomCount / 8 : (roomCount / 8) + 1;
             BindPage(pageIndex);
-            panelText.text = string.Format("{0}/{1}", pageIndex.ToString(), pageCount.ToString());
+            panelText.text = $"{pageIndex.ToString()}/{pageCount.ToString()}";
 
             Debug.Log($"room count: {roomCount}");
         }
@@ -71,7 +70,7 @@ namespace Game.Lobby
             pageIndex = Mathf.Min(pageIndex, pageCount);
 
             BindPage(pageIndex);
-            panelText.text = string.Format("{0}/{1}", pageIndex.ToString(), pageCount.ToString());
+            panelText.text = $"{pageIndex.ToString()}/{pageCount.ToString()}";
         }
 
         private void BindPage(int index)
@@ -87,7 +86,7 @@ namespace Game.Lobby
 
             for (int i = 0, j = 8 * (index - 1); j < Mathf.Min(8 * index, roomCount); i++, j++)
             {
-                roomList[j].transform.SetParent(parentPostitions[i]);
+                roomList[j].transform.SetParent(parentPositions[i]);
                 roomList[j].transform.localPosition = new Vector3(0, 0, 0);
             }
         }
