@@ -8,18 +8,10 @@ namespace Game.Play {
         private Vector3 startPosition;
         [SerializeField] private Transform transformTileWall;
         [SerializeField] private GameObject mahjongPrefab; // 麻將Prefab
-        private readonly List<GameObject> tileList = new List<GameObject>();
+        private readonly List<GameObject> tileList = new();
 
-        private TableManager tableManager;
-
-        public TableManager TableManager {
-            set => tableManager = value;
-        }
-
-        public void GetReady(TableManager currentTableManager)
+        public void GetReady()
         {
-            Debug.Log(tableManager);
-            this.tableManager = currentTableManager;
             GenerateAllTile();
             Shuffle();
         }
@@ -48,7 +40,6 @@ namespace Game.Play {
             {
                 Debug.LogError("沒有 tile_script");
             }
-            tile.SetTableManager(tableManager);
 
             // tile info
             tile.TileType = tileType;

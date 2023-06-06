@@ -171,12 +171,12 @@ namespace Game.Play {
             return isCanPong;
         }
 
-        public bool IsPlayerCanHu(bool isSelfDraw)
+        public bool IsPlayerCanHu(bool selfDraw)
         {
             int[] tileCountArray = new int[50];
             TransToArray(tileCountArray, handTiles);
 
-            this.isSelfDraw = isSelfDraw;
+            isSelfDraw = selfDraw;
 
             if (!isSelfDraw)
             {
@@ -305,7 +305,7 @@ namespace Game.Play {
             }
         }
 
-        private List<List<GameObject>> canChiTileSet = new();
+        private readonly List<List<GameObject>> canChiTileSet = new();
         bool Find(TileType tileType, int lostA, int lostB)
         {
             if (lostA < 1 || lostB > 9)

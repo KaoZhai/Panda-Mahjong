@@ -14,8 +14,6 @@ namespace Game.Play {
 
         private int activePlayerIndex;
 
-        private GameObject lastTile;
-
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
         [SerializeField] private GameObject roundPoints;
         [SerializeField] private Text points;
@@ -23,19 +21,11 @@ namespace Game.Play {
         [SerializeField] private List<Text> winningType;
         
 
-        public TileWall TileWall
-        {
-            get { return tileWall;}
-        }
-        public GameObject LastTile
-        {
-            set { lastTile = value; }
-            get { return lastTile; }
-        }
-        public int ActivePlayerIndex
-        {
-            get { return activePlayerIndex; }
-        }
+        public TileWall TileWall => tileWall;
+
+        public GameObject LastTile { set; get; }
+
+        public int ActivePlayerIndex => activePlayerIndex;
 
 
         private bool chiActive;
@@ -46,7 +36,7 @@ namespace Game.Play {
 
         void Start() 
         {
-            tileWall.GetReady(this);
+            tileWall.GetReady();
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
             {
@@ -112,7 +102,7 @@ namespace Game.Play {
             activePlayerIndex = 0;
         }
 
-        public void Draw()
+        private void Draw()
         {
             tileWall.DealTile(players[activePlayerIndex]);
             while(!players[activePlayerIndex].IsDoneReplace())
@@ -131,7 +121,7 @@ namespace Game.Play {
             }
         }
 
-        public void BuKong()
+        private void BuKong()
         {
             tileWall.BuPai(players[activePlayerIndex]);
             while(!players[activePlayerIndex].IsDoneReplace())
@@ -140,17 +130,17 @@ namespace Game.Play {
             }
         }
 
-        public void NextPlayer() 
+        private void NextPlayer() 
         {
             activePlayerIndex = (activePlayerIndex + 1) % 4;
         }
 
-        public void TurnToPlayer(int playerIndex)
+        private void TurnToPlayer(int playerIndex)
         {
             activePlayerIndex = playerIndex;
         }
         //  only from single player
-        public void AutoPlay()
+        private void AutoPlay()
         {
             if(activePlayerIndex != 0)
             {
