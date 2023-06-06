@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,6 +21,8 @@ namespace Game.Play
         {
             get => playerList[networkRunner.LocalPlayer];
         }
+
+        public Dictionary<PlayerRef, PlayerController> PlayerList { get => playerList; }
 
         public void Start()
         {
@@ -53,7 +54,7 @@ namespace Game.Play
             if (playerList.TryGetValue(player, out PlayerController playerController))
             {
                 playerList.Remove(player);
-                runner.Despawn(playerController);
+                runner.Despawn(playerController.Object);
             }
         }
 
