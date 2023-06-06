@@ -22,7 +22,7 @@ namespace Game.Lobby
             SetDropdownOptions(valueList);
         }
 
-        #region BtnCallBack
+        #region - BtnCallBack
 
         public void OnCancelBtnClick()
         {
@@ -39,7 +39,7 @@ namespace Game.Lobby
 
         #endregion
 
-        #region Helper Function
+        #region - Helper Function
         public void SetDropdownOptions(List<int> valueList)
         {
             if (valueList.Count > 0)

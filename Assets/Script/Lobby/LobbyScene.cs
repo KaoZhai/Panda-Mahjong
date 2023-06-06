@@ -19,7 +19,7 @@ namespace Game.Lobby
             lobbyManager.PanelController.AddPanel(EnumPanel.Lobby, gameObject);
         }
 
-        #region BtnCallBack
+        #region - BtnCallBack
 
         public void OnLeaveBtnClick()
         {

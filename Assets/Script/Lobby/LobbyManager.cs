@@ -54,7 +54,9 @@ namespace Game.Lobby
             await JoinLobby(gameManager.Runner);
         }
 
-        public async Task JoinLobby(NetworkRunner runner)
+        #region - RoomRelated
+
+                public async Task JoinLobby(NetworkRunner runner)
         {
             var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
 
@@ -107,6 +109,15 @@ namespace Game.Lobby
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
         }
 
+        #endregion
+
+        public void Disconnect()
+        {
+        }
+
+
+        #region - PhontonCallBack
+
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
             roomNameSet.Clear();
@@ -130,9 +141,7 @@ namespace Game.Lobby
             }
         }
 
-        public void Disconnect()
-        {
-        }
+        #endregion
 
         #region - unused callbacks
         public void OnInput(NetworkRunner runner, NetworkInput input) { }

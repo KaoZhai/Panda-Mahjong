@@ -15,7 +15,7 @@ namespace Game.Lobby
             musicController.PlayMusic(Game.Music.EnumMusic.Start);
         }
 
-        #region BtnCallBack
+        #region - BtnCallBack
         public void StartButton()
         {
             lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);

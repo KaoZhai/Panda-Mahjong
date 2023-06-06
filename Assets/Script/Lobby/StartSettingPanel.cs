@@ -16,7 +16,7 @@ namespace Game.Lobby
             // Debug.Log("StartSetting");
         }
 
-        #region BtnCallBack
+        #region - BtnCallBack
 
         public void OnLeaveBtnClick()
         {
