@@ -44,7 +44,8 @@ namespace Game.Core
             set { gameTaiPoint = value; }
         }
 
-        public string playerName = "施衡";
+        public string PlayerName { get; set; } = "User";
+
 
         public event Action OnPlayerListUpdated = null;
 

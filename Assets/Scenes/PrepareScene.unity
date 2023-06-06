@@ -3426,7 +3426,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 670858190}
+        m_TargetAssemblyTypeName: Game.Lobby.StartSettingPanel, Assembly-CSharp
+        m_MethodName: OnPlayerNameChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
@@ -3613,6 +3625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba6b9e889530624b91e1de4b2870157, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerName: {fileID: 654026803}
 --- !u!114 &670858191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5335,7 +5348,6 @@ MonoBehaviour:
   runner: {fileID: 0}
   gameBasePoint: 0
   gameTaiPoint: 0
-  playerName: "\u65BD\u8861"
 --- !u!4 &987252866
 Transform:
   m_ObjectHideFlags: 0
