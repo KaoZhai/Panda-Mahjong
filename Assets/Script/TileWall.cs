@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Play {
+namespace Game.Play
+{
     public class TileWall : MonoBehaviour
     {
         private Vector3 startPosition;
@@ -21,7 +22,7 @@ namespace Game.Play {
             GameObject face = mahjong.transform.Find("Face").gameObject;
             Image faceImage = face.GetComponent<Image>();
             Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex.ToString());
-            if (img) 
+            if (img)
             {
                 faceImage.sprite = img;
             }
@@ -29,14 +30,14 @@ namespace Game.Play {
             {
                 Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardFaceIndex.ToString());
             }
-            
+
         }
 
         void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
         {
             GameObject tileObj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
-            Tile tile =  tileObj.GetComponent<Tile>();
-            if(tile==null)
+            Tile tile = tileObj.GetComponent<Tile>();
+            if (tile == null)
             {
                 Debug.LogError("沒有 tile_script");
             }
@@ -74,7 +75,7 @@ namespace Game.Play {
                 {
                     GenerateTile(TileType.Wind, i, cardFaceIndex, j);
                 }
-                ++cardFaceIndex; 
+                ++cardFaceIndex;
             }
             // Dragon       13-15
             for (int i = 1; i <= 3; ++i)
@@ -83,7 +84,7 @@ namespace Game.Play {
                 {
                     GenerateTile(TileType.Dragon, i, cardFaceIndex, j);
                 }
-                ++cardFaceIndex; 
+                ++cardFaceIndex;
             }
             // Character    16-24
             for (int i = 1; i <= 9; ++i)
@@ -92,7 +93,7 @@ namespace Game.Play {
                 {
                     GenerateTile(TileType.Character, i, cardFaceIndex, j);
                 }
-                ++cardFaceIndex; 
+                ++cardFaceIndex;
             }
             // Bamboo       25-33
             for (int i = 1; i <= 9; ++i)
@@ -101,7 +102,7 @@ namespace Game.Play {
                 {
                     GenerateTile(TileType.Bamboo, i, cardFaceIndex, j);
                 }
-                ++cardFaceIndex; 
+                ++cardFaceIndex;
             }
             // Dot          34-42
             for (int i = 1; i <= 9; ++i)
@@ -110,15 +111,36 @@ namespace Game.Play {
                 {
                     GenerateTile(TileType.Dot, i, cardFaceIndex, j);
                 }
-                ++cardFaceIndex; 
+                ++cardFaceIndex;
             }
         }
 
-        public void DealTile(Player player)
+        public void DealTile(Player player, string tileId)
         {
-            if ( tileList.Count > 0)
+            foreach (var tileObj in tileList)
+            {
+                Tile tile = tileObj.GetComponent<Tile>();
+                if (tile.TileId == tileId)
+                {
+                    player.GetTile(tileObj);
+                    tileList.Remove(tileObj);
+                    return;
+                }
+                else
+                {
+                    Debug.LogError("牌牆已空");
+                }
+            }
+        }
+
+        public string DealTile(Player player)
+        {
+            string tileId = "";
+
+            if (tileList.Count > 0)
             {
                 GameObject tile = tileList[0];
+                tileId = tile.GetComponent<Tile>().TileId;
                 player.GetTile(tile);
                 tileList.RemoveAt(0);
             }
@@ -126,15 +148,17 @@ namespace Game.Play {
             {
                 Debug.LogError("牌牆已空");
             }
+
+            return tileId;
         }
 
         public void BuPai(Player player)
         {
-            if ( tileList.Count > 0)
+            if (tileList.Count > 0)
             {
                 GameObject tile = tileList[^1];
                 player.GetTile(tile);
-                tileList.RemoveAt(tileList.Count-1);
+                tileList.RemoveAt(tileList.Count - 1);
             }
             else
             {
@@ -145,7 +169,7 @@ namespace Game.Play {
 
         void Shuffle()
         {
-            for(int i = 0; i < tileList.Count; ++i)
+            for (int i = 0; i < tileList.Count; ++i)
             {
                 int j = Random.Range(0, tileList.Count);
                 (tileList[i], tileList[j]) = (tileList[j], tileList[i]);
@@ -155,5 +179,5 @@ namespace Game.Play {
     }
 
 
-        
+
 }

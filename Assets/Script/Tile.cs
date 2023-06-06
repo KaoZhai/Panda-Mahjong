@@ -48,7 +48,7 @@ namespace Game.Play
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
             {
                 oriPosition = self.transform.position;
             }
@@ -56,7 +56,7 @@ namespace Game.Play
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
             {
                 self.transform.position = eventData.position;
             }
@@ -64,7 +64,7 @@ namespace Game.Play
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerId))
             {
                 if (transform.localPosition.y > 0)
                 {
@@ -76,20 +76,18 @@ namespace Game.Play
                 }
 
                 Debug.Log("Tile" + PlayerPrefs.GetFloat("Tile"));
-                if(PlayerPrefs.GetFloat("Tile") > 0.0f)
+                if (PlayerPrefs.GetFloat("Tile") > 0.0f)
                 {
                     gameObject.GetComponent<AudioSource>().Play();
                 }
             }
         }
-        
 
-        private bool IsValidDrag(Transform parent, int currentID)
+
+        private bool IsValidDrag(Transform parent, string curPlayerId)
         {
-            return parent == player.Hand && currentID == player.PlayerIndex;
+            return parent == player.Hand && curPlayerId == player.PlayerId;
         }
-
-        public int PlayerIndex => player.PlayerIndex;
 
         public TileType TileType { get; set; }
 
@@ -99,9 +97,11 @@ namespace Game.Play
 
         public string TileId => id;
 
-        public void SetTileId(int serialNumber) 
+        public string PlayerId => player.PlayerId;
+
+        public void SetTileId(int serialNumber)
         {
-            id = TileType.ToString() + "_" + 
+            id = TileType.ToString() + "_" +
                 TileNumber.ToString() + "_" +
                 serialNumber.ToString();
         }
@@ -110,7 +110,7 @@ namespace Game.Play
         {
             get => player;
             set => player = value;
-        } 
+        }
         public void SetTableManager(TableManager currentTableManager)
         {
             this.tableManager = currentTableManager;

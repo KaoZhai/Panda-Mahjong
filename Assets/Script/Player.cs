@@ -2,19 +2,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Game.Play {
+namespace Game.Play
+{
     public class Player : MonoBehaviour
     {
         private readonly List<GameObject> handTiles = new();
         private readonly List<GameObject> showTiles = new();
-        
+
         [SerializeField] private Transform hand;
         [SerializeField] private Transform tilePool;
         [SerializeField] private Transform showPool;
 
         [SerializeField] private GameObject chiTileSets;
         [SerializeField] private Transform chiTileSetsTransform;
-        
+
         [SerializeField] private GameObject setPrefab;
 
         private TaiCalculator taiCalculator = new(null, null);
@@ -29,7 +30,9 @@ namespace Game.Play {
 
         public TableManager TableManager { get; set; }
 
-        public int PlayerIndex { set; get; } = -1;
+        public string PlayerId { set; get; } = "";
+
+        public List<GameObject> HandTiles { get => handTiles; }
 
         public Transform Hand => hand;
 
@@ -43,10 +46,16 @@ namespace Game.Play {
 
         public bool IsSelfDraw => isSelfDraw;
 
+        public void SetInfo(string playerId, TableManager tableManager)
+        {
+            PlayerId = playerId;
+            TableManager = tableManager;
+        }
+
         public void SortHandTiles()
         {
             handTiles.Sort(new TileGameObjectComparer());
-            foreach(GameObject t in handTiles)
+            foreach (GameObject t in handTiles)
             {
                 t.transform.SetAsLastSibling();
             }
@@ -74,7 +83,7 @@ namespace Game.Play {
             }
             return isDone;
         }
-        
+
         void ShowTile(int indexOfHandTiles)
         {
             handTiles[indexOfHandTiles].transform.SetParent(showPool, false);
@@ -90,7 +99,7 @@ namespace Game.Play {
         public void ReplaceFlower()
         {
             int cnt = 0;
-            for(int i = handTiles.Count-1; i >= 0; --i)
+            for (int i = handTiles.Count - 1; i >= 0; --i)
             {
                 if (handTiles[i].GetComponent<Tile>().IsFlower())
                 {
@@ -99,7 +108,7 @@ namespace Game.Play {
                 }
             }
 
-            for(int i = 0; i < cnt; ++i)
+            for (int i = 0; i < cnt; ++i)
             {
                 TableManager.TileWall.BuPai(this);
             }
@@ -110,13 +119,13 @@ namespace Game.Play {
         {
             Discard(handTiles[Random.Range(0, HandTilesCnt)].GetComponent<Tile>().TileId);
 
-            
+
             // Discard(handTiles[handTiles.Count-1].GetComponent<Tile>().TileId);
         }
 
         public void Discard(string tileId)
         {
-            for(int i = 0; i < handTiles.Count; ++i)
+            for (int i = 0; i < handTiles.Count; ++i)
             {
                 if (handTiles[i].GetComponent<Tile>().TileId == tileId)
                 {
@@ -133,13 +142,13 @@ namespace Game.Play {
 
         public bool IsPlayerCanKong()
         {
-            if (((TableManager.ActivePlayerIndex + 1) % 4 == PlayerIndex) || TableManager.LastTile.GetComponent<Tile>().PlayerIndex == PlayerIndex)
+            if ((TableManager.NextPlayer() == PlayerId) || TableManager.LastTile.GetComponent<Tile>().PlayerId == PlayerId)
             {
                 return false;
             }
             bool isCanGang = false;
             int numSame = 0;
-            foreach(GameObject tile in handTiles)
+            foreach (GameObject tile in handTiles)
             {
                 if (TableManager.LastTile && tile.GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
                     ++numSame;
@@ -151,14 +160,14 @@ namespace Game.Play {
             }
             return isCanGang;
         }
-        
+
         public bool IsPlayerCanPong()
         {
-            if (TableManager.ActivePlayerIndex == PlayerIndex)
+            if (TableManager.ActivePlayerId == PlayerId)
                 return false;
             bool isCanPong = false;
             int numSame = 0;
-            foreach(GameObject tile in handTiles)
+            foreach (GameObject tile in handTiles)
             {
                 if (TableManager.LastTile && tile.GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
                     ++numSame;
@@ -181,11 +190,11 @@ namespace Game.Play {
             if (!isSelfDraw)
             {
                 this.isOnly = CheckIsOnly((int[])tileCountArray.Clone());
-                GameObject[] lastTileArray = {TableManager.LastTile};
+                GameObject[] lastTileArray = { TableManager.LastTile };
                 List<GameObject> lastTile = new List<GameObject>(lastTileArray);
                 TransToArray(tileCountArray, lastTile);
             }
-            
+
             return CheckHu((int[])tileCountArray.Clone(), false);
         }
 
@@ -196,11 +205,11 @@ namespace Game.Play {
             {
                 if (i == 10 || i == 20 || i == 30)
                     continue;
-                
+
                 nowHandArray[i]++;
-                if (CheckHu((int[])nowHandArray.Clone() ,false))
+                if (CheckHu((int[])nowHandArray.Clone(), false))
                 {
-                    cnt ++;
+                    cnt++;
                 }
                 nowHandArray[i]--;
             }
@@ -211,21 +220,21 @@ namespace Game.Play {
         // recursion
         private static bool CheckHu(int[] nowTileArray, bool havePair)
         {
-            if(nowTileArray.Sum() == 0)
+            if (nowTileArray.Sum() == 0)
             {
                 return true;
             }
 
-            for(int i = 1; i <= 37; i++)
+            for (int i = 1; i <= 37; i++)
             {
-                if(nowTileArray[i] == 0)
+                if (nowTileArray[i] == 0)
                     continue;
-                
+
                 // have pair
                 if (havePair)
                 {
                     // check straight
-                    if(nowTileArray[i] > 0 && nowTileArray[i - 1] > 0 && nowTileArray[i + 1] > 0)
+                    if (nowTileArray[i] > 0 && nowTileArray[i - 1] > 0 && nowTileArray[i + 1] > 0)
                     {
                         nowTileArray[i - 1] -= 1;
                         nowTileArray[i] -= 1;
@@ -239,7 +248,7 @@ namespace Game.Play {
                         nowTileArray[i + 1] += 1;
                     }
                     // check pon
-                    if(nowTileArray[i] >= 3)
+                    if (nowTileArray[i] >= 3)
                     {
                         nowTileArray[i] -= 3;
                         if (CheckHu((int[])nowTileArray.Clone(), true))
@@ -252,7 +261,7 @@ namespace Game.Play {
                 // no pair yet
                 else
                 {
-                    if(nowTileArray[i] >= 2)
+                    if (nowTileArray[i] >= 2)
                     {
                         nowTileArray[i] -= 2;
                         if (CheckHu((int[])nowTileArray.Clone(), true))
@@ -309,13 +318,13 @@ namespace Game.Play {
         bool Find(TileType tileType, int lostA, int lostB)
         {
             if (lostA < 1 || lostB > 9)
-                return false; 
+                return false;
             GameObject a = handTiles.Find(t => t.GetComponent<Tile>().TileType == tileType &&
                                                 t.GetComponent<Tile>().TileNumber == lostA);
             GameObject b = handTiles.Find(t => t.GetComponent<Tile>().TileType == tileType &&
                                                 t.GetComponent<Tile>().TileNumber == lostB);
-    
-            
+
+
             if (a != null && b != null)
             {
                 List<GameObject> set = new List<GameObject>
@@ -325,14 +334,14 @@ namespace Game.Play {
                 };
                 canChiTileSet.Add(set);
                 return true;
-            }   
+            }
             return false;
         }
         public bool IsPlayerCanChi()
         {
-            if (TableManager.ActivePlayerIndex == PlayerIndex)
+            if (TableManager.ActivePlayerId == PlayerId)
                 return false;
-            if ((TableManager.ActivePlayerIndex + 1) % 4 != PlayerIndex)
+            if (TableManager.NextPlayer() != PlayerId)
                 return false;
             canChiTileSet.Clear();
             Tile newTile = TableManager.LastTile.GetComponent<Tile>();
@@ -340,14 +349,14 @@ namespace Game.Play {
             bool isCanChi = false;
             if (!newTile.IsSuit())
                 return false;
-           
+
             int i = newTile.TileNumber;
             // i-2, i-1, i
-            isCanChi |= Find(newTile.TileType, i-2, i-1);
+            isCanChi |= Find(newTile.TileType, i - 2, i - 1);
             // i-1, i, i+1
-            isCanChi |= Find(newTile.TileType, i-1, i+1);
+            isCanChi |= Find(newTile.TileType, i - 1, i + 1);
             // i, i+1, i+2
-            isCanChi |= Find(newTile.TileType, i+1, i+2);
+            isCanChi |= Find(newTile.TileType, i + 1, i + 2);
 
             return isCanChi;
         }
@@ -386,7 +395,7 @@ namespace Game.Play {
             {
                 if (child == set.transform) continue;
                 string tileId = child.name;
-                for(int i = handTiles.Count-1; i >= 0; --i)
+                for (int i = handTiles.Count - 1; i >= 0; --i)
                 {
                     if (handTiles[i].GetComponent<Tile>().TileId == tileId)
                     {
@@ -400,7 +409,7 @@ namespace Game.Play {
                     }
                 }
             }
-            
+
             CloseChiSelection();
             straightCnt++;
         }
@@ -408,7 +417,7 @@ namespace Game.Play {
         {
             TakeTileFromOther();
             int cnt = 0;
-            for(int i = handTiles.Count-1; i >= 0; --i)
+            for (int i = handTiles.Count - 1; i >= 0; --i)
             {
                 if (handTiles[i].GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
                 {
@@ -420,12 +429,12 @@ namespace Game.Play {
             }
             ponCnt++;
         }
-        
+
         public void Kong()
         {
             TakeTileFromOther();
             int cnt = 0;
-            for(int i = handTiles.Count-1; i >= 0; --i)
+            for (int i = handTiles.Count - 1; i >= 0; --i)
             {
                 if (handTiles[i].GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
                 {
@@ -448,7 +457,7 @@ namespace Game.Play {
             this.taiCalculator = new TaiCalculator(handTiles, showTiles, kongCnt, ponCnt, straightCnt, 1, 1, 0, 0,
             isDealer, false, false, isSelfDraw, false, isOnly);
         }
-        
+
     }
 
 }
