@@ -28,6 +28,22 @@ namespace Game.Core
             }
         }
 
+        public int gameBasePoint = 100;
+
+        public int gameTaiPoint = 30;
+
+        public int GameBasePoint
+        {
+            get { return gameBasePoint; }
+            set { gameBasePoint = value; }
+        }
+
+        public int GameTaiPoint
+        {
+            get { return gameTaiPoint; }
+            set { gameTaiPoint = value; }
+        }
+
         public string playerName = "施衡";
 
         public event Action OnPlayerListUpdated = null;

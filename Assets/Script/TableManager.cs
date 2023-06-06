@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game.Core;
 
 namespace Game.Play {
     
@@ -19,8 +20,14 @@ namespace Game.Play {
         private int activePlayerIndex = 0;
 
         private GameObject lastTile = null;
+
+        private GameManager gameManager = null;
         
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
+        [SerializeField] private GameObject roundPoints;
+        [SerializeField] private Text points;
+        [SerializeField] private List<Text> pointsChangeText;
+        [SerializeField] private List<Text> WinningType;
         
 
         public TileWall TileWall
@@ -41,11 +48,12 @@ namespace Game.Play {
         private bool chiActive = false;
         private bool pongActive = false;
         private bool kongActive = false;
-        private bool winningActive = false;
+        private bool huActive = false;
 
 
         void Start() 
         {
+            gameManager = GameManager.Instance;
             tileWall.GetReady(this);
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
@@ -184,8 +192,61 @@ namespace Game.Play {
         }
         public void Win()
         {
-            winningActive = true;
-            Debug.Log("Winning");
+            huActive = true;
+            int winningPlayerIndex = 0;
+            TurnToPlayer(winningPlayerIndex);
+            EndGame(winningPlayerIndex);
+        }
+
+        private void EndGame(int winningPlayerIndex)
+        {
+            roundPoints.SetActive(true);
+            players[winningPlayerIndex].callCalculator();
+
+            points.text = "共 "+players[winningPlayerIndex].TaiCalculator.Tai+" 台";
+
+            int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
+            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
+
+            if (players[winningPlayerIndex].IsSelfDraw)
+            {
+                pointsChangeText[winningPlayerIndex].text = "+" + (pointsChange * 3).ToString();
+                pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
+                pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
+                pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (LastTile.GetComponent<Tile>().PlayerIndex == i)
+                    {
+                        pointsChangeText[i].text = "-" + pointsChange.ToString();
+                    }
+                    else
+                    {
+                        pointsChangeText[i].text = "+0";
+                    }
+                }
+                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+            }
+
+            List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
+
+            InitScoringList();
+
+            for (int i = 0; i < scoringList.Count; i++)
+            {
+                WinningType[i].text = scoringList[i];
+            }
+        }
+
+        private void InitScoringList()
+        {
+            for (int i = 0; i < 18; i++)
+            {
+                WinningType[i].text = "";
+            }
         }
 
         public IEnumerator BeforeNextPlayer()
@@ -216,10 +277,9 @@ namespace Game.Play {
             SetButton(kongBtn, false);
             SetButton(winningBtn, false);
             // todo: need to deal multiplayer move
-            if ( winningActive )
+            if ( huActive )
             {
-                TurnToPlayer(0);
-                winningActive = false;
+
             }
             else if ( kongActive )
             {

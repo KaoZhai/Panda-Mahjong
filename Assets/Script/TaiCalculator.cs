@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Play
 {
-    public class TaiCalculator : MonoBehaviour
+    public class TaiCalculator
     {
         private List<GameObject> handTilesList = new List<GameObject>();
         private List<GameObject> showTilesList = new List<GameObject>();
@@ -23,7 +23,6 @@ namespace Game.Play
         private bool isSelfDraw = false;
         private bool isAfterGang = false;
         private bool isOnly = false;
-        private GameObject winningTile = null;
         private int tai = 0;
 
         public void Start()
@@ -55,8 +54,7 @@ namespace Game.Play
             bool isLastTile = false,
             bool isSelfDraw = false,
             bool isAfterGang = false,
-            bool isOnly = false,
-            GameObject winningTile = null)
+            bool isOnly = false)
         {
             int[] tileCountArray = new int[50]; // 1~9：萬、11~19：筒、21~29：條、31~37：東南西北中發白、41~48：春夏秋冬梅蘭竹菊
 
@@ -75,14 +73,8 @@ namespace Game.Play
             this.isSelfDraw = isSelfDraw;
             this.isAfterGang = isAfterGang;
             this.isOnly = isOnly;
-            this.winningTile = winningTile;
 
-            if (QiQiangYi() || BaXianGuoHai())
-            {
-                this.tai = CalculateTai(0, 0);
-                this.scoringList = CalculateScoring(0, 0);
-            }
-            else
+            if (handTilesList != null)
             {
                 tileCountArray = TransToArray((int[])tileCountArray.Clone(), handTilesList);
                 //recursion
@@ -130,7 +122,7 @@ namespace Game.Play
 
         private void FindHighestTai(int[] nowTileArray, bool havePair, int ponCnt, int straightCnt)
         {
-            if(nowTileArray.Sum() == 0)
+            if((isSelfDraw && nowTileArray.Sum() == 0) || ((!isSelfDraw) && nowTileArray.Sum() == 2))
             {
                 int tmpTai = CalculateTai(ponCnt, straightCnt);
                 if (tmpTai > this.tai)
@@ -190,6 +182,8 @@ namespace Game.Play
             //將所有手牌和擺牌轉為 array
             tileCountArray = TransToArray((int[])tileCountArray.Clone(), handTilesList);
             tileCountArray = TransToArray((int[])tileCountArray.Clone(), showTilesList);
+
+            Debug.Log(tileCountArray);
 
             //地胡不計門清、自摸、不求人
             //天胡不計門清、自摸、不求人、獨聽、槓上開花
@@ -287,33 +281,22 @@ namespace Game.Play
             }
 
             //花
-            if (BaXianGuoHai())
+            if (HuaGang(tileCountArray, true)) //春夏秋冬
             {
-                calTai += 8;
+                calTai += 2;
             }
-            else if (QiQiangYi())
+            else if(HuaTai(tileCountArray, 40 + faceWind))
             {
-                calTai += 8;
+                calTai += 1;
             }
-            else
-            {
-                if (HuaGang(tileCountArray, true)) //春夏秋冬
-                {
-                    calTai += 2;
-                }
-                else if(HuaTai(tileCountArray, 40 + faceWind))
-                {
-                    calTai += 1;
-                }
 
-                if (HuaGang(tileCountArray, false)) //梅蘭竹菊
-                {
-                    calTai += 2;
-                }
-                else if(HuaTai(tileCountArray, 44 + faceWind))
-                {
-                    calTai += 1;
-                }
+            if (HuaGang(tileCountArray, false)) //梅蘭竹菊
+            {
+                calTai += 2;
+            }
+            else if(HuaTai(tileCountArray, 44 + faceWind))
+            {
+                calTai += 1;
             }
 
             //門清、自摸、不求人
@@ -505,33 +488,22 @@ namespace Game.Play
             }
 
             //花
-            if (BaXianGuoHai())
+            if (HuaGang(tileCountArray, true)) //春夏秋冬
             {
-                calScoring.Add("八仙過海");
+                calScoring.Add("四季");
             }
-            else if (QiQiangYi())
+            else if(HuaTai(tileCountArray, 40 + faceWind))
             {
-                calScoring.Add("七搶一");
+                calScoring.Add(faceWind.ToString()+"花");
             }
-            else
-            {
-                if (HuaGang(tileCountArray, true)) //春夏秋冬
-                {
-                    calScoring.Add("四季");
-                }
-                else if(HuaTai(tileCountArray, 40 + faceWind))
-                {
-                    calScoring.Add(faceWind.ToString()+"花");
-                }
 
-                if (HuaGang(tileCountArray, false)) //梅蘭竹菊
-                {
-                    calScoring.Add("四君子");
-                }
-                else if(HuaTai(tileCountArray, 44 + faceWind))
-                {
-                    calScoring.Add(faceWind.ToString()+"花");
-                }
+            if (HuaGang(tileCountArray, false)) //梅蘭竹菊
+            {
+                calScoring.Add("四君子");
+            }
+            else if(HuaTai(tileCountArray, 44 + faceWind))
+            {
+                calScoring.Add(faceWind.ToString()+"花");
             }
 
             //門清、自摸、不求人
@@ -813,16 +785,6 @@ namespace Game.Play
         private bool DaSanYuan(int[] tileCountArray)//大三元
         {
             return tileCountArray[35] >= 3 && tileCountArray[36] >= 3 && tileCountArray[37] >= 3;
-        }
-
-        private bool QiQiangYi()//七搶一
-        {
-            return (!isSelfDraw) && (winningTile.GetComponent<Tile>().TileType == TileType.Season || winningTile.GetComponent<Tile>().TileType == TileType.Flower);
-        }
-
-        private bool BaXianGuoHai()//八仙過海
-        {
-            return isSelfDraw && (winningTile.GetComponent<Tile>().TileType == TileType.Season || winningTile.GetComponent<Tile>().TileType == TileType.Flower);
         }
 
         private bool ZiYiSe(int[] tileCountArray)//字一色
