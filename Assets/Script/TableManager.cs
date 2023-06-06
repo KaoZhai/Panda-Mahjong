@@ -26,10 +26,7 @@ namespace Game.Play {
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
         [SerializeField] private GameObject roundPoints;
         [SerializeField] private Text points;
-        [SerializeField] private Text underPointsChange;
-        [SerializeField] private Text upperPointsChange;
-        [SerializeField] private Text rightPointsChange;
-        [SerializeField] private Text leftPointsChange;
+        [SerializeField] private List<Text> pointsChange;
         [SerializeField] private List<Text> WinningType;
         
 
@@ -196,14 +193,21 @@ namespace Game.Play {
         public void Win()
         {
             huActive = true;
-            TurnToPlayer(0);
+            int winningPlayerIndex = 0;
+            TurnToPlayer(winningPlayerIndex);
+            EndGame(winningPlayerIndex);
+        }
 
+        private void EndGame(int winningPlayerIndex)
+        {
             roundPoints.SetActive(true);
-            players[0].callCalculator();
+            players[winningPlayerIndex].callCalculator();
 
-            points.text = "共 "+players[0].TaiCalculator.Tai+" 台";
-            int pointsChange = 300 + 100 * players[0].TaiCalculator.Tai;
-            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[0].TaiCalculator.Tai;
+            points.text = "共 "+players[winningPlayerIndex].TaiCalculator.Tai+" 台";
+
+            int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
+            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
+
             if (players[0].IsSelfDraw)
             {
                 underPointsChange.text = "+" + (pointsChange * 3).ToString();
