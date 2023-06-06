@@ -46,9 +46,16 @@ namespace Game.Core
 
         public string playerName = "施衡";
 
+        private Guid playerID = Guid.NewGuid();
+
         public event Action OnPlayerListUpdated = null;
 
         public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
+
+        public Guid PlayerID
+        {
+            get => playerID;
+        }
 
         public void Disconnect()
         {
