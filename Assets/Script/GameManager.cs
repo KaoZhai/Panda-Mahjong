@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using UnityEngine.Serialization;
+using Game.Play;
 
 namespace Game.Core
 {
@@ -35,17 +36,16 @@ namespace Game.Core
 
         public string PlayerName { get; set; } = "User";
 
+        public TableManager TableManager { get; set; }
+
 
         public event Action OnPlayerListUpdated;
 
-        private Guid playerID = Guid.NewGuid();
+        private string playerId = Guid.NewGuid().ToString("D");
 
         [FormerlySerializedAs("playerList")] public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
 
-        public Guid PlayerID
-        {
-            get => playerID;
-        }
+        public string PlayerID { get => playerId; }
 
         public void Disconnect()
         {
@@ -67,6 +67,8 @@ namespace Game.Core
 
             DontDestroyOnLoad(gameObject);
         }
+
+        #region - used for lobby
 
         private bool CheckAllPlayerIsReady()
         {
@@ -94,5 +96,11 @@ namespace Game.Core
                 Runner.SetActiveScene("GamePlay");
             }
         }
+
+        #endregion
+
+        #region - callback for game play sync
+
+        #endregion
     }
 }

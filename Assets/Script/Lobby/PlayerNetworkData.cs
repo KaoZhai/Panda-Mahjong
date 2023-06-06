@@ -6,10 +6,8 @@ namespace Game.Core
     {
         private GameManager gameManager;
 
+        [Networked] public string PlayerID { get; set; }
         [Networked] public string PlayerName { get; private set; }
-
-        [Networked] public Guid PlayerID { get; set; }
-        [Networked] public string PlayerName { get; set; }
         [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 
         public override void Spawned()
@@ -23,8 +21,8 @@ namespace Game.Core
 
             if (Object.HasInputAuthority)
             {
-                PlayerName = gameManager.PlayerName;
                 PlayerID = gameManager.PlayerID;
+                PlayerName = gameManager.PlayerName;
             }
         }
 
