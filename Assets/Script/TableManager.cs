@@ -26,7 +26,7 @@ namespace Game.Play {
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
         [SerializeField] private GameObject roundPoints;
         [SerializeField] private Text points;
-        [SerializeField] private List<Text> pointsChange;
+        [SerializeField] private List<Text> pointsChangeText;
         [SerializeField] private List<Text> WinningType;
         
 
@@ -208,36 +208,39 @@ namespace Game.Play {
             int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
             // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
 
-            if (players[0].IsSelfDraw)
+            if (players[winningPlayerIndex].IsSelfDraw)
             {
-                underPointsChange.text = "+" + (pointsChange * 3).ToString();
-                rightPointsChange.text = "-" + pointsChange.ToString();
-                upperPointsChange.text = "-" + pointsChange.ToString();
-                leftPointsChange.text = "-" + pointsChange.ToString();
+                pointsChangeText[winningPlayerIndex].text = "+" + (pointsChange * 3).ToString();
+                pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
+                pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
+                pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
             }
             else if (LastTile.GetComponent<Tile>().PlayerIndex == 1)
             {
-                underPointsChange.text = "+" + pointsChange.ToString();
-                rightPointsChange.text = "-" + pointsChange.ToString();
-                upperPointsChange.text = "+0";
-                leftPointsChange.text = "+0";
+                pointsChangeText[0].text = "+0";
+                pointsChangeText[2].text = "+0";
+                pointsChangeText[3].text = "+0";
+                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+                pointsChangeText[1].text = "-" + pointsChange.ToString();
             }
             else if (LastTile.GetComponent<Tile>().PlayerIndex == 2)
             {
-                underPointsChange.text = "+" + pointsChange.ToString();
-                rightPointsChange.text = "+0";
-                upperPointsChange.text = "-" + pointsChange.ToString();
-                leftPointsChange.text = "+0";
+                pointsChangeText[0].text = "+0";
+                pointsChangeText[1].text = "+0";
+                pointsChangeText[3].text = "+0";
+                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+                pointsChangeText[2].text = "-" + pointsChange.ToString();
             }
             else if (LastTile.GetComponent<Tile>().PlayerIndex == 3)
             {
-                underPointsChange.text = "+" + pointsChange.ToString();
-                rightPointsChange.text = "+0";
-                upperPointsChange.text = "+0";
-                leftPointsChange.text = "-" + pointsChange.ToString();
+                pointsChangeText[0].text = "+0";
+                pointsChangeText[1].text = "+0";
+                pointsChangeText[2].text = "+0";
+                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+                pointsChangeText[3].text = "-" + pointsChange.ToString();
             }
 
-            List<string> scoringList = players[0].TaiCalculator.ScoringList;
+            List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
 
             InitScoringList();
 
