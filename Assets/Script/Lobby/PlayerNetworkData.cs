@@ -4,9 +4,9 @@ namespace Game.Core
 {
     public class PlayerNetworkData : NetworkBehaviour
     {
-        private GameManager gameManager = null;
+        private GameManager gameManager;
 
-        [Networked] public string PlayerName { get; set; }
+        [Networked] public string PlayerName { get; private set; }
 
         [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 

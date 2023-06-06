@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,7 +20,7 @@ namespace Game.Play
     {
         public int Compare(GameObject x, GameObject y)
         {
-            return string.Compare(x.GetComponent<Tile>().TileId, y.GetComponent<Tile>().TileId);
+            return String.CompareOrdinal(x?.GetComponent<Tile>().TileId, y?.GetComponent<Tile>().TileId);
         }
     }
 
@@ -28,7 +28,7 @@ namespace Game.Play
     {
         public int Compare(Tile x, Tile y)
         {
-            return string.Compare(x.TileId, y.TileId);
+            return String.CompareOrdinal(x?.TileId, y?.TileId);
         }
     }
 
@@ -36,9 +36,6 @@ namespace Game.Play
     {
         // {tile_type}_{tile_number}_{1..4}
         private string id;
-        private TileType tileType;
-        private int tileNumber;
-        private int cardFaceIndex;
         private Player player;
         private TableManager tableManager;
         private Transform self;
@@ -87,69 +84,52 @@ namespace Game.Play
         }
         
 
-        private bool IsValidDrag(Transform parent, int id)
+        private bool IsValidDrag(Transform parent, int currentID)
         {
-            return parent == player.Hand && id == player.PlayerIndex;
+            return parent == player.Hand && currentID == player.PlayerIndex;
         }
 
-        public int PlayerIndex
-        {
-            get { return player.PlayerIndex; }
-        }
+        public int PlayerIndex => player.PlayerIndex;
 
-        public TileType TileType
-        {
-            get { return tileType; }
-            set { tileType = value; }
-        }
+        public TileType TileType { get; set; }
 
-        public int TileNumber
-        {
-            get { return tileNumber; }
-            set { tileNumber = value; }
-        }
+        public int TileNumber { get; set; }
 
-        public int CardFaceIndex
-        {
-            get { return cardFaceIndex; }
-            set { cardFaceIndex = value; }
-        }
+        public int CardFaceIndex { get; set; }
 
-        public string TileId
-        {
-            get { return id; }
-        }
+        public string TileId => id;
+
         public void SetTileId(int serialNumber) 
         {
-            id = tileType.ToString() + "_" + 
-                tileNumber.ToString() + "_" +
+            id = TileType.ToString() + "_" + 
+                TileNumber.ToString() + "_" +
                 serialNumber.ToString();
         }
 
         public Player Player
         {
-            get { return player; }
-            set { player = value; }
+            get => player;
+            set => player = value;
         } 
-        public void SetTableManager(TableManager tableManager)
+        public void SetTableManager(TableManager currentTableManager)
         {
-            this.tableManager = tableManager;
+            this.tableManager = currentTableManager;
         }
         // Flower Season
         public bool IsFlower()
         {
-            return (tileType == TileType.Flower) || (tileType == TileType.Season);
+            return (TileType == TileType.Flower) || (TileType == TileType.Season);
         }
 
         // Wind Dragon
         public bool IsHonor()
         {
-            return (tileType == TileType.Wind) || (tileType == TileType.Dragon);
+            return (TileType == TileType.Wind) || (TileType == TileType.Dragon);
         }
         // Dot Bamboo Character
         public bool IsSuit()
         {
-            return (tileType == TileType.Dot) || (tileType == TileType.Bamboo) || (tileType == TileType.Character);
+            return (TileType == TileType.Dot) || (TileType == TileType.Bamboo) || (TileType == TileType.Character);
         }
 
         public bool IsSame(Tile tile)

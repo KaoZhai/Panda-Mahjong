@@ -7,7 +7,7 @@ namespace Game.Lobby
     public class StartSettingPanel : MonoBehaviour
     {
         [SerializeField] private InputField playerName;
-        private LobbyManager lobbyManager = null;
+        private LobbyManager lobbyManager;
         // Start is called before the first frame update
         public void Start()
         {

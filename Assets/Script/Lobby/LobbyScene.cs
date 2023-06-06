@@ -1,17 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Fusion;
-using Game.Core;
 
 namespace Game.Lobby
 {
     public class LobbyScene : MonoBehaviour
     {
-        private LobbyManager lobbyManager = null;
-        [SerializeField] private Text roomName = null;
+        private LobbyManager lobbyManager;
 
         public void Start()
         {

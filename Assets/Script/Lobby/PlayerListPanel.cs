@@ -4,13 +4,13 @@ using Game.Core;
 
 namespace Game.Lobby
 {
-    public class PlayerListPannel : MonoBehaviour
+    public class PlayerListPanel : MonoBehaviour
     {
-        private GameManager gameManager = null;
-        private List<PlayerUnit> playerUnits = new List<PlayerUnit>();
+        private GameManager gameManager;
+        private List<PlayerUnit> playerUnits = new();
 
-        [SerializeField] private Transform contentTrans = null;
-        [SerializeField] private PlayerUnit playerUnitPrefab = null;
+        [SerializeField] private Transform contentTrans;
+        [SerializeField] private PlayerUnit playerUnitPrefab;
 
         public void Start()
         {
@@ -23,7 +23,7 @@ namespace Game.Lobby
             UpdatePlayerList();
         }
 
-        public void UpdatePlayerList()
+        private void UpdatePlayerList()
         {
             foreach (var unit in playerUnits)
             {
@@ -41,9 +41,6 @@ namespace Game.Lobby
                 playerUnits.Add(unit);
             }
         }
-
-        public void DespawnPlayerList()
-        {
-        }
+        
     }
 }

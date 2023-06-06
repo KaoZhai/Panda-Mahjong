@@ -5,17 +5,17 @@ namespace Utils
 {
     public class RoomID
     {
-        private const int minID = 100000;
-        private const int maxID = 999999;
-        private Random rand = new Random();
-        private Dictionary<string, int> roomIDDic = new Dictionary<string, int>();
+        private const int MinID = 100000;
+        private const int MaxID = 999999;
+        private readonly Random rand = new Random();
+        private readonly Dictionary<string, int> roomIDDic = new Dictionary<string, int>();
 
         public int Get(string roomName)
         {
-            if (roomIDDic.ContainsKey(roomName))
-                return roomIDDic[roomName];
+            if (roomIDDic.TryGetValue(roomName, out var value))
+                return value;
 
-            return roomIDDic[roomName] = rand.Next(minID, maxID);
+            return roomIDDic[roomName] = rand.Next(MinID, MaxID);
         }
 
         public void Del(string roomName)

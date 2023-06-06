@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,18 +8,18 @@ namespace Game.Play {
         private Vector3 startPosition;
         [SerializeField] private Transform transformTileWall;
         [SerializeField] private GameObject mahjongPrefab; // 麻將Prefab
-        private List<GameObject> tileList = new List<GameObject>();
+        private readonly List<GameObject> tileList = new List<GameObject>();
 
         private TableManager tableManager;
 
         public TableManager TableManager {
-            set { tableManager = value; }
+            set => tableManager = value;
         }
 
-        public void GetReady(TableManager tableManager)
+        public void GetReady(TableManager currentTableManager)
         {
             Debug.Log(tableManager);
-            this.tableManager = tableManager;
+            this.tableManager = currentTableManager;
             GenerateAllTile();
             Shuffle();
         }
@@ -126,10 +125,9 @@ namespace Game.Play {
 
         public void DealTile(Player player)
         {
-            GameObject tile = null;
             if ( tileList.Count > 0)
             {
-                tile = tileList[0];
+                GameObject tile = tileList[0];
                 player.GetTile(tile);
                 tileList.RemoveAt(0);
             }
@@ -141,10 +139,9 @@ namespace Game.Play {
 
         public void BuPai(Player player)
         {
-            GameObject tile = null;
             if ( tileList.Count > 0)
             {
-                tile = tileList[tileList.Count-1];
+                GameObject tile = tileList[^1];
                 player.GetTile(tile);
                 tileList.RemoveAt(tileList.Count-1);
             }
@@ -160,9 +157,7 @@ namespace Game.Play {
             for(int i = 0; i < tileList.Count; ++i)
             {
                 int j = Random.Range(0, tileList.Count);
-                GameObject tmp = tileList[i];
-                tileList[i] = tileList[j];
-                tileList[j] = tmp;
+                (tileList[i], tileList[j]) = (tileList[j], tileList[i]);
             }
         }
 
