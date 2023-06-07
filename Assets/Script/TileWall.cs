@@ -48,9 +48,15 @@ namespace Game.Play {
             Shuffle();
         }
 
-        public void DealTile(Player player)
+        public bool DealTile(Player player)
         {
+            if(tileList.Count <= 16)
+            {
+                return false;
+            }
+
             RemoveTile(player, 0);
+            return true;
         }
 
         public void Replenish(Player player)
@@ -62,17 +68,11 @@ namespace Game.Play {
 
         private void RemoveTile(Player player, int idx)
         {
-            if ( tileList.Count > 0)
-            {
-                GameObject tile = tileList[idx];
-                player.GetTile(tile);
-                tileList.RemoveAt(idx);
-            }
-            else
-            {
-                Debug.LogError("牌牆已空");
-            }
-        } 
+            GameObject tile = tileList[idx];
+            player.GetTile(tile);
+            tileList.RemoveAt(idx);
+        }
+        
         private void SetTileFace(GameObject mahjong)
         {
             int cardFaceIndex = mahjong.GetComponent<Tile>().CardFaceIndex;
@@ -116,8 +116,9 @@ namespace Game.Play {
                 {
                     for (int serialNumber = 0; serialNumber < tileCategory.MaxSerialNumber; serialNumber++)
                     {
-                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex++, serialNumber);   
+                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex, serialNumber);   
                     }
+                    cardFaceIndex++;
                 }
             }
         }
