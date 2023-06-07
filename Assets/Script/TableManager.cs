@@ -229,6 +229,11 @@ namespace Game.Play
                     pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
                     pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
                     pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
+
+                    if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+                    {
+                        playerNetworkData.UpdateScore_RPC(pointsChange * 3);
+                    }
                 }
                 else
                 {
@@ -244,6 +249,11 @@ namespace Game.Play
                         }
                     }
                     pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+
+                    if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+                    {
+                        playerNetworkData.UpdateScore_RPC(pointsChange);
+                    }
                 }
 
                 List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
@@ -253,10 +263,6 @@ namespace Game.Play
                     winningType[i].text = scoringList[i];
                 }
                 
-                if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
-                {
-                    playerNetworkData.UpdateScore_RPC(pointsChange * 3);
-                }
             }
         }
 
