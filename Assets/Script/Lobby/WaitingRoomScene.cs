@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Game.Core;
 
 namespace Game.Lobby
@@ -35,7 +36,11 @@ namespace Game.Lobby
 
         public void OnStartBtnClick()
         {
-            GameManager.Instance.UpdatePlayerList();
+            if (gameManager.CheckAllPlayerIsReady())
+            {
+                int curSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                gameManager.Runner.SetActiveScene(curSceneIndex + 1);
+            }
         }
 
         public void OnReadyBtnClick()

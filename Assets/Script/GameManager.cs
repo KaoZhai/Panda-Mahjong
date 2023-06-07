@@ -33,7 +33,11 @@ namespace Game.Core
 
         public int GameTaiPoint { get; set; } = 30;
 
+        public int UserScore { get; set; } = 1000;
+
         public string PlayerName { get; set; } = "User";
+
+        public string PlayerId { get; } = Guid.NewGuid().ToString("D");
 
 
         public event Action OnPlayerListUpdated;
@@ -68,7 +72,7 @@ namespace Game.Core
             DontDestroyOnLoad(gameObject);
         }
 
-        private bool CheckAllPlayerIsReady()
+        public bool CheckAllPlayerIsReady()
         {
             if (!Runner.IsServer) return false;
 
@@ -88,11 +92,6 @@ namespace Game.Core
         public void UpdatePlayerList()
         {
             OnPlayerListUpdated?.Invoke();
-
-            if (CheckAllPlayerIsReady())
-            {
-                Runner.SetActiveScene("GamePlay");
-            }
         }
     }
 }

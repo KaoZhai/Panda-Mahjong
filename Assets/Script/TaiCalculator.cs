@@ -24,10 +24,6 @@ namespace Game.Play
         private readonly bool isOnly;
         private int tai;
 
-        public void Start()
-        {
-        }
-
         public List<string> ScoringList => scoringList;
 
         public int Tai => tai;
@@ -74,44 +70,47 @@ namespace Game.Play
                 FindHighestTai((int[])tileCountArray.Clone(), false, 0);
             }
         }
-
-        private int[] TransToArray(int[] tileCountArray, List<GameObject> tileList)
+        
+        public static int[] TransToArray(int[] tileCountArray, List<GameObject> tileList)
         {
             foreach (var tile in tileList)
             {
-                TileType tileType = tile.GetComponent<Tile>().TileType;
-
-                switch (tileType)
+                int offset = 0;
+                switch (tile.GetComponent<Tile>().TileType)
                 {
                     case TileType.Character:
-                        tileCountArray[0 + tile.GetComponent<Tile>().TileNumber] += 1; // 1~9 萬
+                        offset = 0; // 1~9 萬
                         break;
                     case TileType.Dot:
-                        tileCountArray[10 + tile.GetComponent<Tile>().TileNumber] += 1; // 11~19 筒
+                        offset = 10; // 11~19 筒
                         break;
                     case TileType.Bamboo:
-                        tileCountArray[20 + tile.GetComponent<Tile>().TileNumber] += 1; // 21~29 條
+                        offset = 20; // 21~29 條
                         break;
                     case TileType.Wind:
-                        tileCountArray[30 + tile.GetComponent<Tile>().TileNumber] += 1; // 31~34 東南西北
+                        offset = 30; // 31~34 東南西北
                         break;
                     case TileType.Dragon:
-                        tileCountArray[34 + tile.GetComponent<Tile>().TileNumber] += 1; // 35~37 中發白
+                        offset = 34; // 35~37 中發白
                         break;
                     case TileType.Season:
-                        tileCountArray[40 + tile.GetComponent<Tile>().TileNumber] += 1; // 41~44 春夏秋冬
+                        offset = 40; // 41~44 春夏秋冬
                         break;
                     case TileType.Flower:
-                        tileCountArray[44 + tile.GetComponent<Tile>().TileNumber] += 1; // 45~48 梅蘭竹菊
+                        offset = 44; // 45~48 梅蘭竹菊
                         break;
                     default:
-                        Debug.Log("Error tile type: " + tileType);
-                        break;   
+                        Debug.Log("Error tile type: " + tile.GetComponent<Tile>().TileType);
+                        break;
                 }
+                
+                tileCountArray[offset + tile.GetComponent<Tile>().TileNumber] += 1;
             }
 
             return tileCountArray;
         }
+
+        #region Helper Function
 
         private void FindHighestTai(int[] nowTileArray, bool havePair, int ponCnt)
         {
@@ -582,6 +581,10 @@ namespace Game.Play
             return calScoring;
         }
 
+        #endregion
+        
+        #region Judge
+
         private bool Dealer() //莊家
         {
             return isDealer;
@@ -805,5 +808,8 @@ namespace Game.Play
         {
             return isFirstTile && isSelfDraw && isDealer;
         }
+
+        #endregion
+        
     }
 }

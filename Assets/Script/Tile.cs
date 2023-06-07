@@ -24,31 +24,43 @@ namespace Game.Play
         }
     }
 
-    public class TileComparer : IComparer<Tile>
-    {
-        public int Compare(Tile x, Tile y)
-        {
-            return String.CompareOrdinal(x?.TileId, y?.TileId);
-        }
-    }
-
     public class Tile : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         // {tile_type}_{tile_number}_{1..4}
         private string id;
-        private Player player;
-        private TableManager tableManager;
         private Transform self;
         private Vector3 oriPosition;
+        
+        public int PlayerIndex => Player.PlayerIndex;
+        public TileType TileType { get; private set; }
+        public int TileNumber { get; private set; }
+        public int CardFaceIndex { get; private set; }
+        public Player Player { get; set; }
+        public string TileId => id;
 
         void Start()
         {
             self = GetComponent<Transform>();
         }
 
+        public void Init(TileType tileType, int tileNumber, int serialNumber, int cardFaceIndex)
+        {
+            TileType = tileType;
+            TileNumber = tileNumber;
+            CardFaceIndex = cardFaceIndex;
+            id = TileType + "_" + TileNumber + "_" + serialNumber;
+        }
+        
+        public bool Equals(Tile tile)
+        {
+            return tile.CardFaceIndex == CardFaceIndex;
+        }
+
+        #region - Drag Process
+
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent))
             {
                 oriPosition = self.transform.position;
             }
@@ -56,7 +68,7 @@ namespace Game.Play
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent))
             {
                 self.transform.position = eventData.position;
             }
@@ -64,11 +76,14 @@ namespace Game.Play
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent))
             {
                 if (transform.localPosition.y > 0)
                 {
-                    player.Discard(id);
+                    if(!Player.Discard(id))
+                    {
+                        self.transform.position = oriPosition;
+                    }
                 }
                 else
                 {
@@ -83,59 +98,34 @@ namespace Game.Play
             }
         }
         
-
-        private bool IsValidDrag(Transform parent, int currentID)
+        private bool IsValidDrag(Transform parent)
         {
-            return parent == player.Hand && currentID == player.PlayerIndex;
+            return parent == Player.Hand;
         }
 
-        public int PlayerIndex => player.PlayerIndex;
+        #endregion
 
-        public TileType TileType { get; set; }
+        #region - Judge
 
-        public int TileNumber { get; set; }
-
-        public int CardFaceIndex { get; set; }
-
-        public string TileId => id;
-
-        public void SetTileId(int serialNumber) 
-        {
-            id = TileType.ToString() + "_" + 
-                TileNumber.ToString() + "_" +
-                serialNumber.ToString();
-        }
-
-        public Player Player
-        {
-            get => player;
-            set => player = value;
-        } 
-        public void SetTableManager(TableManager currentTableManager)
-        {
-            this.tableManager = currentTableManager;
-        }
         // Flower Season
         public bool IsFlower()
         {
-            return (TileType == TileType.Flower) || (TileType == TileType.Season);
+            return TileType is TileType.Flower or TileType.Season;
         }
 
         // Wind Dragon
         public bool IsHonor()
         {
-            return (TileType == TileType.Wind) || (TileType == TileType.Dragon);
+            return TileType is TileType.Wind or TileType.Dragon;
         }
         // Dot Bamboo Character
         public bool IsSuit()
         {
-            return (TileType == TileType.Dot) || (TileType == TileType.Bamboo) || (TileType == TileType.Character);
+            return TileType is TileType.Dot or TileType.Bamboo or TileType.Character;
         }
 
-        public bool IsSame(Tile tile)
-        {
-            return tile.CardFaceIndex == this.CardFaceIndex;
-        }
+        #endregion
+
     }
 }
 

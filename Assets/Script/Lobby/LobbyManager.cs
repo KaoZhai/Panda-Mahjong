@@ -31,8 +31,15 @@ namespace Game.Lobby
 
         public void Awake()
         {
-            if (Instance == null)
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
                 Instance = this;
+                DontDestroyOnLoad(this);
+            }
         }
 
         public async void Start()
@@ -41,7 +48,7 @@ namespace Game.Lobby
 
             // AddCallbacks to trigger callback function
             gameManager.Runner.AddCallbacks(this);
-
+            
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
         }
