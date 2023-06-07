@@ -2109,7 +2109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7584bf76582099d41a450180b7ff3b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomListPannel: {fileID: 1976841573}
+  roomListPanel: {fileID: 1976841573}
   playerNetworkDataPrefab: {fileID: -3488874529639845621, guid: eefe55435cafb2c438003a77d6f748a2, type: 3}
 --- !u!1 &412292888
 GameObject:
@@ -3313,7 +3313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f85e54281020d04fb3db6f54adf61b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomName: {fileID: 79025960}
 --- !u!225 &637258882
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5346,8 +5345,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runner: {fileID: 0}
-  gameBasePoint: 0
-  gameTaiPoint: 0
 --- !u!4 &987252866
 Transform:
   m_ObjectHideFlags: 0
@@ -10532,7 +10529,7 @@ MonoBehaviour:
   panelText: {fileID: 307421384}
   hideTrans: {fileID: 945905560}
   roomUnitPrefab: {fileID: 266122147286468751, guid: ea516222197319043837d64f7aa84357, type: 3}
-  parentPostitions:
+  parentPositions:
   - {fileID: 984941180}
   - {fileID: 1503121120}
   - {fileID: 944920942}
