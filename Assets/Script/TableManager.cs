@@ -156,7 +156,7 @@ namespace Game.Play
             {
                 playerNetworkData.SetReady_RPC(false);
             }
-            
+
             huActive = true;
             int winningPlayerIndex = 0;
             TurnToPlayer(winningPlayerIndex);
@@ -251,6 +251,11 @@ namespace Game.Play
                 for (int i = 0; i < scoringList.Count; i++)
                 {
                     winningType[i].text = scoringList[i];
+                }
+                
+                if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+                {
+                    playerNetworkData.UpdateScore_RPC(pointsChange * 3);
                 }
             }
         }
