@@ -67,7 +67,7 @@ namespace Game.Play
                 player
             );
 
-            networkRunner.SetPlayerObject(playerController);
+            networkRunner.SetPlayerObject(player, playerController.Object);
 
             playerList.Add(player, playerController);
         }
