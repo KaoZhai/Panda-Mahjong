@@ -30,8 +30,8 @@ namespace Game.Play
         private string id;
         private Transform self;
         private Vector3 oriPosition;
-        
-        public int PlayerIndex => Player.PlayerIndex;
+
+        public string PlayerId => Player.PlayerId;
         public TileType TileType { get; private set; }
         public int TileNumber { get; private set; }
         public int CardFaceIndex { get; private set; }
@@ -50,7 +50,7 @@ namespace Game.Play
             CardFaceIndex = cardFaceIndex;
             id = TileType + "_" + TileNumber + "_" + serialNumber;
         }
-        
+
         public bool Equals(Tile tile)
         {
             return tile.CardFaceIndex == CardFaceIndex;
@@ -94,7 +94,7 @@ namespace Game.Play
                 }
             }
         }
-        
+
         private bool IsValidDrag(Transform parent)
         {
             return parent == Player.Hand;
