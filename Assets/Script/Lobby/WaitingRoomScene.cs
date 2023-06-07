@@ -46,7 +46,10 @@ namespace Game.Lobby
         public void OnStartBtnClick()
         {
             if (gameManager.CheckAllPlayerIsReady())
-                SceneManager.LoadScene("PlayTile");
+            {
+                int curSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                gameManager.Runner.SetActiveScene(curSceneIndex + 1);
+            }
         }
 
         public void OnReadyBtnClick()
