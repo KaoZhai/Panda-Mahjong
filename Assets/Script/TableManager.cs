@@ -45,7 +45,7 @@ namespace Game.Play
         void Start() 
         {
             gameManager = GameManager.Instance;
-            tileWall.GetReady(this);
+            tileWall.GetReady();
             // todo: player will set player id, now is 0-3
             for(int i = 0; i < 4; i++)
             {
@@ -129,15 +129,7 @@ namespace Game.Play
             while(players[activePlayerIndex].ReplaceFlower()) { }
         }
         
-        //  only from single player
-        public void AutoPlay()
-        {
-            if(activePlayerIndex != 0)
-            {
-                
-                players[activePlayerIndex].DefaultDiscard();
-            }
-        }
+        #endregion
 
         #region - BtnCallBack
 
@@ -197,7 +189,7 @@ namespace Game.Play
         private void EndGame(int winningPlayerIndex)
         {
             roundPoints.SetActive(true);
-            players[winningPlayerIndex].callCalculator();
+            players[winningPlayerIndex].CallCalculator();
 
             points.text = "共 " + players[winningPlayerIndex].TaiCalculator.Tai + " 台";
 
@@ -233,7 +225,7 @@ namespace Game.Play
 
             for (int i = 0; i < scoringList.Count; i++)
             {
-                WinningType[i].text = scoringList[i];
+                winningType[i].text = scoringList[i];
             }
         }
 
@@ -241,7 +233,7 @@ namespace Game.Play
         {
             for (int i = 0; i < 18; i++)
             {
-                WinningType[i].text = "";
+                winningType[i].text = "";
             }
         }
 
@@ -301,6 +293,6 @@ namespace Game.Play
             }
 
         }
-
+        #endregion
     }
 }
