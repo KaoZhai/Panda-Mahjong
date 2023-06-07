@@ -44,7 +44,7 @@ namespace Game.Core
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void SetPlayerName_RPC(string playerName)
         {
-            PlayerId = playerName;
+            PlayerName = playerName;
         }
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
