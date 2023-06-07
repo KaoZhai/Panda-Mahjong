@@ -37,7 +37,7 @@ namespace Game.Lobby
                 var unit = Instantiate(playerUnitPrefab, contentTrans);
                 var playerData = player.Value;
 
-                unit.SetInfo(playerData.PlayerName, playerData.IsReady);
+                unit.SetInfo(playerData.PlayerName, playerData.IsReady, playerData.UserScore);
                 playerUnits.Add(unit);
             }
         }

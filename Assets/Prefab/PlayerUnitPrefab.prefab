@@ -336,6 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNameTxt: {fileID: 4727872348163444978}
   isReadyTxt: {fileID: 1146864436106014606}
+  pointsTxt: {fileID: 5726267289905168850}
 --- !u!1 &6717660955116035669
 GameObject:
   m_ObjectHideFlags: 0
