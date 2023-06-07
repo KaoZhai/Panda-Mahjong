@@ -5,8 +5,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Game.Core;
 
-namespace Game.Play {
-    
+namespace Game.Play
+{
+
     public class TableManager : MonoBehaviour
     {
         public static TableManager Instance
@@ -22,17 +23,17 @@ namespace Game.Play {
         private GameObject lastTile = null;
 
         private GameManager gameManager = null;
-        
+
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
         [SerializeField] private GameObject roundPoints;
         [SerializeField] private Text points;
         [SerializeField] private List<Text> pointsChangeText;
         [SerializeField] private List<Text> WinningType;
-        
+
 
         public TileWall TileWall
         {
-            get { return tileWall;}
+            get { return tileWall; }
         }
         public GameObject LastTile
         {
@@ -51,12 +52,12 @@ namespace Game.Play {
         private bool huActive = false;
 
 
-        void Start() 
+        void Start()
         {
             gameManager = GameManager.Instance;
             tileWall.GetReady(this);
             // todo: player will set player id, now is 0-3
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 players[i].PlayerIndex = i;
                 players[i].TableManager = this;
@@ -75,9 +76,9 @@ namespace Game.Play {
         {
             tileWall.DealTile(players[activePlayerIndex]);
             int cnt = 0;
-            while(cnt < 4)
+            while (cnt < 4)
             {
-                foreach(Player player in players)
+                foreach (Player player in players)
                 {
                     if (player.IsDoneReplace())
                     {
@@ -89,7 +90,7 @@ namespace Game.Play {
                     }
                 }
             }
-            foreach(Player player in players)
+            foreach (Player player in players)
             {
                 player.SortHandTiles();
             }
@@ -97,11 +98,11 @@ namespace Game.Play {
 
         void DealTiles()
         {
-            for(int round = 0; round < 4; ++round)
+            for (int round = 0; round < 4; ++round)
             {
-                for(int playerIndex = 0; playerIndex < 4; ++playerIndex)
+                for (int playerIndex = 0; playerIndex < 4; ++playerIndex)
                 {
-                    for(int i = 0; i < 4; ++i)
+                    for (int i = 0; i < 4; ++i)
                     {
                         tileWall.DealTile(players[playerIndex]);
                     }
@@ -112,7 +113,7 @@ namespace Game.Play {
         void PickSeatsAndDecideDealer()
         {
 
-            for(int i = 0; i < players.Count; ++i)
+            for (int i = 0; i < players.Count; ++i)
             {
                 int j = Random.Range(0, players.Count);
                 Player tmp = players[i];
@@ -125,12 +126,12 @@ namespace Game.Play {
         public void Draw()
         {
             tileWall.DealTile(players[activePlayerIndex]);
-            while(!players[activePlayerIndex].IsDoneReplace())
+            while (!players[activePlayerIndex].IsDoneReplace())
             {
                 players[activePlayerIndex].ReplaceFlower();
             }
 
-            if(activePlayerIndex == 0 && players[0].IsPlayerCanKong())
+            if (activePlayerIndex == 0 && players[0].IsPlayerCanKong())
             {
                 SetButton(kongBtn, true);
             }
@@ -144,13 +145,13 @@ namespace Game.Play {
         public void BuKong()
         {
             tileWall.BuPai(players[activePlayerIndex]);
-            while(!players[activePlayerIndex].IsDoneReplace())
+            while (!players[activePlayerIndex].IsDoneReplace())
             {
                 players[activePlayerIndex].ReplaceFlower();
             }
         }
 
-        public void NextPlayer() 
+        public void NextPlayer()
         {
             activePlayerIndex = (activePlayerIndex + 1) % 4;
         }
@@ -162,9 +163,9 @@ namespace Game.Play {
         //  only from single player
         public void AutoPlay()
         {
-            if(activePlayerIndex != 0)
+            if (activePlayerIndex != 0)
             {
-                
+
                 players[activePlayerIndex].DefaultDiscard();
             }
         }
@@ -203,7 +204,7 @@ namespace Game.Play {
             roundPoints.SetActive(true);
             players[winningPlayerIndex].callCalculator();
 
-            points.text = "共 "+players[winningPlayerIndex].TaiCalculator.Tai+" 台";
+            points.text = "共 " + players[winningPlayerIndex].TaiCalculator.Tai + " 台";
 
             int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
             // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
@@ -214,6 +215,12 @@ namespace Game.Play {
                 pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
                 pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
                 pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
+
+                // sync user score
+                if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+                {
+                    playerNetworkData.UpdateScore_RPC(pointsChange * 3);
+                }
             }
             else
             {
@@ -229,6 +236,12 @@ namespace Game.Play {
                     }
                 }
                 pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+
+                // sync user score
+                if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+                {
+                    playerNetworkData.UpdateScore_RPC(pointsChange);
+                }
             }
 
             List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
@@ -252,19 +265,19 @@ namespace Game.Play {
         public IEnumerator BeforeNextPlayer()
         {
             // only control local player's button
-            if(players[0].IsPlayerCanChi())
+            if (players[0].IsPlayerCanChi())
             {
                 SetButton(chiBtn, true);
             }
-            if(players[0].IsPlayerCanPong())
+            if (players[0].IsPlayerCanPong())
             {
                 SetButton(pongBtn, true);
             }
-            if(players[0].IsPlayerCanKong())
+            if (players[0].IsPlayerCanKong())
             {
                 SetButton(kongBtn, true);
             }
-            if(players[0].IsPlayerCanHu(false))
+            if (players[0].IsPlayerCanHu(false))
             {
                 SetButton(winningBtn, true);
             }
@@ -272,27 +285,27 @@ namespace Game.Play {
             // StartCoroutine(Countdown(3));
             yield return new WaitForSeconds(2f);
             Debug.Log("停頓結束");
-            SetButton(chiBtn, false);   
-            SetButton(pongBtn, false); 
+            SetButton(chiBtn, false);
+            SetButton(pongBtn, false);
             SetButton(kongBtn, false);
             SetButton(winningBtn, false);
             // todo: need to deal multiplayer move
-            if ( huActive )
+            if (huActive)
             {
 
             }
-            else if ( kongActive )
+            else if (kongActive)
             {
                 TurnToPlayer(0);
                 kongActive = false;
                 BuKong();
             }
-            else if ( pongActive )
+            else if (pongActive)
             {
                 TurnToPlayer(0);
                 pongActive = false;
             }
-            else if ( chiActive )
+            else if (chiActive)
             {
                 TurnToPlayer(0);
                 chiActive = false;
@@ -303,7 +316,7 @@ namespace Game.Play {
                 Draw();
                 AutoPlay();
             }
-            
+
         }
 
     }
