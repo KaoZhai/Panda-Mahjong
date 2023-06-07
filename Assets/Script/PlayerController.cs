@@ -6,7 +6,6 @@ namespace Game.Core
     public class PlayerController : NetworkBehaviour
     {
         private GameManager gameManager;
-        private TableManager tableManager;
 
         [Networked] public int PlayerOrder { get; set; }
         [Networked] public string PlayerID { get; set; }
@@ -40,7 +39,7 @@ namespace Game.Core
         }
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
-        public void SetLastTile_PRC(string lastTileID)
+        public void SetLastTile_RPC(string lastTileID)
         {
             LastTileID = lastTileID;
         }
