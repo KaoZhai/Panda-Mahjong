@@ -526,6 +526,7 @@ namespace Game.Play {
         
         public void ChiBtnCallBack()
         {
+            chiTileSets.SetActive(false);
             Chi.DoOperation();
         }
 
