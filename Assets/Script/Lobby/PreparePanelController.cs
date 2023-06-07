@@ -26,6 +26,11 @@ namespace Game.Lobby
             panelDict.TryAdd(enumPanel, panel);
         }
 
+        public void ClearPanel()
+        {
+            panelDict.Clear();
+        }
+
         public void OpenPanel(EnumPanel enumPanel)
         {
             foreach (var content in panelDict)

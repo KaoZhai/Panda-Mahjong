@@ -165,9 +165,10 @@ namespace Game.Play
 
         public void OnRoundPointClose()
         {
-            LobbyManager.Instance.PanelController.OpenPanel(EnumPanel.Waiting);
             int curSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            LobbyManager.Instance.PanelController.ClearPanel();
             gameManager.Runner.SetActiveScene(curSceneIndex - 1);
+            LobbyManager.Instance.PanelController.OpenPanel(EnumPanel.Waiting);
         }
 
         #endregion
