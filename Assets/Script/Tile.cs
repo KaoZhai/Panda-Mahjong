@@ -80,7 +80,10 @@ namespace Game.Play
             {
                 if (transform.localPosition.y > 0)
                 {
-                    Player.Discard(id);
+                    if(!Player.Discard(id))
+                    {
+                        self.transform.position = oriPosition;
+                    }
                 }
                 else
                 {

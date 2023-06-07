@@ -91,10 +91,10 @@ namespace Game.Play {
             return cnt != 0;
         }
         
-        public void Discard(string tileId)
+        public bool Discard(string tileId)
         {
             if (TableManager.ActivePlayerIndex != PlayerIndex)
-                return;
+                return false;
             
             int idx = FindTileByTileId(handTiles, tileId);
 
@@ -108,10 +108,12 @@ namespace Game.Play {
             else
             {
                 Debug.LogError("Cannot find tile from Tile ID");
+                return false;
             }
             
             SortHandTiles();
             StartCoroutine(TableManager.BeforeNextPlayer());
+            return true;
         }
         
         public void DefaultDiscard()
