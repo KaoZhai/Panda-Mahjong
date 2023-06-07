@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Game.Lobby
 {
@@ -7,7 +8,7 @@ namespace Game.Lobby
     {
         private LobbyManager lobbyManager;
 
-        [SerializeField] private TextMeshProUGUI roomName;
+        [SerializeField] private Text roomName;
         [SerializeField] private TextMeshProUGUI curPlayerNum;
         [SerializeField] private TextMeshProUGUI maxPlayerNum;
 

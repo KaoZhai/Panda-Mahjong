@@ -21,6 +21,7 @@ namespace Game.Play {
     {
         [SerializeField] private Transform transformTileWall;
         [SerializeField] private GameObject mahjongPrefab; // 麻將Prefab
+        [SerializeField] private Text tileRemain;
         private Vector3 startPosition;
         private readonly List<GameObject> tileList = new();
         
@@ -71,8 +72,9 @@ namespace Game.Play {
             GameObject tile = tileList[idx];
             player.GetTile(tile);
             tileList.RemoveAt(idx);
+            tileRemain.text = tileList.Count.ToString();
         }
-        
+
         private void SetTileFace(GameObject mahjong)
         {
             int cardFaceIndex = mahjong.GetComponent<Tile>().CardFaceIndex;

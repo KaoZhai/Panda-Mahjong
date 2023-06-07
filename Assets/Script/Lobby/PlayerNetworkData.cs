@@ -6,7 +6,7 @@ namespace Game.Core
     {
         private GameManager gameManager = null;
 
-        [Networked] public int UserScore { get; set; }
+        [Networked] public int UserScore { get; set; } = 0;
         [Networked] public string PlayerId { get; set; }
         [Networked] public string PlayerName { get; set; }
 
@@ -23,9 +23,9 @@ namespace Game.Core
 
             if (Object.HasInputAuthority)
             {
-                PlayerId = gameManager.PlayerId;
-                UserScore = gameManager.UserScore;
-                PlayerName = gameManager.PlayerName;
+                SetPlayerId_RPC(gameManager.PlayerId);
+                UpdateScore_RPC(gameManager.UserScore);
+                SetPlayerName_RPC(gameManager.PlayerName);
             }
         }
 
@@ -36,15 +36,27 @@ namespace Game.Core
         }
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
-        public void SetReady_RPC(bool isReady)
+        public void SetPlayerId_RPC(string playerId)
         {
-            IsReady = isReady;
+            PlayerId = playerId;
+        }
+
+        [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+        public void SetPlayerName_RPC(string playerName)
+        {
+            PlayerName = playerName;
         }
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void UpdateScore_RPC(int score)
         {
             UserScore += score;
+        }
+
+        [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+        public void SetReady_RPC(bool isReady)
+        {
+            IsReady = isReady;
         }
 
         private static void OnIsReadyChanged(Changed<PlayerNetworkData> changed)

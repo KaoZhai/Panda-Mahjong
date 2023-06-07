@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Game.Core;
+using Game.Lobby;
+using UnityEngine.SceneManagement;
 
 namespace Game.Play
 {
@@ -150,10 +152,23 @@ namespace Game.Play
         }
         public void Win()
         {
+            if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+            {
+                playerNetworkData.SetReady_RPC(false);
+            }
+
             huActive = true;
             int winningPlayerIndex = 0;
             TurnToPlayer(winningPlayerIndex);
             EndGame(winningPlayerIndex);
+        }
+
+        public void OnRoundPointClose()
+        {
+            int curSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            LobbyManager.Instance.PanelController.ClearPanel();
+            gameManager.Runner.SetActiveScene(curSceneIndex - 1);
+            LobbyManager.Instance.PanelController.OpenPanel(EnumPanel.Waiting);
         }
 
         #endregion
@@ -215,6 +230,11 @@ namespace Game.Play
                     pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
                     pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
                     pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
+
+                    if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+                    {
+                        playerNetworkData.UpdateScore_RPC(pointsChange * 3);
+                    }
                 }
                 else
                 {
@@ -230,6 +250,11 @@ namespace Game.Play
                         }
                     }
                     pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+
+                    if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+                    {
+                        playerNetworkData.UpdateScore_RPC(pointsChange);
+                    }
                 }
 
                 List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
@@ -238,6 +263,7 @@ namespace Game.Play
                 {
                     winningType[i].text = scoringList[i];
                 }
+                
             }
         }
 
