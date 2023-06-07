@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,15 +20,7 @@ namespace Game.Play
     {
         public int Compare(GameObject x, GameObject y)
         {
-            return string.Compare(x.GetComponent<Tile>().TileId, y.GetComponent<Tile>().TileId);
-        }
-    }
-
-    public class TileComparer : IComparer<Tile>
-    {
-        public int Compare(Tile x, Tile y)
-        {
-            return string.Compare(x.TileId, y.TileId);
+            return String.CompareOrdinal(x?.GetComponent<Tile>().TileId, y?.GetComponent<Tile>().TileId);
         }
     }
 
@@ -36,22 +28,39 @@ namespace Game.Play
     {
         // {tile_type}_{tile_number}_{1..4}
         private string id;
-        private TileType tileType;
-        private int tileNumber;
-        private int cardFaceIndex;
-        private Player player;
-        private TableManager tableManager;
         private Transform self;
         private Vector3 oriPosition;
+        
+        public int PlayerIndex => Player.PlayerIndex;
+        public TileType TileType { get; private set; }
+        public int TileNumber { get; private set; }
+        public int CardFaceIndex { get; private set; }
+        public Player Player { get; set; }
+        public string TileId => id;
 
         void Start()
         {
             self = GetComponent<Transform>();
         }
 
+        public void Init(TileType tileType, int tileNumber, int serialNumber, int cardFaceIndex)
+        {
+            TileType = tileType;
+            TileNumber = tileNumber;
+            CardFaceIndex = cardFaceIndex;
+            id = TileType + "_" + TileNumber + "_" + serialNumber;
+        }
+        
+        public bool Equals(Tile tile)
+        {
+            return tile.CardFaceIndex == CardFaceIndex;
+        }
+
+        #region - Drag Process
+
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent))
             {
                 oriPosition = self.transform.position;
             }
@@ -59,7 +68,7 @@ namespace Game.Play
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent))
             {
                 self.transform.position = eventData.position;
             }
@@ -67,11 +76,11 @@ namespace Game.Play
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (IsValidDrag(self.transform.parent, tableManager.ActivePlayerIndex))
+            if (IsValidDrag(self.transform.parent))
             {
                 if (transform.localPosition.y > 0)
                 {
-                    player.Discard(id);
+                    Player.Discard(id);
                 }
                 else
                 {
@@ -86,76 +95,34 @@ namespace Game.Play
             }
         }
         
-
-        private bool IsValidDrag(Transform parent, int id)
+        private bool IsValidDrag(Transform parent)
         {
-            return parent == player.Hand && id == player.PlayerIndex;
+            return parent == Player.Hand;
         }
 
-        public int PlayerIndex
-        {
-            get { return player.PlayerIndex; }
-        }
+        #endregion
 
-        public TileType TileType
-        {
-            get { return tileType; }
-            set { tileType = value; }
-        }
+        #region - Judge
 
-        public int TileNumber
-        {
-            get { return tileNumber; }
-            set { tileNumber = value; }
-        }
-
-        public int CardFaceIndex
-        {
-            get { return cardFaceIndex; }
-            set { cardFaceIndex = value; }
-        }
-
-        public string TileId
-        {
-            get { return id; }
-        }
-        public void SetTileId(int serialNumber) 
-        {
-            id = tileType.ToString() + "_" + 
-                tileNumber.ToString() + "_" +
-                serialNumber.ToString();
-        }
-
-        public Player Player
-        {
-            get { return player; }
-            set { player = value; }
-        } 
-        public void SetTableManager(TableManager tableManager)
-        {
-            this.tableManager = tableManager;
-        }
         // Flower Season
         public bool IsFlower()
         {
-            return (tileType == TileType.Flower) || (tileType == TileType.Season);
+            return TileType is TileType.Flower or TileType.Season;
         }
 
         // Wind Dragon
         public bool IsHonor()
         {
-            return (tileType == TileType.Wind) || (tileType == TileType.Dragon);
+            return TileType is TileType.Wind or TileType.Dragon;
         }
         // Dot Bamboo Character
         public bool IsSuit()
         {
-            return (tileType == TileType.Dot) || (tileType == TileType.Bamboo) || (tileType == TileType.Character);
+            return TileType is TileType.Dot or TileType.Bamboo or TileType.Character;
         }
 
-        public bool IsSame(Tile tile)
-        {
-            return tile.CardFaceIndex == this.CardFaceIndex;
-        }
+        #endregion
+
     }
 }
 

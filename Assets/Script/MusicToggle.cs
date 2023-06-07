@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 namespace Game.Music
@@ -7,7 +5,7 @@ namespace Game.Music
     public class MusicToggle : MonoBehaviour
     {
         [SerializeField] private string saveType = "";
-        [SerializeField] private BgmController musicController = null;
+        [SerializeField] private BgmController musicController;
 
         void Start()
         {
@@ -18,16 +16,9 @@ namespace Game.Music
             SetVolume();
         }
 
-        public void OnToogleClick()
+        public void OnToggleClick()
         {
-            if(gameObject.GetComponent<Toggle>().isOn)
-            {
-                PlayerPrefs.SetFloat(saveType, 1.0f);
-            }
-            else
-            {
-                PlayerPrefs.SetFloat(saveType, 0.0f);
-            }
+            PlayerPrefs.SetFloat(saveType, gameObject.GetComponent<Toggle>().isOn ? 1.0f : 0.0f);
             SetVolume();
         }
 
@@ -35,7 +26,7 @@ namespace Game.Music
         {
             if(musicController != null)
             {
-                musicController.setVolume(PlayerPrefs.GetFloat(saveType));
+                musicController.SetVolume(PlayerPrefs.GetFloat(saveType));
             }
             gameObject.GetComponent<Toggle>().isOn = (PlayerPrefs.GetFloat(saveType) > 0.0f);
         }

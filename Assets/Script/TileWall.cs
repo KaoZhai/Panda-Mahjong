@@ -1,173 +1,135 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Play {
+    internal class TileCategory
+    {
+        public TileType Type { get; private set; }
+        public int MaxTileNumber { get; private set; }
+        public int MaxSerialNumber { get; private set; }
+
+        public TileCategory(TileType type, int maxTileNumber, int maxSerialNumber)
+        {
+            Type = type;
+            MaxTileNumber = maxTileNumber;
+            MaxSerialNumber = maxSerialNumber;
+        }
+    }
+
     public class TileWall : MonoBehaviour
     {
-        private Vector3 startPosition;
         [SerializeField] private Transform transformTileWall;
         [SerializeField] private GameObject mahjongPrefab; // 麻將Prefab
-        private List<GameObject> tileList = new List<GameObject>();
-
-        private TableManager tableManager;
-
-        public TableManager TableManager {
-            set { tableManager = value; }
-        }
-
-        public void GetReady(TableManager tableManager)
+        private Vector3 startPosition;
+        private readonly List<GameObject> tileList = new();
+        
+        private static readonly List<TileCategory> TileCategoriesList = new List<TileCategory>()
         {
-            Debug.Log(tableManager);
-            this.tableManager = tableManager;
+            // Season       1-4
+            new(TileType.Season, 4, 1),
+            // Flower       5-8
+            new(TileType.Flower, 4, 1),
+            // Wind         9-12
+            new(TileType.Wind, 4, 4),
+            // Dragon       13-15
+            new(TileType.Dragon, 3, 4),
+            // Character    16-24
+            new(TileType.Character, 9, 4),
+            // Bamboo       25-33
+            new(TileType.Bamboo, 9, 4),
+            // Dot          34-42
+            new(TileType.Dot, 9, 4)
+        };
+
+        public void GetReady()
+        {
             GenerateAllTile();
             Shuffle();
         }
-        void SetTileFace(GameObject mahjong)
+
+        public void DealTile(Player player)
+        {
+            RemoveTile(player, 0);
+        }
+
+        public void Replenish(Player player)
+        {
+            RemoveTile(player, tileList.Count - 1);
+        }
+
+        #region - HelperFunctions
+
+        private void RemoveTile(Player player, int idx)
+        {
+            if ( tileList.Count > 0)
+            {
+                GameObject tile = tileList[idx];
+                player.GetTile(tile);
+                tileList.RemoveAt(idx);
+            }
+            else
+            {
+                Debug.LogError("牌牆已空");
+            }
+        } 
+        private void SetTileFace(GameObject mahjong)
         {
             int cardFaceIndex = mahjong.GetComponent<Tile>().CardFaceIndex;
-            GameObject face = mahjong.transform.Find("Face").gameObject;
-            Image faceImage = face.GetComponent<Image>();
-            Sprite img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex.ToString());
+            var faceImage = mahjong.transform.Find("Face").gameObject.GetComponent<Image>();
+            
+            var img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex);
             if (img) 
             {
                 faceImage.sprite = img;
             }
             else
             {
-                Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardFaceIndex.ToString());
+                Debug.Log("無法設定圖像" + "Image/Mahjong/" + cardFaceIndex);
             }
-            
         }
-
-        void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
+        private void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
         {
-            GameObject tileObj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
-            Tile tile =  tileObj.GetComponent<Tile>();
-            if(tile==null)
+            var tileObj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
+            var tile =  tileObj.GetComponent<Tile>();
+            if(tile!=null)
+            {
+                tile.Init(tileType, tileNumber, serialNumber, cardFaceIndex);
+                tileObj.name = tile.TileId; 
+            }
+            else
             {
                 Debug.LogError("沒有 tile_script");
             }
-            tile.SetTableManager(tableManager);
-
-            // tile info
-            tile.TileType = tileType;
-            tile.TileNumber = tileNumber;
-            tile.CardFaceIndex = cardFaceIndex;
-            tile.SetTileId(serialNumber);
 
             tileList.Add(tileObj);
-            tileObj.name = tile.TileId;
             SetTileFace(tileObj);
         }
 
-        void GenerateAllTile()
+        private void GenerateAllTile()
         {
             int cardFaceIndex = 1;
-            // Season       1-4
-            for (int i = 1; i <= 4; ++i)
+
+            foreach (var tileCategory in TileCategoriesList)
             {
-                GenerateTile(TileType.Season, i, cardFaceIndex, 1);
-                ++cardFaceIndex;
-            }
-            // Flower       5-8
-            for (int i = 1; i <= 4; ++i)
-            {
-                GenerateTile(TileType.Flower, i, cardFaceIndex, 1);
-                ++cardFaceIndex;
-            }
-            // Wind         9-12 
-            for (int i = 1; i <= 4; ++i)
-            {
-                for (int j = 1; j <= 4; ++j)
+                for (int tileNumber = 0; tileNumber < tileCategory.MaxTileNumber; tileNumber++)
                 {
-                    GenerateTile(TileType.Wind, i, cardFaceIndex, j);
+                    for (int serialNumber = 0; serialNumber < tileCategory.MaxSerialNumber; serialNumber++)
+                    {
+                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex++, serialNumber);   
+                    }
                 }
-                ++cardFaceIndex; 
-            }
-            // Dragon       13-15
-            for (int i = 1; i <= 3; ++i)
-            {
-                for (int j = 1; j <= 4; ++j)
-                {
-                    GenerateTile(TileType.Dragon, i, cardFaceIndex, j);
-                }
-                ++cardFaceIndex; 
-            }
-            // Character    16-24
-            for (int i = 1; i <= 9; ++i)
-            {
-                for (int j = 1; j <= 4; ++j)
-                {
-                    GenerateTile(TileType.Character, i, cardFaceIndex, j);
-                }
-                ++cardFaceIndex; 
-            }
-            // Bamboo       25-33
-            for (int i = 1; i <= 9; ++i)
-            {
-                for (int j = 1; j <= 4; ++j)
-                {
-                    GenerateTile(TileType.Bamboo, i, cardFaceIndex, j);
-                }
-                ++cardFaceIndex; 
-            }
-            // Dot          34-42
-            for (int i = 1; i <= 9; ++i)
-            {
-                for (int j = 1; j <= 4; ++j)
-                {
-                    GenerateTile(TileType.Dot, i, cardFaceIndex, j);
-                }
-                ++cardFaceIndex; 
             }
         }
-
-        public void DealTile(Player player)
-        {
-            GameObject tile = null;
-            if ( tileList.Count > 0)
-            {
-                tile = tileList[0];
-                player.GetTile(tile);
-                tileList.RemoveAt(0);
-            }
-            else
-            {
-                Debug.LogError("牌牆已空");
-            }
-        }
-
-        public void BuPai(Player player)
-        {
-            GameObject tile = null;
-            if ( tileList.Count > 0)
-            {
-                tile = tileList[tileList.Count-1];
-                player.GetTile(tile);
-                tileList.RemoveAt(tileList.Count-1);
-            }
-            else
-            {
-                Debug.LogError("牌牆已空");
-            }
-        }
-
-
-        void Shuffle()
+        private void Shuffle()
         {
             for(int i = 0; i < tileList.Count; ++i)
             {
                 int j = Random.Range(0, tileList.Count);
-                GameObject tmp = tileList[i];
-                tileList[i] = tileList[j];
-                tileList[j] = tmp;
+                (tileList[i], tileList[j]) = (tileList[j], tileList[i]);
             }
         }
 
+        #endregion
     }
-
-
-        
 }
