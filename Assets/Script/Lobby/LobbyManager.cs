@@ -48,7 +48,7 @@ namespace Game.Lobby
 
             // AddCallbacks to trigger callback function
             gameManager.Runner.AddCallbacks(this);
-            
+
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
         }
@@ -160,12 +160,20 @@ namespace Game.Lobby
         {
             runner.Shutdown(false);
         }
+
+        public void OnSceneLoadDone(NetworkRunner runner)
+        {
+            if (runner.CurrentScene.buildIndex == 0)
+            {
+                preparePanelController.OpenPanel(EnumPanel.Waiting);
+            }
+        }
+
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) { }
-        public void OnSceneLoadDone(NetworkRunner runner) { }
         public void OnSceneLoadStart(NetworkRunner runner) { }
         public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
         #endregion
