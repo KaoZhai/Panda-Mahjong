@@ -93,6 +93,9 @@ namespace Game.Play {
         
         public void Discard(string tileId)
         {
+            if (TableManager.ActivePlayerIndex != PlayerIndex)
+                return;
+            
             int idx = FindTileByTileId(handTiles, tileId);
 
             if (idx != -1)
