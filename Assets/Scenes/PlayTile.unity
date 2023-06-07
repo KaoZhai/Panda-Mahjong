@@ -646,8 +646,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 404617982}
-        m_TargetAssemblyTypeName: Game.PlayingRoom.Player, Assembly-CSharp
-        m_MethodName: Chi
+        m_TargetAssemblyTypeName: Game.Play.Player, Assembly-CSharp
+        m_MethodName: ChiBtnCallBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1553,8 +1553,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 404617982}
-        m_TargetAssemblyTypeName: Game.PlayingRoom.Player, Assembly-CSharp
-        m_MethodName: Kong
+        m_TargetAssemblyTypeName: Game.Play.Player, Assembly-CSharp
+        m_MethodName: KongBtnCallBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2208,8 +2208,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 404617982}
-        m_TargetAssemblyTypeName: Game.PlayingRoom.Player, Assembly-CSharp
-        m_MethodName: Pong
+        m_TargetAssemblyTypeName: Game.Play.Player, Assembly-CSharp
+        m_MethodName: PongBtnCallBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4235,7 +4235,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 404617982}
-        m_TargetAssemblyTypeName: Game.PlayingRoom.Player, Assembly-CSharp
+        m_TargetAssemblyTypeName: Game.Play.Player, Assembly-CSharp
         m_MethodName: DecideHowToChi
         m_Mode: 1
         m_Arguments:

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Game.Core;
 
@@ -19,7 +18,7 @@ namespace Game.Play
 
         private GameObject lastTile = null;
 
-        private GameManager gameManager = null;
+        private GameManager gameManager;
 
         [SerializeField] private GameObject winningBtn, chiBtn, pongBtn, kongBtn;
         [SerializeField] private GameObject roundPoints;
@@ -116,7 +115,7 @@ namespace Game.Play
 
             while (players[activePlayerIndex].ReplaceFlower()) { }
 
-            if (activePlayerIndex == 0 && players[0].IsPlayerCanKong())
+            if (activePlayerIndex == 0 && players[0].Kong.CanDoOperation())
             {
                 SetButton(kongBtn, true);
             }
@@ -253,15 +252,15 @@ namespace Game.Play
         public IEnumerator BeforeNextPlayer()
         {
             // only control local player's button
-            if (players[0].IsPlayerCanChi())
+            if (players[0].Chi.CanDoOperation())
             {
                 SetButton(chiBtn, true);
             }
-            if (players[0].IsPlayerCanPong())
+            if (players[0].Pong.CanDoOperation())
             {
                 SetButton(pongBtn, true);
             }
-            if (players[0].IsPlayerCanKong())
+            if (players[0].Kong.CanDoOperation())
             {
                 SetButton(kongBtn, true);
             }
@@ -269,14 +268,10 @@ namespace Game.Play
             {
                 SetButton(winningBtn, true);
             }
-            Debug.Log("開始停頓");
-            // StartCoroutine(Countdown(3));
             yield return new WaitForSeconds(2f);
-            Debug.Log("停頓結束");
-            SetButton(chiBtn, false);
-            SetButton(pongBtn, false);
-            SetButton(kongBtn, false);
-            SetButton(winningBtn, false);
+
+            buttons.ForEach((button) => {SetButton(button, false);});
+            
             // todo: need to deal multiplayer move
             if (huActive)
             {

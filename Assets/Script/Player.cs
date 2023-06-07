@@ -18,6 +18,7 @@ namespace Game.Play {
         [SerializeField] private GameObject setPrefab;
 
         private TaiCalculator taiCalculator = new(null, null);
+        private readonly List<List<GameObject>> canChiTileSet = new();
 
         private int kongCnt;
         private int ponCnt;
@@ -26,6 +27,17 @@ namespace Game.Play {
         private bool isSelfDraw;
         private readonly bool isDealer = true;
         private bool isOnly;
+
+        public readonly IProcessStrategy Chi;
+        public readonly IProcessStrategy Pong;
+        public readonly IProcessStrategy Kong;
+
+        public Player()
+        {
+            Chi = new ChiStrategy(this);
+            Pong = new PongStrategy(this);
+            Kong = new KongStrategy(this);
+        }
 
         public TableManager TableManager { get; set; }
 
@@ -42,51 +54,23 @@ namespace Game.Play {
         public int Point { get; set; }
 
         public bool IsSelfDraw => isSelfDraw;
-
-        public void SortHandTiles()
-        {
-            handTiles.Sort(new TileGameObjectComparer());
-            foreach(GameObject t in handTiles)
-            {
-                t.transform.SetAsLastSibling();
-            }
-        }
-
+        
         private int HandTilesCnt => handTiles.Count;
 
-        public void GetTile(GameObject tile)
-        {
-            handTiles.Add(tile);
-            tile.GetComponent<Tile>().Player = this;
-            tile.transform.SetParent(hand, false);
-            tile.SetActive(true);
-        }
 
-        public bool IsDoneReplace()
+        #region - TileOperations
+        
+        public void CallCalculator()
         {
-            bool isDone = true;
-            foreach (var t in handTiles)
+            if (!isSelfDraw)
             {
-                if (t.GetComponent<Tile>().IsFlower())
-                {
-                    isDone = false;
-                }
+                showTiles.Add(TableManager.LastTile);
             }
-            return isDone;
+
+            taiCalculator = new TaiCalculator(handTiles, showTiles, kongCnt, ponCnt, straightCnt, 1, 1, 0, 0,
+                isDealer, false, false, isSelfDraw, false, isOnly);
         }
         
-        void ShowTile(int indexOfHandTiles)
-        {
-            handTiles[indexOfHandTiles].transform.SetParent(showPool, false);
-            showTiles.Add(handTiles[indexOfHandTiles]);
-            handTiles.RemoveAt(indexOfHandTiles);
-        }
-
-        void TakeTileFromOther()
-        {
-            TableManager.LastTile.transform.SetParent(showPool, false);
-            showTiles.Add(TableManager.LastTile);
-        }
         public bool ReplaceFlower()
         {
             int cnt = 0;
@@ -106,71 +90,239 @@ namespace Game.Play {
 
             return cnt != 0;
         }
+        
+        public bool Discard(string tileId)
+        {
+            if (TableManager.ActivePlayerIndex != PlayerIndex)
+                return false;
+            
+            int idx = FindTileByTileId(handTiles, tileId);
 
-
+            if (idx != -1)
+            {
+                TableManager.LastTile = handTiles[idx];
+                handTiles[idx].transform.SetParent(tilePool, false);
+                handTiles[idx].SetActive(true);
+                handTiles.RemoveAt(idx);
+            }
+            else
+            {
+                Debug.LogError("Cannot find tile from Tile ID");
+                return false;
+            }
+            
+            SortHandTiles();
+            StartCoroutine(TableManager.BeforeNextPlayer());
+            return true;
+        }
+        
         public void DefaultDiscard()
         {
             Discard(handTiles[Random.Range(0, HandTilesCnt)].GetComponent<Tile>().TileId);
-
-            
             // Discard(handTiles[handTiles.Count-1].GetComponent<Tile>().TileId);
         }
 
-        public void Discard(string tileId)
+        public void SortHandTiles()
         {
-            for(int i = 0; i < handTiles.Count; ++i)
+            handTiles.Sort(new TileGameObjectComparer());
+            foreach(GameObject t in handTiles)
             {
-                if (handTiles[i].GetComponent<Tile>().TileId == tileId)
-                {
-                    TableManager.LastTile = handTiles[i];
-                    handTiles[i].transform.SetParent(tilePool, false);
-                    handTiles[i].SetActive(true);
-                    handTiles.RemoveAt(i);
-                    break;
-                }
+                t.transform.SetAsLastSibling();
             }
-            SortHandTiles();
-            StartCoroutine(TableManager.BeforeNextPlayer());
+        }
+        public void GetTile(GameObject tile)
+        {
+            handTiles.Add(tile);
+            tile.GetComponent<Tile>().Player = this;
+            tile.transform.SetParent(hand, false);
+            tile.SetActive(true);
         }
 
-        public bool IsPlayerCanKong()
+        void ShowTile(int indexOfHandTiles)
         {
-            if (((TableManager.ActivePlayerIndex + 1) % 4 == PlayerIndex) || TableManager.LastTile.GetComponent<Tile>().PlayerIndex == PlayerIndex)
-            {
-                return false;
-            }
-            bool isCanGang = false;
-            int numSame = 0;
-            foreach(GameObject tile in handTiles)
-            {
-                if (TableManager.LastTile && tile.GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
-                    ++numSame;
-            }
-            if (numSame == 3)
-            {
-                isCanGang = true;
-
-            }
-            return isCanGang;
+            handTiles[indexOfHandTiles].transform.SetParent(showPool, false);
+            showTiles.Add(handTiles[indexOfHandTiles]);
+            handTiles.RemoveAt(indexOfHandTiles);
         }
         
-        public bool IsPlayerCanPong()
+        void TakeTileFromOther()
         {
-            if (TableManager.ActivePlayerIndex == PlayerIndex)
-                return false;
-            bool isCanPong = false;
-            int numSame = 0;
-            foreach(GameObject tile in handTiles)
-            {
-                if (TableManager.LastTile && tile.GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
-                    ++numSame;
-            }
-            if (numSame >= 2)
-            {
-                isCanPong = true;
+            TableManager.LastTile.transform.SetParent(showPool, false);
+            showTiles.Add(TableManager.LastTile);
+        }
 
+        #endregion
+
+        #region - ChinPongGangHu
+
+        public interface IProcessStrategy
+        {
+            public bool CanDoOperation();
+            public void DoOperation();
+        }
+
+        private class ChiStrategy: IProcessStrategy
+        {
+            private readonly Player player;
+
+            public ChiStrategy(Player player)
+            {
+                this.player = player;
             }
-            return isCanPong;
+            public bool CanDoOperation()
+            {
+                if (player.TableManager.ActivePlayerIndex == player.PlayerIndex)
+                    return false;
+                if ((player.TableManager.ActivePlayerIndex + 1) % 4 != player.PlayerIndex)
+                    return false;
+                player.canChiTileSet.Clear();
+                Tile newTile = player.TableManager.LastTile.GetComponent<Tile>();
+                // Debug.Log(newTile.TileType.ToString() + newTile.TileNumber.ToString());
+                bool isCanChi = false;
+                if (!newTile.IsSuit())
+                    return false;
+           
+                int i = newTile.TileNumber;
+                // i-2, i-1, i
+                isCanChi |= player.Find(newTile.TileType, i-2, i-1);
+                // i-1, i, i+1
+                isCanChi |= player.Find(newTile.TileType, i-1, i+1);
+                // i, i+1, i+2
+                isCanChi |= player.Find(newTile.TileType, i+1, i+2);
+
+                return isCanChi;
+            }
+
+            public void DoOperation()
+            {
+                GameObject set = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+                Transform[] children = set.GetComponentsInChildren<Transform>();
+
+                bool first = true;
+                foreach (Transform child in children)
+                {
+                    if (child == set.transform) continue;
+                    string tileId = child.name;
+
+                    int idx = player.FindTileByTileId(player.handTiles, tileId, "REVERSE");
+
+                    if (idx != -1)
+                    {
+                        player.ShowTile(idx);
+                        if (first)
+                        {
+                            player.TakeTileFromOther();
+                            first = false;
+                        }
+                    }
+                }
+            
+                CloseChiSelection();
+                player.straightCnt++;
+            }
+            
+            private void CloseChiSelection()
+            {
+                player.chiTileSets.SetActive(false);
+                Transform[] children = player.chiTileSets.GetComponentsInChildren<Transform>();
+                foreach (Transform child in children)
+                {
+                    if (child == player.chiTileSets.transform) continue;
+                    Destroy(child.gameObject);
+                }
+            }
+        }
+
+        private class PongStrategy : IProcessStrategy
+        {
+            private readonly Player player;
+
+            public PongStrategy(Player player)
+            {
+                this.player = player;
+            }
+            public bool CanDoOperation()
+            {
+                if (player.TableManager.ActivePlayerIndex == player.PlayerIndex)
+                    return false;
+                bool isCanPong = false;
+                int numSame = 0;
+                foreach(GameObject tile in player.handTiles)
+                {
+                    if (player.TableManager.LastTile && tile.GetComponent<Tile>().Equals(player.TableManager.LastTile.GetComponent<Tile>()))
+                        ++numSame;
+                }
+                if (numSame >= 2)
+                {
+                    isCanPong = true;
+
+                }
+                return isCanPong;
+            }
+
+            public void DoOperation()
+            {
+                player.TakeTileFromOther();
+                int cnt = 0;
+                for(int i = player.handTiles.Count-1; i >= 0; --i)
+                {
+                    if (player.handTiles[i].GetComponent<Tile>().Equals(player.TableManager.LastTile.GetComponent<Tile>()))
+                    {
+                        ++cnt;
+                        player.ShowTile(i);
+                    }
+                    if (cnt == 2)
+                        break;
+                }
+                player.ponCnt++;
+            }
+        }
+
+        private class KongStrategy : IProcessStrategy
+        {
+            private readonly Player player;
+
+            public KongStrategy(Player player)
+            {
+                this.player = player;
+            }
+            public bool CanDoOperation()
+            {
+                if (((player.TableManager.ActivePlayerIndex + 1) % 4 == player.PlayerIndex) || player.TableManager.LastTile.GetComponent<Tile>().PlayerIndex == player.PlayerIndex)
+                {
+                    return false;
+                }
+                bool isCanGang = false;
+                int numSame = 0;
+                foreach(GameObject tile in player.handTiles)
+                {
+                    if (player.TableManager.LastTile && tile.GetComponent<Tile>().Equals(player.TableManager.LastTile.GetComponent<Tile>()))
+                        ++numSame;
+                }
+                if (numSame == 3)
+                {
+                    isCanGang = true;
+
+                }
+                return isCanGang;
+            }
+
+            public void DoOperation()
+            {
+                player.TakeTileFromOther();
+                int cnt = 0;
+                for(int i = player.handTiles.Count-1; i >= 0; --i)
+                {
+                    if (player.handTiles[i].GetComponent<Tile>().Equals(player.TableManager.LastTile.GetComponent<Tile>()))
+                    {
+                        ++cnt;
+                        player.ShowTile(i);
+                    }
+                    if (cnt == 3)
+                        break;
+                }
+                player.kongCnt++;
+            }
         }
 
         public bool IsPlayerCanHu(bool selfDraw)
@@ -189,6 +341,36 @@ namespace Game.Play {
             }
             
             return CheckHu((int[])tileCountArray.Clone(), false);
+        }
+        
+        #endregion
+        
+        #region - HelperFunction
+
+        private int FindTileByTileId(List<GameObject> tiles, string tileId, string mode = "NORMAL")
+        {
+            if (mode == "NORMAL")
+            {
+                for (int i = 0; i < tiles.Count; ++i)
+                {
+                    if (tiles[i].GetComponent<Tile>().TileId == tileId)
+                    {
+                        return i;
+                    }
+                }
+            }
+            else if(mode == "REVERSE")
+            {
+                for (int i = tiles.Count - 1; i >= 0; --i)
+                {
+                    if (tiles[i].GetComponent<Tile>().TileId == tileId)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
 
         private bool CheckIsOnly(int[] nowHandArray)
@@ -270,45 +452,11 @@ namespace Game.Play {
 
         private void TransToArray(int[] tileCountArray, List<GameObject> tileList)
         {
-            foreach (var tile in tileList)
-            {
-                if (tile.GetComponent<Tile>().TileType == TileType.Character)
-                {
-                    tileCountArray[0 + tile.GetComponent<Tile>().TileNumber] += 1; // 1~9 萬
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Dot)
-                {
-                    tileCountArray[10 + tile.GetComponent<Tile>().TileNumber] += 1; // 11~19 筒
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Bamboo)
-                {
-                    tileCountArray[20 + tile.GetComponent<Tile>().TileNumber] += 1; // 21~29 條
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Wind)
-                {
-                    tileCountArray[30 + tile.GetComponent<Tile>().TileNumber] += 1; // 31~34 東南西北
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Dragon)
-                {
-                    tileCountArray[34 + tile.GetComponent<Tile>().TileNumber] += 1; // 35~37 中發白
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Season)
-                {
-                    tileCountArray[40 + tile.GetComponent<Tile>().TileNumber] += 1; // 41~44 春夏秋冬
-                }
-                else if (tile.GetComponent<Tile>().TileType == TileType.Flower)
-                {
-                    tileCountArray[44 + tile.GetComponent<Tile>().TileNumber] += 1; // 45~48 梅蘭竹菊
-                }
-                else
-                {
-                    Debug.Log("Error tile type: " + tile.GetComponent<Tile>().TileType);
-                }
-            }
+            TaiCalculator.TransToArray(tileCountArray, tileList);
         }
 
-        private readonly List<List<GameObject>> canChiTileSet = new();
-        bool Find(TileType tileType, int lostA, int lostB)
+        
+        private bool Find(TileType tileType, int lostA, int lostB)
         {
             if (lostA < 1 || lostB > 9)
                 return false; 
@@ -330,29 +478,10 @@ namespace Game.Play {
             }   
             return false;
         }
-        public bool IsPlayerCanChi()
-        {
-            if (TableManager.ActivePlayerIndex == PlayerIndex)
-                return false;
-            if ((TableManager.ActivePlayerIndex + 1) % 4 != PlayerIndex)
-                return false;
-            canChiTileSet.Clear();
-            Tile newTile = TableManager.LastTile.GetComponent<Tile>();
-            // Debug.Log(newTile.TileType.ToString() + newTile.TileNumber.ToString());
-            bool isCanChi = false;
-            if (!newTile.IsSuit())
-                return false;
-           
-            int i = newTile.TileNumber;
-            // i-2, i-1, i
-            isCanChi |= Find(newTile.TileType, i-2, i-1);
-            // i-1, i, i+1
-            isCanChi |= Find(newTile.TileType, i-1, i+1);
-            // i, i+1, i+2
-            isCanChi |= Find(newTile.TileType, i+1, i+2);
 
-            return isCanChi;
-        }
+        #endregion
+
+        #region - BtnCallBack
 
         public void DecideHowToChi()
         {
@@ -367,90 +496,24 @@ namespace Game.Play {
                 b.name = t[1].GetComponent<Tile>().TileId;
             }
         }
-
-        void CloseChiSelection()
+        
+        public void ChiBtnCallBack()
         {
             chiTileSets.SetActive(false);
-            Transform[] children = chiTileSets.GetComponentsInChildren<Transform>();
-            foreach (Transform child in children)
-            {
-                if (child == chiTileSets.transform) continue;
-                Destroy(child.gameObject);
-            }
-        }
-        public void Chi()
-        {
-            GameObject set = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-            Transform[] children = set.GetComponentsInChildren<Transform>();
-
-            bool first = true;
-            foreach (Transform child in children)
-            {
-                if (child == set.transform) continue;
-                string tileId = child.name;
-                for(int i = handTiles.Count-1; i >= 0; --i)
-                {
-                    if (handTiles[i].GetComponent<Tile>().TileId == tileId)
-                    {
-                        ShowTile(i);
-                        if (first)
-                        {
-                            TakeTileFromOther();
-                            first = false;
-                        }
-                        break;
-                    }
-                }
-            }
-            
-            CloseChiSelection();
-            straightCnt++;
-        }
-        public void Pong()
-        {
-            TakeTileFromOther();
-            int cnt = 0;
-            for(int i = handTiles.Count-1; i >= 0; --i)
-            {
-                if (handTiles[i].GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
-                {
-                    ++cnt;
-                    ShowTile(i);
-                }
-                if (cnt == 2)
-                    break;
-            }
-            ponCnt++;
-        }
-        
-        public void Kong()
-        {
-            TakeTileFromOther();
-            int cnt = 0;
-            for(int i = handTiles.Count-1; i >= 0; --i)
-            {
-                if (handTiles[i].GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
-                {
-                    ++cnt;
-                    ShowTile(i);
-                }
-                if (cnt == 3)
-                    break;
-            }
-            kongCnt++;
+            Chi.DoOperation();
         }
 
-        public void CallCalculator()
+        public void PongBtnCallBack()
         {
-            if (!isSelfDraw)
-            {
-                showTiles.Add(TableManager.LastTile);
-            }
-
-            this.taiCalculator = new TaiCalculator(handTiles, showTiles, kongCnt, ponCnt, straightCnt, 1, 1, 0, 0,
-            isDealer, false, false, isSelfDraw, false, isOnly);
+            Pong.DoOperation();
         }
-        
+
+        public void KongBtnCallBack()
+        {
+            Kong.DoOperation();
+        }
+
+        #endregion
     }
 
 }
