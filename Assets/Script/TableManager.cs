@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Game.Core;
+using Game.Lobby;
+using UnityEngine.SceneManagement;
 
 namespace Game.Play
 {
@@ -150,10 +152,22 @@ namespace Game.Play
         }
         public void Win()
         {
+            if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out var playerNetworkData))
+            {
+                playerNetworkData.SetReady_RPC(false);
+            }
+            
             huActive = true;
             int winningPlayerIndex = 0;
             TurnToPlayer(winningPlayerIndex);
             EndGame(winningPlayerIndex);
+        }
+
+        public void OnRoundPointClose()
+        {
+            LobbyManager.Instance.PanelController.OpenPanel(EnumPanel.Waiting);
+            int curSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            gameManager.Runner.SetActiveScene(curSceneIndex - 1);
         }
 
         #endregion
