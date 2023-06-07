@@ -193,8 +193,8 @@ namespace Game.Play
 
             points.text = "共 " + players[winningPlayerIndex].TaiCalculator.Tai + " 台";
 
-            int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
-            // int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
+            // int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
+            int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
 
             if (players[winningPlayerIndex].IsSelfDraw)
             {
@@ -231,9 +231,9 @@ namespace Game.Play
 
         private void InitScoringList()
         {
-            for (int i = 0; i < 18; i++)
+            foreach(Text obj in winningType)
             {
-                winningType[i].text = "";
+                obj.text = "";
             }
         }
 

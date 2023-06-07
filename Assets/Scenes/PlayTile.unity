@@ -4676,7 +4676,7 @@ MonoBehaviour:
   - {fileID: 1357726025}
   - {fileID: 60435799}
   - {fileID: 800375441}
-  WinningType:
+  winningType:
   - {fileID: 1036365491}
   - {fileID: 1508505759}
   - {fileID: 1411615175}

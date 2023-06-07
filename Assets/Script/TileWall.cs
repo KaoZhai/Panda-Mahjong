@@ -116,8 +116,9 @@ namespace Game.Play {
                 {
                     for (int serialNumber = 0; serialNumber < tileCategory.MaxSerialNumber; serialNumber++)
                     {
-                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex++, serialNumber);   
+                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex, serialNumber);   
                     }
+                    cardFaceIndex++;
                 }
             }
         }
