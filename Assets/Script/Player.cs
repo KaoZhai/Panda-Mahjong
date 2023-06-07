@@ -447,39 +447,7 @@ namespace Game.Play {
 
         private void TransToArray(int[] tileCountArray, List<GameObject> tileList)
         {
-            foreach (var tile in tileList)
-            {
-                int offset = 0;
-                switch (tile.GetComponent<Tile>().TileType)
-                {
-                    case TileType.Character:
-                        offset = 0; // 1~9 萬
-                        break;
-                    case TileType.Dot:
-                        offset = 10; // 11~19 筒
-                        break;
-                    case TileType.Bamboo:
-                        offset = 20; // 21~29 條
-                        break;
-                    case TileType.Wind:
-                        offset = 30; // 31~34 東南西北
-                        break;
-                    case TileType.Dragon:
-                        offset = 34; // 35~37 中發白
-                        break;
-                    case TileType.Season:
-                        offset = 40; // 41~44 春夏秋冬
-                        break;
-                    case TileType.Flower:
-                        offset = 44; // 45~48 梅蘭竹菊
-                        break;
-                    default:
-                        Debug.Log("Error tile type: " + tile.GetComponent<Tile>().TileType);
-                        break;
-                }
-                
-                tileCountArray[offset + tile.GetComponent<Tile>().TileNumber] += 1;
-            }
+            TaiCalculator.TransToArray(tileCountArray, tileList);
         }
 
         
