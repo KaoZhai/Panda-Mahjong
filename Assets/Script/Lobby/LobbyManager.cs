@@ -41,6 +41,7 @@ namespace Game.Lobby
 
             // AddCallbacks to trigger callback function
             gameManager.Runner.AddCallbacks(this);
+            DontDestroyOnLoad(this);
 
             // TODO: user can not operate until join session completely
             await JoinLobby(gameManager.Runner);
