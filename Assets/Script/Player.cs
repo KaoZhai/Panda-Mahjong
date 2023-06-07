@@ -96,7 +96,7 @@ namespace Game.Play
             TableManager.LastTile.transform.SetParent(showPool, false);
             showTiles.Add(TableManager.LastTile);
         }
-        public void ReplaceFlower()
+        public bool ReplaceFlower()
         {
             int cnt = 0;
             for (int i = handTiles.Count - 1; i >= 0; --i)
@@ -110,8 +110,18 @@ namespace Game.Play
 
             for (int i = 0; i < cnt; ++i)
             {
-                TableManager.TileWall.BuPai(this);
+                TableManager.TileWall.Replenish(this);
             }
+
+            // replenish probably contain flowers
+            bool containFlower = false;
+            foreach (var tile in handTiles)
+            {
+                if (tile.GetComponent<Tile>().IsFlower())
+                    containFlower = true;
+            }
+
+            return containFlower;
         }
 
 
@@ -150,7 +160,7 @@ namespace Game.Play
             int numSame = 0;
             foreach (GameObject tile in handTiles)
             {
-                if (TableManager.LastTile && tile.GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
+                if (TableManager.LastTile && tile.GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
                     ++numSame;
             }
             if (numSame == 3)
@@ -169,7 +179,7 @@ namespace Game.Play
             int numSame = 0;
             foreach (GameObject tile in handTiles)
             {
-                if (TableManager.LastTile && tile.GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
+                if (TableManager.LastTile && tile.GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
                     ++numSame;
             }
             if (numSame >= 2)
@@ -419,7 +429,7 @@ namespace Game.Play
             int cnt = 0;
             for (int i = handTiles.Count - 1; i >= 0; --i)
             {
-                if (handTiles[i].GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
+                if (handTiles[i].GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
                 {
                     ++cnt;
                     ShowTile(i);
@@ -436,7 +446,7 @@ namespace Game.Play
             int cnt = 0;
             for (int i = handTiles.Count - 1; i >= 0; --i)
             {
-                if (handTiles[i].GetComponent<Tile>().IsSame(TableManager.LastTile.GetComponent<Tile>()))
+                if (handTiles[i].GetComponent<Tile>().Equals(TableManager.LastTile.GetComponent<Tile>()))
                 {
                     ++cnt;
                     ShowTile(i);

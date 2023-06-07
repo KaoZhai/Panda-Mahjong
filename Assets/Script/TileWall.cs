@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Play {
+namespace Game.Play
+{
     internal class TileCategory
     {
         public TileType Type { get; private set; }
@@ -23,7 +24,7 @@ namespace Game.Play {
         [SerializeField] private GameObject mahjongPrefab; // 麻將Prefab
         private Vector3 startPosition;
         private readonly List<GameObject> tileList = new();
-        
+
         private static readonly List<TileCategory> TileCategoriesList = new List<TileCategory>()
         {
             // Season       1-4
@@ -47,7 +48,7 @@ namespace Game.Play {
             GenerateAllTile();
             Shuffle();
         }
-        
+
         public void DealTile(Player player, string tileId)
         {
             foreach (var tileObj in tileList)
@@ -80,7 +81,7 @@ namespace Game.Play {
 
         private void RemoveTile(Player player, int idx)
         {
-            if ( tileList.Count > 0)
+            if (tileList.Count > 0)
             {
                 GameObject tile = tileList[idx];
                 player.GetTile(tile);
@@ -90,14 +91,14 @@ namespace Game.Play {
             {
                 Debug.LogError("牌牆已空");
             }
-        } 
+        }
         private void SetTileFace(GameObject mahjong)
         {
             int cardFaceIndex = mahjong.GetComponent<Tile>().CardFaceIndex;
             var faceImage = mahjong.transform.Find("Face").gameObject.GetComponent<Image>();
-            
+
             var img = Resources.Load<Sprite>("Image/Mahjong/" + cardFaceIndex);
-            if (img) 
+            if (img)
             {
                 faceImage.sprite = img;
             }
@@ -109,11 +110,11 @@ namespace Game.Play {
         private void GenerateTile(TileType tileType, int tileNumber, int cardFaceIndex, int serialNumber)
         {
             var tileObj = Instantiate(mahjongPrefab, startPosition + new Vector3(0, 0, 0), Quaternion.identity, transformTileWall);
-            var tile =  tileObj.GetComponent<Tile>();
-            if(tile!=null)
+            var tile = tileObj.GetComponent<Tile>();
+            if (tile != null)
             {
                 tile.Init(tileType, tileNumber, serialNumber, cardFaceIndex);
-                tileObj.name = tile.TileId; 
+                tileObj.name = tile.TileId;
             }
             else
             {
@@ -134,14 +135,14 @@ namespace Game.Play {
                 {
                     for (int serialNumber = 0; serialNumber < tileCategory.MaxSerialNumber; serialNumber++)
                     {
-                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex++, serialNumber);   
+                        GenerateTile(tileCategory.Type, tileNumber, cardFaceIndex++, serialNumber);
                     }
                 }
             }
         }
         private void Shuffle()
         {
-            for(int i = 0; i < tileList.Count; ++i)
+            for (int i = 0; i < tileList.Count; ++i)
             {
                 int j = Random.Range(0, tileList.Count);
                 (tileList[i], tileList[j]) = (tileList[j], tileList[i]);
