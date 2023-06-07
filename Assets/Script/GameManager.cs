@@ -42,7 +42,14 @@ namespace Game.Core
 
         public event Action OnPlayerListUpdated;
 
+        private Guid playerID = Guid.NewGuid();
+
         [FormerlySerializedAs("playerList")] public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
+
+        public Guid PlayerID
+        {
+            get => playerID;
+        }
 
         public void Disconnect()
         {
