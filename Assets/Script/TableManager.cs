@@ -109,7 +109,11 @@ namespace Game.Play
 
         private void Draw()
         {
-            tileWall.DealTile(players[activePlayerIndex]);
+            if(!tileWall.DealTile(players[activePlayerIndex]))
+            {
+                EndGame(-1);
+            }
+
             while (players[activePlayerIndex].ReplaceFlower()) { }
 
             if (activePlayerIndex == 0 && players[0].IsPlayerCanKong())
@@ -189,43 +193,52 @@ namespace Game.Play
         private void EndGame(int winningPlayerIndex)
         {
             roundPoints.SetActive(true);
-            players[winningPlayerIndex].CallCalculator();
-
-            points.text = "共 " + players[winningPlayerIndex].TaiCalculator.Tai + " 台";
-
-            // int pointsChange = 300 + 100 * players[winningPlayerIndex].TaiCalculator.Tai; //還沒接上 gameManager 先用這個
-            int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
-
-            if (players[winningPlayerIndex].IsSelfDraw)
+            InitScoringList();
+            if(winningPlayerIndex == -1)
             {
-                pointsChangeText[winningPlayerIndex].text = "+" + (pointsChange * 3).ToString();
-                pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
-                pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
-                pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
+                points.text = "流局";
+                foreach(Text obj in pointsChangeText)
+                {
+                    obj.text = "+0";
+                }
+                huActive = true;
             }
             else
             {
-                for (int i = 0; i < 4; i++)
+                players[winningPlayerIndex].CallCalculator();
+
+                points.text = "共 " + players[winningPlayerIndex].TaiCalculator.Tai + " 台";
+                int pointsChange = gameManager.GameBasePoint + gameManager.GameTaiPoint * players[winningPlayerIndex].TaiCalculator.Tai;
+
+                if (players[winningPlayerIndex].IsSelfDraw)
                 {
-                    if (LastTile.GetComponent<Tile>().PlayerIndex == i)
-                    {
-                        pointsChangeText[i].text = "-" + pointsChange.ToString();
-                    }
-                    else
-                    {
-                        pointsChangeText[i].text = "+0";
-                    }
+                    pointsChangeText[winningPlayerIndex].text = "+" + (pointsChange * 3).ToString();
+                    pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
+                    pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
+                    pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
                 }
-                pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
-            }
+                else
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (LastTile.GetComponent<Tile>().PlayerIndex == i)
+                        {
+                            pointsChangeText[i].text = "-" + pointsChange.ToString();
+                        }
+                        else
+                        {
+                            pointsChangeText[i].text = "+0";
+                        }
+                    }
+                    pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
+                }
 
-            List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
+                List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
 
-            InitScoringList();
-
-            for (int i = 0; i < scoringList.Count; i++)
-            {
-                winningType[i].text = scoringList[i];
+                for (int i = 0; i < scoringList.Count; i++)
+                {
+                    winningType[i].text = scoringList[i];
+                }
             }
         }
 
