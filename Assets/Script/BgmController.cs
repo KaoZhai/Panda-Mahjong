@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,9 +15,9 @@ namespace Game.Music
     {
         private Dictionary<EnumMusic, AudioClip> musicDict = new Dictionary<EnumMusic, AudioClip>();
 
-        [SerializeField] private AudioClip startMusic = null;
-        [SerializeField] private AudioClip lobbyMusic = null;
-        [SerializeField] private AudioClip playingRoomMusic = null;
+        [SerializeField] private AudioClip startMusic;
+        [SerializeField] private AudioClip lobbyMusic;
+        [SerializeField] private AudioClip playingRoomMusic;
 
         void Start() 
         {
@@ -27,11 +26,10 @@ namespace Game.Music
             AddMusic(EnumMusic.PlayingRoom,playingRoomMusic);
         }
 
-        public void AddMusic(EnumMusic enumMusic, AudioClip music)
+        private void AddMusic(EnumMusic enumMusic, AudioClip music)
         {
             Debug.Log($"add music: {enumMusic}");
-            if (!musicDict.ContainsKey(enumMusic))
-                musicDict.Add(enumMusic, music);
+            musicDict.TryAdd(enumMusic, music);
         }
 
         public void PlayMusic(EnumMusic enumMusic)
@@ -77,7 +75,7 @@ namespace Game.Music
             }
         }
 
-        public void setVolume(float volume)
+        public void SetVolume(float volume)
         {
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.volume = volume;

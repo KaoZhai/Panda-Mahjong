@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,29 +6,22 @@ using UnityEngine.SceneManagement;
 using Fusion;
 using Fusion.Sockets;
 using Game.Core;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace Game.Lobby
 {
     public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
-        private const int maxRoomNum = 100;
-        private RoomID roomID = new RoomID();
-        private GameManager gameManager = null;
-        private SortedSet<string> roomNameSet = new SortedSet<string>();
-        private PreparePanelController preparePanelController = new PreparePanelController();
+        private const int MaxRoomNum = 100;
+        private readonly RoomID roomID = new();
+        private GameManager gameManager;
+        private SortedSet<string> roomNameSet = new();
+        private PreparePanelController preparePanelController = new();
 
-        [SerializeField] private RoomListPannel roomListPannel = null;
-        [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
+        [SerializeField] private RoomListPanel roomListPanel;
+        [SerializeField] private PlayerNetworkData playerNetworkDataPrefab;
 
-        public PreparePanelController PanelController
-        {
-            get
-            {
-                return preparePanelController;
-            }
-        }
+        public PreparePanelController PanelController => preparePanelController;
 
         public static LobbyManager Instance
         {
@@ -54,7 +46,9 @@ namespace Game.Lobby
             await JoinLobby(gameManager.Runner);
         }
 
-        public async Task JoinLobby(NetworkRunner runner)
+        #region - RoomRelated
+
+        private async Task JoinLobby(NetworkRunner runner)
         {
             var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
 
@@ -64,11 +58,11 @@ namespace Game.Lobby
 
         public async Task CreateRoom(string roomName, int maxPlayerNum)
         {
-            if (roomNameSet.Count <= maxRoomNum && !roomNameSet.Contains(roomName))
+            if (roomNameSet.Count <= MaxRoomNum && !roomNameSet.Contains(roomName))
             {
                 // TODO: session add unique id
                 var customProps = new Dictionary<string, int>(){
-                    {"roomID", (int)roomID.Get(roomName)}
+                    {"roomID", roomID.Get(roomName)}
                 };
 
                 // TODO: add fusion object pool
@@ -107,6 +101,15 @@ namespace Game.Lobby
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
         }
 
+        #endregion
+
+        private void Disconnect()
+        {
+        }
+
+
+        #region - PhontonCallBack
+
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
             roomNameSet.Clear();
@@ -114,7 +117,7 @@ namespace Game.Lobby
             {
                 roomNameSet.Add(session.Name);
             }
-            roomListPannel.UpdateRoomList(sessionList);
+            roomListPanel.UpdateRoomList(sessionList);
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -130,9 +133,7 @@ namespace Game.Lobby
             }
         }
 
-        public void Disconnect()
-        {
-        }
+        #endregion
 
         #region - unused callbacks
         public void OnInput(NetworkRunner runner, NetworkInput input) { }

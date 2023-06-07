@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Game.Core;
@@ -8,11 +6,11 @@ namespace Game.Lobby
 {
     public class WaitingRoomScene : MonoBehaviour
     {
-        private LobbyManager lobbyManager = null;
-        private GameManager gameManager = null;
+        private LobbyManager lobbyManager;
+        private GameManager gameManager;
 
-        [SerializeField] private GameObject startBtn = null;
-        [SerializeField] private Game.Music.BgmController musicController = null;
+        [SerializeField] private GameObject startBtn;
+        [SerializeField] private Music.BgmController musicController;
 
         public void Start()
         {
@@ -24,22 +22,15 @@ namespace Game.Lobby
 
         public void OnEnable()
         {
-            if (GameManager.Instance.Runner.GameMode == Fusion.GameMode.Host)
-            {
-                startBtn.SetActive(true);
-            }
-            else
-            {
-                startBtn.SetActive(false);
-            }
+            startBtn.SetActive(GameManager.Instance.Runner.GameMode == Fusion.GameMode.Host);
         }
 
-        #region BtnCallBack
+        #region - BtnCallBack
 
         public void OnLeaveBtnClick()
         {
             GameManager.Instance.Disconnect();
-            musicController.PlayMusic(Game.Music.EnumMusic.Start);
+            musicController.PlayMusic(Music.EnumMusic.Start);
             lobbyManager.PanelController.OpenPanel(EnumPanel.RoomList);
         }
 

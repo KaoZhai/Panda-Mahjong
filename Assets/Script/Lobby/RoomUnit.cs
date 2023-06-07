@@ -5,11 +5,11 @@ namespace Game.Lobby
 {
     public class RoomUnit : MonoBehaviour
     {
-        private LobbyManager lobbyManager = null;
+        private LobbyManager lobbyManager;
 
-        [SerializeField] private TextMeshProUGUI roomName = null;
-        [SerializeField] private TextMeshProUGUI curPlayerNum = null;
-        [SerializeField] private TextMeshProUGUI maxPlayerNum = null;
+        [SerializeField] private TextMeshProUGUI roomName;
+        [SerializeField] private TextMeshProUGUI curPlayerNum;
+        [SerializeField] private TextMeshProUGUI maxPlayerNum;
 
         public void SetInfo(LobbyManager lobbyManager, string roomName, int curPlayerNum, int maxPlayerNum)
         {

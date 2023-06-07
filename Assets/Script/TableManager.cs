@@ -10,15 +10,12 @@ namespace Game.Play
 
     public class TableManager : MonoBehaviour
     {
-        public static TableManager Instance
-        {
-            get;
-            private set;
-        }
+        public static TableManager Instance => null;
+
         [SerializeField] private List<Player> players = new List<Player>();
         [SerializeField] private TileWall tileWall;
 
-        private int activePlayerIndex = 0;
+        private int activePlayerIndex;
 
         private GameObject lastTile = null;
 
@@ -28,40 +25,35 @@ namespace Game.Play
         [SerializeField] private GameObject roundPoints;
         [SerializeField] private Text points;
         [SerializeField] private List<Text> pointsChangeText;
-        [SerializeField] private List<Text> WinningType;
+        [SerializeField] private List<Text> winningType;
+
+        private List<GameObject> buttons;
+
+        public TileWall TileWall => tileWall;
+
+        public GameObject LastTile { set; get; }
+
+        public int ActivePlayerIndex => activePlayerIndex;
 
 
-        public TileWall TileWall
-        {
-            get { return tileWall; }
-        }
-        public GameObject LastTile
-        {
-            set { lastTile = value; }
-            get { return lastTile; }
-        }
-        public int ActivePlayerIndex
-        {
-            get { return activePlayerIndex; }
-        }
+        private bool chiActive;
+        private bool pongActive;
+        private bool kongActive;
+        private bool huActive;
 
 
-        private bool chiActive = false;
-        private bool pongActive = false;
-        private bool kongActive = false;
-        private bool huActive = false;
-
-
-        void Start()
+        void Start() 
         {
             gameManager = GameManager.Instance;
-            tileWall.GetReady(this);
+            tileWall.GetReady();
             // todo: player will set player id, now is 0-3
-            for (int i = 0; i < 4; i++)
+            for(int i = 0; i < 4; i++)
             {
                 players[i].PlayerIndex = i;
                 players[i].TableManager = this;
             }
+
+            buttons = new List<GameObject>() { winningBtn, chiBtn, kongBtn, pongBtn };
 
             // PickSeatsAndDecideDealer();
 
@@ -69,28 +61,22 @@ namespace Game.Play
             OpenDoor();
         }
 
-
-
+        #region - GameLogic
 
         void OpenDoor()
         {
             tileWall.DealTile(players[activePlayerIndex]);
             int cnt = 0;
-            while (cnt < 4)
+            
+            while(cnt < 4)
             {
                 foreach (Player player in players)
                 {
-                    if (player.IsDoneReplace())
-                    {
-                        cnt += 1;
-                    }
-                    else
-                    {
-                        player.ReplaceFlower();
-                    }
+                    cnt += player.ReplaceFlower() ? 0 : 1;
                 }
             }
-            foreach (Player player in players)
+            
+            foreach(Player player in players)
             {
                 player.SortHandTiles();
             }
@@ -112,24 +98,19 @@ namespace Game.Play
 
         void PickSeatsAndDecideDealer()
         {
-
-            for (int i = 0; i < players.Count; ++i)
+            for(int i = 0; i < players.Count; ++i)
             {
                 int j = Random.Range(0, players.Count);
-                Player tmp = players[i];
-                players[i] = players[j];
-                players[j] = tmp;
+                
+                (players[i], players[j]) = (players[j], players[i]);
             }
             activePlayerIndex = 0;
         }
 
-        public void Draw()
+        private void Draw()
         {
             tileWall.DealTile(players[activePlayerIndex]);
-            while (!players[activePlayerIndex].IsDoneReplace())
-            {
-                players[activePlayerIndex].ReplaceFlower();
-            }
+            while (players[activePlayerIndex].ReplaceFlower()) { }
 
             if (activePlayerIndex == 0 && players[0].IsPlayerCanKong())
             {
@@ -142,42 +123,15 @@ namespace Game.Play
             }
         }
 
-        public void BuKong()
+        private void BuKong()
         {
-            tileWall.BuPai(players[activePlayerIndex]);
-            while (!players[activePlayerIndex].IsDoneReplace())
-            {
-                players[activePlayerIndex].ReplaceFlower();
-            }
+            tileWall.Replenish(players[activePlayerIndex]);
+            while(players[activePlayerIndex].ReplaceFlower()) { }
         }
+        
+        #endregion
 
-        public void NextPlayer()
-        {
-            activePlayerIndex = (activePlayerIndex + 1) % 4;
-        }
-
-        public void TurnToPlayer(int playerIndex)
-        {
-            activePlayerIndex = playerIndex;
-        }
-        //  only from single player
-        public void AutoPlay()
-        {
-            if (activePlayerIndex != 0)
-            {
-
-                players[activePlayerIndex].DefaultDiscard();
-            }
-        }
-
-        IEnumerator Countdown(int second)
-        {
-            yield return new WaitForSeconds(1f);
-        }
-        void SetButton(GameObject btn, bool isInteractable)
-        {
-            btn.GetComponent<Button>().interactable = isInteractable;
-        }
+        #region - BtnCallBack
 
         public void Chi()
         {
@@ -199,10 +153,43 @@ namespace Game.Play
             EndGame(winningPlayerIndex);
         }
 
+        #endregion
+
+        #region - HelperFunction
+        
+        IEnumerator Countdown(int second)
+        {
+            yield return new WaitForSeconds(second);
+        }
+        
+        private void NextPlayer() 
+        {
+            activePlayerIndex = (activePlayerIndex + 1) % 4;
+        }
+
+        private void TurnToPlayer(int playerIndex)
+        {
+            activePlayerIndex = playerIndex;
+        }
+        //  only from single player
+
+        
+        private void AutoPlay()
+        {
+            if(activePlayerIndex != 0)
+            {
+                players[activePlayerIndex].DefaultDiscard();
+            }
+        }
+
+        private void SetButton(GameObject btn, bool isInteractable)
+        {
+            btn.GetComponent<Button>().interactable = isInteractable;
+        }
         private void EndGame(int winningPlayerIndex)
         {
             roundPoints.SetActive(true);
-            players[winningPlayerIndex].callCalculator();
+            players[winningPlayerIndex].CallCalculator();
 
             points.text = "共 " + players[winningPlayerIndex].TaiCalculator.Tai + " 台";
 
@@ -215,12 +202,6 @@ namespace Game.Play
                 pointsChangeText[(winningPlayerIndex + 1) % 4].text = "-" + pointsChange.ToString();
                 pointsChangeText[(winningPlayerIndex + 2) % 4].text = "-" + pointsChange.ToString();
                 pointsChangeText[(winningPlayerIndex + 3) % 4].text = "-" + pointsChange.ToString();
-
-                // sync user score
-                if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
-                {
-                    playerNetworkData.UpdateScore_RPC(pointsChange * 3);
-                }
             }
             else
             {
@@ -236,12 +217,6 @@ namespace Game.Play
                     }
                 }
                 pointsChangeText[winningPlayerIndex].text = "+" + pointsChange.ToString();
-
-                // sync user score
-                if (gameManager.PlayerList.TryGetValue(gameManager.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
-                {
-                    playerNetworkData.UpdateScore_RPC(pointsChange);
-                }
             }
 
             List<string> scoringList = players[winningPlayerIndex].TaiCalculator.ScoringList;
@@ -250,7 +225,7 @@ namespace Game.Play
 
             for (int i = 0; i < scoringList.Count; i++)
             {
-                WinningType[i].text = scoringList[i];
+                winningType[i].text = scoringList[i];
             }
         }
 
@@ -258,7 +233,7 @@ namespace Game.Play
         {
             for (int i = 0; i < 18; i++)
             {
-                WinningType[i].text = "";
+                winningType[i].text = "";
             }
         }
 
@@ -318,6 +293,6 @@ namespace Game.Play
             }
 
         }
-
+        #endregion
     }
 }
