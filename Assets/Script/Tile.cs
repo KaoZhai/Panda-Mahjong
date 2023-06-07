@@ -88,7 +88,7 @@ namespace Game.Play
                 }
 
                 Debug.Log("Tile" + PlayerPrefs.GetFloat("Tile"));
-                if(PlayerPrefs.GetFloat("Tile") > 0.0f)
+                if (PlayerPrefs.GetFloat("Tile") > 0.0f)
                 {
                     gameObject.GetComponent<AudioSource>().Play();
                 }

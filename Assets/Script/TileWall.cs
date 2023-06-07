@@ -47,6 +47,24 @@ namespace Game.Play {
             GenerateAllTile();
             Shuffle();
         }
+        
+        public void DealTile(Player player, string tileId)
+        {
+            foreach (var tileObj in tileList)
+            {
+                Tile tile = tileObj.GetComponent<Tile>();
+                if (tile.TileId == tileId)
+                {
+                    player.GetTile(tileObj);
+                    tileList.Remove(tileObj);
+                    return;
+                }
+                else
+                {
+                    Debug.LogError("牌牆已空");
+                }
+            }
+        }
 
         public void DealTile(Player player)
         {

@@ -1,33 +1,32 @@
-using System;
 using Fusion;
 using Game.Play;
 
 namespace Game.Core
 {
-    public class PlayerController : NetworkBehavior
+    public class PlayerController : NetworkBehaviour
     {
-        private GameManager gameManager = null;
-        private TableManager tableManager = null;
+        private GameManager gameManager;
+        private TableManager tableManager;
 
-        [Network] public Guid PlayerID { get; set; }
-        [Network] public int PlayerOrder { get; set; }
-        [Network] public string PlayerName { get; set; }
-        [Network] public string LastTileID { get; set; }
+        [Networked] public int PlayerOrder { get; set; }
+        [Networked] public string PlayerID { get; set; }
+        [Networked] public string PlayerName { get; set; }
+        [Networked] public string LastTileID { get; set; }
 
         public override void Spawned()
         {
             gameManager = GameManager.Instance;
 
-            tableManager = GameObject.Find("Canvas").GetComponent<TableManager>();
+            // tableManager = gameManager.gameObject.Find("Canvas").GetComponent<TableManager>();
 
             if (Object.HasInputAuthority)
             {
-                PlayerID = playerNetworkData.PlayerID;
-                PlayerName = PlayerNetworkData.PlayerName;
+                PlayerID = gameManager.PlayerID;
+                PlayerName = gameManager.PlayerName;
             }
         }
 
-        public override void Despawned()
+        public override void Despawned(NetworkRunner runner, bool hasState)
         {
 
         }
@@ -49,16 +48,21 @@ namespace Game.Core
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void DealTiles_RPC(string tileId)
         {
-            // TODO: find tile object by id and assign to player
+            gameManager.TableManager.AssignTileToPlayer(PlayerID, tileId);
         }
 
         #endregion
 
         #region - callback
 
-        public static void OnLastTileChange()
+        public void OnOrderChange()
         {
-            tableManager.BeforeNextPlayer();
+            gameManager.TableManager.SetPlayerOrder(PlayerID, PlayerOrder);
+        }
+
+        public void OnLastTileChange()
+        {
+            // tableManager.BeforeNextPlayer();
         }
 
         #endregion
